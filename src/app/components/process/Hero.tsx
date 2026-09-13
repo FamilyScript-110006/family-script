@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import SocialIcons from "../layout/SocialIcos";
+import PageGradientBackground from "../layout/PageGradientBackground";
 
 interface ProcessStep {
   title: string;
@@ -237,9 +238,8 @@ export default function Hero() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   return (
-    <main className="relative min-h-screen w-full  bg-[#421C2A] text-[#F4F0E9]">
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,#421C2A_0%,#431D2C_54%,#33232B_100%)]" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[38%] bg-[radial-gradient(ellipse_at_center_bottom,rgba(30,24,30,.48),transparent_72%)]" />
+    <main className="relative min-h-screen w-full  bg-[#532439] text-[#F4F0E9]">
+      <PageGradientBackground />
 
       <SocialIcons />
 

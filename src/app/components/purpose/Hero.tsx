@@ -8,6 +8,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SocialIcons from "../layout/SocialIcos";
 import ScrapbookImage from "./ScrapbookImage";
+import PageGradientBackground from "../layout/PageGradientBackground";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -154,7 +155,12 @@ export default function Hero() {
   }, []);
 
   return (
-    <main className="relative w-full  bg-[#3b1425] text-white">
+    <main className="relative w-full  bg-[#532439] text-white">
+      {/* Behind the banner photo below (opaque, so this only actually
+          shows through in the content area past it) and everything
+          else on the page. */}
+      <PageGradientBackground />
+
       {/* ================= SOCIAL MEDIA ICONS ================= */}
       <SocialIcons />
 

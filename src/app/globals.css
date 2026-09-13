@@ -58,7 +58,6 @@
   --foreground: #171717;
 
   /* Testimonials/Products palette */
-  --muted-purple: #382c3b;
   --dark-burgundy: #532439;
   --antique-gold: #cba356;
   --warm-beige: #d2c6b2;
@@ -72,7 +71,6 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-muted-purple: var(--muted-purple);
   --color-dark-burgundy: var(--dark-burgundy);
   --color-antique-gold: var(--antique-gold);
   --color-warm-beige: var(--warm-beige);
@@ -170,6 +168,22 @@ body {
 
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
+  display: none;
+
+  width: 0;
+  height: 0;
+}
+
+/* ============================================================
+   HIDE SCROLLBAR (reusable, for internally-scrollable elements)
+============================================================ */
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
   display: none;
 
   width: 0;

@@ -5,6 +5,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import productsData from "./products.json";
+import PageGradientBackground from "../layout/PageGradientBackground";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -136,7 +137,9 @@ export default function Products() {
   }, []);
 
   return (
-    <main className="relative w-full overflow-x-hidden bg-[#4E2336]">
+    <main className="relative w-full overflow-x-hidden bg-[#532439]">
+      <PageGradientBackground />
+
       <div className="relative mx-auto" style={{ width: 1440 }}>
         {/* Banner — measured Figma height: ~356px. */}
         <div className="relative " style={{ width: 1440, height: 356 }}>

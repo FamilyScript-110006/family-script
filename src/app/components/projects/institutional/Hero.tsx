@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import PageGradientBackground from "../../layout/PageGradientBackground";
 
 const institutionalProjects = [
   {
@@ -22,45 +23,11 @@ export default function Hero() {
         relative
         min-h-screen
         w-full
-        bg-[#480424]
+        bg-[#532439]
         text-white
       "
     >
-      {/* =====================================================
-          BACKGROUND
-      ===================================================== */}
-
-      <div
-        className="
-          pointer-events-none
-          absolute
-          inset-0
-        "
-      >
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to bottom, #431827 0%, #3b1724 38%, #2b1821 72%, #171319 100%)",
-          }}
-        />
-
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(circle at 50% 40%, rgba(119,57,65,0.12), transparent 55%)",
-          }}
-        />
-
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to bottom, transparent 55%, rgba(10,8,10,0.32) 100%)",
-          }}
-        />
-      </div>
+      <PageGradientBackground />
 
       {/* =====================================================
           MAIN CONTENT

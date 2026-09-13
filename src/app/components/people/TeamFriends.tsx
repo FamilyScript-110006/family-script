@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import PageGradientBackground from "../layout/PageGradientBackground";
 
 const team = [
   {
@@ -97,40 +98,8 @@ const friends = [
 
 export default function TeamFriends() {
   return (
-    <section className="relative min-h-[160vh] w-full  bg-[#480424] text-white">
-      {/* ================= BACKGROUND ================= */}
-
-      <div className="pointer-events-none absolute inset-0">
-        {/* BASE COLOR */}
-        <div className="absolute inset-0 bg-[#480424]" />
-
-        {/* DARKER TOP + BOTTOM GRADIENT */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to bottom, #210212 0%, rgba(33,2,18,0.72) 10%, rgba(72,4,36,0) 32%, rgba(72,4,36,0) 68%, rgba(33,2,18,0.72) 90%, #210212 100%)",
-          }}
-        />
-
-        {/* SUBTLE CENTER LIGHT */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(circle at 50% 45%, rgba(120,45,75,0.08), transparent 60%)",
-          }}
-        />
-
-        {/* SUBTLE SIDE DARKENING */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to right, rgba(20,2,12,0.12), transparent 18%, transparent 82%, rgba(20,2,12,0.12))",
-          }}
-        />
-      </div>
+    <section className="relative min-h-[160vh] w-full  bg-[#532439] text-white">
+      <PageGradientBackground />
 
       {/* ================= CONTENT ================= */}
 

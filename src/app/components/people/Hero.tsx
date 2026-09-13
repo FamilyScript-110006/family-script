@@ -3,6 +3,7 @@
 "use client";
 
 import FounderHover, { type Founder } from "./FounderHover";
+import PageGradientBackground from "../layout/PageGradientBackground";
 
 const founders: Founder[] = [
   {
@@ -32,40 +33,8 @@ const founders: Founder[] = [
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen w-full bg-[#480424] text-white">
-      {/* ================= BACKGROUND ================= */}
-
-      <div className="pointer-events-none absolute inset-0">
-        {/* BASE COLOR */}
-        <div className="absolute inset-0 bg-[#480424]" />
-
-        {/* TOP + BOTTOM GRADIENT */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to bottom, #480424 0%, #480424 55%, rgba(48,3,25,0.35) 75%, rgba(48,3,25,0.72) 90%, #300319 100%)",
-          }}
-        />
-
-        {/* SUBTLE CENTER GLOW */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(circle at 50% 40%, rgba(120,45,75,0.08), transparent 60%)",
-          }}
-        />
-
-        {/* SIDE VIGNETTE */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to right, rgba(25,2,14,0.10) 0%, transparent 18%, transparent 82%, rgba(25,2,14,0.10) 100%)",
-          }}
-        />
-      </div>
+    <section className="relative min-h-screen w-full bg-[#532439] text-white">
+      <PageGradientBackground />
 
       {/* ================= CONTENT ================= */}
 

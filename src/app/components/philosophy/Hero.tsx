@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SocialIcons from "../layout/SocialIcos";
+import PageGradientBackground from "../layout/PageGradientBackground";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -335,6 +336,8 @@ export default function Hero() {
 
   return (
     <main className="relative min-h-screen w-full  bg-[#532439] text-white">
+      <PageGradientBackground />
+
       <SocialIcons />
 
       {/* =========================================================

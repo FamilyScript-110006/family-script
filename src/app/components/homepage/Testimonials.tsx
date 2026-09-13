@@ -11,47 +11,22 @@ const BACKDROP_PHOTO = "/assets/testimonials/testimonials-bg.png";
 type Testimonial = {
   quote: string;
   name: string;
-  project: string;
   photo: string;
 };
 
-const TESTIMONIALS: Testimonial[] = [
-  {
-    name: "Varun & Elina",
-    project: "The Wedding Hamper Project",
-    photo: "/assets/testimonials/varun-elina.png",
-    quote:
-      'We are so grateful to the entire FS team for making our wedding so special and memorable. The hamper you created for us was amazing and unique. It had the traditional elements and also a hint of what we love. All of our guests were really delighted and impressed by the contents of the basket. They appreciated how you chose sustainable and eco-friendly products. The stories behind each of the items made it so much more personal and the "fun facts" about the both of us was such a nice touch too!\n\nYou all really put a lot of thought and effort into it. Thank you so much for all your patience, creativity and energy that went into making this a highlight of our wedding!',
-  },
-  {
-    name: "Sucharita Hota",
-    project: "The Graduation Book",
-    photo: "/assets/testimonials/sucharita-hota.png",
-    quote:
-      "Dear Team Family Script,\n\nThis is a small note of appreciation for the wonderful graduation book you helped me create for my daughter. It was the perfect gift and the best surprise ever for her. Thank you for so beautifully weaving the threads of her life into such a beautiful tapestry. The time and effort your team put in, responding to my every message, voice note and email was exemplary. Your attention to detail was executed to near perfection. I could not have found a better team to work with and I’m so glad I chose you for something so personal and close to me. You made it so easy to put my trust in your team with your positive attitude and friendliness. For that you guys have my heart.\n\nWishing you all success in all your endeavours.\n\nI will always choose you as my “go-to” team.",
-  },
-  {
-    name: "Romonika Sharan",
-    project: "Colombo Colours: Photo Book",
-    photo: "/assets/testimonials/romonika-sharan.png",
-    quote:
-      "Thankyou, FS for crafting this mosaic of memorable moments from our holiday with the parivar in Colombo, Dec 2022. It was an absolute privilege to host 18 people from across the world and experience Sri Lanka together. It was thanks to the patience and professionalism of Faria and the FS team that later helped me select special moments from our family occasions to craft a permanent pathway that we can travel through and renew the warp and weft of family bonds.",
-  },
-  {
-    name: "Vimlendra and Romonika D Sharan",
-    project: "Graduation Journeys: Photo Book",
-    photo: "/assets/testimonials/vimlendra-romonika-sharan.png",
-    quote:
-      "Holding on and letting go are intrinsic elements of most close relationships especially the precious one between a parent and a child. FS played a key role in celebrating the graduation of our son from the University of Toronto, Canada and the post graduation of our daughter from the Institute of development Studies, Sussex, UK. These books produced by FS provide our family with a recording of some of the moments of preparation, adventure, trepidation and of course celebration that we shared as a family across 4 different cities and 3 different time zones over the last few years.\n\nWe shall always be grateful to the team at FS for their empathetic support and professional expertise in curating these personalised academic journeys as our children step out into the world.",
-  },
-  {
-    name: "Nikita Gupta",
-    project: "The Wedding Book",
-    photo: "/assets/testimonials/nikita-gupta.png",
-    quote:
-      "The Wedding Book is a real treasure for me, the right treasure I got at the right time. It’s the legacy of my family I carry with me, and the link which commences my new journey with Mrigank’s family.\n\nWhen we were finally presented with the book, it was such a lovely surprise - looking through it and all our stories! But even more beautiful thing about the Wedding Book is that it keeps getting more interesting with time. Everytime it is opened, we get to know new things about our own families.",
-  },
-];
+// Figma spec content, verbatim — the only testimonial photo that
+// actually exists on disk (public/assets/testimonials/KKS founder.jpg;
+// the other five referenced photos are missing files, not a code bug).
+const KKS_QUOTE =
+  "It was thanks to the patience and professionalism of the FS team that later helped me select special moments from our family occasions to craft a permanent pathway that we can travel through and renew the warp and weft of family bonds.";
+const KKS_NAME = "Dr. Kshitij Kumar Sinha";
+const KKS_PHOTO = "/assets/testimonials/KKS founder.jpg";
+
+const TESTIMONIALS: Testimonial[] = Array.from({ length: 6 }, () => ({
+  quote: KKS_QUOTE,
+  name: KKS_NAME,
+  photo: KKS_PHOTO,
+}));
 
 type SidePreset = {
   boxLeft: number;
@@ -82,10 +57,24 @@ const RIGHT_PRESET: SidePreset = {
 
 const MIN_BOX_HEIGHT = 208;
 
-// Gap between every testimonial in the normal-flow list — kept generous
-// (matches the old "pause between pairs" breathing room) now that there's
-// no viewport/pair concept left to distinguish "within" vs "between" gaps.
-const TESTIMONIAL_GAP = 60;
+// Quote font sizing — the Figma spec (20px/30px line-height) was mocked
+// up against short placeholder text; real testimonial quotes run much
+// longer, so rendering all of them at a fixed 20px would make some boxes
+// grow very tall. Instead, quotes that would otherwise push the box past
+// MAX_BOX_HEIGHT_BEFORE_SHRINK shrink their font size (proportional
+// line-height, same 1.5x ratio as the spec) down to QUOTE_MIN_FONT_SIZE
+// before the box is allowed to grow further — keeps most boxes close to
+// the compact spec size without making any quote illegibly small.
+const QUOTE_BASE_FONT_SIZE = 20;
+const QUOTE_LINE_HEIGHT_RATIO = 1.5; // 30 / 20, per spec
+const QUOTE_MIN_FONT_SIZE = 15;
+const MAX_BOX_HEIGHT_BEFORE_SHRINK = 260;
+
+// Gap between every testimonial in the normal-flow list. Confirmed
+// against the exact Figma spec (upper/lower box positions) by working
+// backward from the given absolute coordinates — 30px, not the 60px
+// this was previously set to.
+const TESTIMONIAL_GAP = 30;
 
 // Testimonial list starts here, matching the original Figma-measured
 // position (298px below the canvas top) — everything below is normal
@@ -102,19 +91,44 @@ function TestimonialBox({
 }) {
   const quoteMeasureRef = useRef<HTMLParagraphElement>(null);
   const [boxHeight, setBoxHeight] = useState(MIN_BOX_HEIGHT);
+  const [quoteFontSize, setQuoteFontSize] = useState(QUOTE_BASE_FONT_SIZE);
 
   const quoteWidth = 654;
   const quoteTop = 45;
-  const nameTop = 162;
+  const quoteLineHeight = Math.round(quoteFontSize * QUOTE_LINE_HEIGHT_RATIO);
   const nameWidth = 217;
+  // Name (20px tall) is anchored to the box's bottom edge, not a fixed
+  // offset from the top — at MIN_BOX_HEIGHT (208) this resolves to
+  // top:162 (matching the Figma spec's absolute top:460, i.e.
+  // LIST_TOP + 162), but for quotes that push boxHeight taller, it
+  // correctly follows the bottom instead of staying pinned where the
+  // quote text has since grown past it.
+  const NAME_BLOCK_BOTTOM_OFFSET = 46;
+  const nameTop = boxHeight - NAME_BLOCK_BOTTOM_OFFSET;
 
   useEffect(() => {
     const measure = () => {
-      if (!quoteMeasureRef.current) return;
+      const el = quoteMeasureRef.current;
+      if (!el) return;
 
-      const textHeight = quoteMeasureRef.current.scrollHeight;
+      // Try the full spec size first, then step down until the
+      // resulting box would fit under the cap or we hit the floor —
+      // whichever comes first. Each step forces a synchronous reflow
+      // of the (hidden) measuring paragraph, but this is a handful of
+      // iterations at most and only runs on mount/resize/quote change.
+      let fontSize = QUOTE_BASE_FONT_SIZE;
+      let textHeight = 0;
+      for (; fontSize >= QUOTE_MIN_FONT_SIZE; fontSize--) {
+        el.style.fontSize = `${fontSize}px`;
+        el.style.lineHeight = `${Math.round(fontSize * QUOTE_LINE_HEIGHT_RATIO)}px`;
+        textHeight = el.scrollHeight;
+        const projectedHeight = quoteTop + textHeight + 20;
+        if (projectedHeight <= MAX_BOX_HEIGHT_BEFORE_SHRINK) break;
+      }
+
       const requiredHeight = Math.max(MIN_BOX_HEIGHT, quoteTop + textHeight + 20);
 
+      setQuoteFontSize(fontSize);
       setBoxHeight(requiredHeight);
     };
 
@@ -135,12 +149,16 @@ function TestimonialBox({
 
   return (
     <div className="relative" style={{ width: 1440, height: boxHeight }}>
-      {/* Hidden measuring text */}
+      {/* Hidden measuring text — font-size/line-height are set
+          directly by the measure() effect above (it tries several
+          sizes while probing scrollHeight), so no size classes here. */}
       <p
         ref={quoteMeasureRef}
         aria-hidden="true"
-        className="futura-medium pointer-events-none absolute whitespace-pre-line text-[20px] leading-[30px] tracking-[0.05em]"
+        className="pointer-events-none absolute whitespace-pre-line tracking-[0.05em]"
         style={{
+          fontFamily: "Futura, sans-serif",
+          fontWeight: 400,
           width: quoteWidth,
           height: "auto",
           top: quoteTop,
@@ -166,8 +184,10 @@ function TestimonialBox({
 
       {/* Quote */}
       <p
-        className="futura-medium absolute whitespace-pre-line text-[20px] leading-[30px] tracking-[0.05em]"
+        className="absolute whitespace-pre-line tracking-[0.05em]"
         style={{
+          fontFamily: "Futura, sans-serif",
+          fontWeight: 400,
           width: quoteWidth,
           height: "auto",
           top: quoteTop,
@@ -175,6 +195,9 @@ function TestimonialBox({
           color: "#FFF5E5",
           textAlign: preset.quoteAlign,
           opacity: 1,
+          fontSize: quoteFontSize,
+          lineHeight: `${quoteLineHeight}px`,
+          transition: "font-size 0.25s ease, line-height 0.25s ease",
         }}
       >
         {testimonial.quote}
@@ -182,34 +205,21 @@ function TestimonialBox({
 
       {/* Name */}
       <p
-        className="futura-medium absolute text-[12px] leading-[20px] tracking-normal"
+        className="absolute text-[12px] leading-[20px] tracking-normal"
         style={{
+          fontFamily: "Futura, sans-serif",
+          fontWeight: 400,
           width: nameWidth,
           height: 20,
           top: nameTop,
           left: preset.nameLeft,
-          color: "#FFF5E5",
-          textAlign: preset.nameAlign,
-          opacity: 1,
-        }}
-      >
-        {testimonial.name}
-      </p>
-
-      {/* Project */}
-      <p
-        className="futura-light absolute text-[12px] leading-[20px] tracking-normal"
-        style={{
-          width: nameWidth,
-          height: 20,
-          top: nameTop + 20,
-          left: preset.nameLeft,
           color: "#D2C6B2",
           textAlign: preset.nameAlign,
           opacity: 1,
+          transition: "top 0.25s ease",
         }}
       >
-        {testimonial.project}
+        {testimonial.name}
       </p>
 
       {/* Photo */}
@@ -234,6 +244,10 @@ export default function Testimonials() {
   const headingRef = useRef<HTMLDivElement>(null);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const boxRefs = useRef<(HTMLDivElement | null)[]>([]);
+  // Scrollable region holding just the testimonial list — heading and
+  // description sit outside it (in the section's own normal flow), so
+  // scrolling within this box never moves them.
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -267,6 +281,12 @@ export default function Testimonials() {
             duration: 1,
             ease: "power2.out",
             scrollTrigger: {
+              // These boxes scroll inside scrollContainerRef, not the
+              // page — without pointing ScrollTrigger at that element,
+              // it would track window scroll instead and never fire
+              // correctly (or fire immediately, since scrolling the
+              // page itself no longer moves these boxes into view).
+              scroller: scrollContainerRef.current ?? undefined,
               trigger: el,
               start: "top 88%",
               toggleActions: "play none none reverse",
@@ -282,7 +302,7 @@ export default function Testimonials() {
   }, []);
 
   return (
-    <section className="relative w-full bg-[#460A26]">
+    <section className="relative h-screen w-full overflow-hidden bg-[#460A26]">
       {/* =====================================================
           FIXED-HEIGHT BACKDROP BAND
 
@@ -352,13 +372,14 @@ export default function Testimonials() {
           CONTENT CANVAS
 
           Retains the original 1440px coordinate system for the
-          heading/description; grows naturally in height (no fixed
-          823 clip) so the normal-flow testimonial list below can
-          extend past the backdrop band.
+          heading/description. Fills the section's full height (fixed
+          at one viewport) rather than growing with content — the
+          testimonial list below is its own internally-scrollable
+          region instead of extending the page.
           ===================================================== */}
       <div
-        className="relative mx-auto"
-        style={{ width: 1440, zIndex: 1, paddingTop: LIST_TOP }}
+        className="relative mx-auto h-full"
+        style={{ width: 1440, zIndex: 1 }}
       >
         {/* Heading */}
         <div
@@ -391,12 +412,19 @@ export default function Testimonials() {
           others who have also played pivotal roles in our endeavors.
         </p>
 
-        {/* Testimonial list — normal document flow, alternating
-            photo-left/photo-right styling by index. */}
-        <div>
+        {/* Testimonial list — heading/description above stay put;
+            this is its own internally-scrollable region (native
+            overflow scroll, no wheel-hijacking) so the user scrolls
+            through testimonials without the heading moving. Boxes
+            alternate photo-left/photo-right styling by index. */}
+        <div
+          ref={scrollContainerRef}
+          className="hide-scrollbar absolute overflow-y-auto"
+          style={{ top: LIST_TOP, left: 0, right: 0, bottom: 0 }}
+        >
           {TESTIMONIALS.map((testimonial, i) => (
             <div
-              key={testimonial.name}
+              key={i}
               ref={(el) => {
                 boxRefs.current[i] = el;
               }}

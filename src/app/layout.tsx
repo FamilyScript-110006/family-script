@@ -4,6 +4,8 @@ import "./globals.css";
 
 import Navbar from "./components/layout/Navbar";
 import BodyStyleReset from "./components/layout/BodyStyleReset";
+import ChunkErrorReload from "./components/layout/ChunkErrorReload";
+import PageTransitionProvider from "./components/transition/PageTransitionProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,21 +41,35 @@ export default function RootLayout({
 
       <body className="flex  flex-col">
 
-        {/* ================= BODY STYLE SAFETY NET =================
-            Resets any body.style.overflow / touchAction left behind
-            by the homepage ripple navigation on every route change.
+        {/* ================= PAGE TRANSITIONS =================
+            Intercepts internal link clicks and plays a ripple
+            crossfade between the outgoing and incoming page. See
+            src/app/components/transition/PageTransitionProvider.tsx.
         ================================================= */}
-        <BodyStyleReset />
+        <PageTransitionProvider>
 
-        {/* ================= NAVBAR ================= */}
-        <Navbar />
+          {/* ================= CHUNK LOAD ERROR SAFETY NET =================
+              If the client tries to fetch a route chunk that no longer
+              exists (stale tab after a new deploy, or a dev-server
+              rebuild), reload instead of leaving a dead page behind.
+          ================================================= */}
+          <ChunkErrorReload />
 
-        {/* ================= PAGE CONTENT ================= */}
-        <main className="flex-1">
-          {children}
-        </main>
+          {/* ================= BODY STYLE SAFETY NET =================
+              Resets any leftover body.style.overflow / touchAction on
+              every route change (defensive cleanup).
+          ================================================= */}
+          <BodyStyleReset />
 
-        
+          {/* ================= NAVBAR ================= */}
+          <Navbar />
+
+          {/* ================= PAGE CONTENT ================= */}
+          <main className="flex-1">
+            {children}
+          </main>
+
+        </PageTransitionProvider>
 
       </body>
     </html>
