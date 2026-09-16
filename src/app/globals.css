@@ -252,3 +252,18 @@ a {
   background: rgba(83, 36, 57, 0.35);
   color: #ffffff;
 }
+
+/* ============================================================
+   MOBILE NAVIGATION SAFETY
+============================================================ */
+
+/*
+ * Prevent accidental horizontal overflow from the
+ * mobile navigation panel and responsive event layouts.
+ */
+
+@media (max-width: 767px) {
+  body {
+    overflow-x: hidden;
+  }
+}
