@@ -248,6 +248,10 @@ export default function Testimonials() {
   // description sit outside it (in the section's own normal flow), so
   // scrolling within this box never moves them.
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  // Backdrop photo drifts at a fraction of the list's scroll speed
+  // (parallax), giving scroll position a visual cue independent of the
+  // ripple-style box fade-ins below.
+  const backdropImgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -301,6 +305,29 @@ export default function Testimonials() {
     return () => ctx.revert();
   }, []);
 
+  // Backdrop parallax: driven directly off the list container's own
+  // scrollTop rather than a ScrollTrigger instance. A ScrollTrigger with
+  // `scroller` and `trigger` pointing at the same element measures that
+  // element's bounding box against itself, which collapses `start`/`end`
+  // to (near) the same point — i.e. zero scroll range, so nothing ever
+  // visibly moved. A plain scroll listener has no such geometry trap.
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    const img = backdropImgRef.current;
+    if (!container || !img) return;
+
+    // Backdrop drifts at 25% of the list's scroll speed.
+    const PARALLAX_FACTOR = 0.25;
+
+    const onScroll = () => {
+      img.style.transform = `translateY(${container.scrollTop * PARALLAX_FACTOR}px)`;
+    };
+
+    onScroll();
+    container.addEventListener("scroll", onScroll, { passive: true });
+    return () => container.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <section className="relative h-screen w-full overflow-hidden bg-[#460A26]">
       {/* =====================================================
@@ -312,10 +339,11 @@ export default function Testimonials() {
           longer clipped to a single viewport.
           ===================================================== */}
       <div
-        className="absolute inset-x-0 top-0 pointer-events-none"
+        className="absolute inset-x-0 top-0 overflow-hidden pointer-events-none"
         style={{ width: "100%", height: 823, zIndex: 0 }}
       >
         <img
+          ref={backdropImgRef}
           src={BACKDROP_PHOTO}
           alt=""
           className="absolute inset-0 h-full w-full"
