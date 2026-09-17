@@ -11,34 +11,47 @@ const KKS_QUOTE =
 
 const KKS_NAME = "Dr. Kshitij Kumar Sinha";
 
-const KKS_PHOTO =
-  "/assets/testimonials/KKS founder.jpg";
+const KKS_PHOTO = "/assets/testimonials/KKS founder.jpg";
 
-const TESTIMONIALS = Array.from(
-  { length: 6 },
-  () => ({
-    quote: KKS_QUOTE,
-    name: KKS_NAME,
-    photo: KKS_PHOTO,
-  })
-);
+const TESTIMONIALS = Array.from({ length: 6 }, () => ({
+  quote: KKS_QUOTE,
+  name: KKS_NAME,
+  photo: KKS_PHOTO,
+}));
 
 const LEFT_PRESET = {
   boxLeft: 309,
   photoLeft: 204,
   quoteLeft: 421,
-  quoteAlign: "left",
+  quoteAlign: "left" as const,
   nameLeft: 1024,
-  nameAlign: "left",
+  nameAlign: "left" as const,
 };
 
 const RIGHT_PRESET = {
   boxLeft: 204,
   photoLeft: 1054,
   quoteLeft: 321,
-  quoteAlign: "right",
+  quoteAlign: "right" as const,
   nameLeft: 270,
-  nameAlign: "left",
+  nameAlign: "left" as const,
+};
+
+/*
+ * Derive the types directly from the objects above.
+ *
+ * This avoids having to manually create Testimonial/Preset interfaces
+ * and guarantees that the types stay in sync with the actual data.
+ */
+type Testimonial = (typeof TESTIMONIALS)[number];
+
+type Preset = typeof LEFT_PRESET | typeof RIGHT_PRESET;
+
+type TestimonialBoxProps = {
+  testimonial: Testimonial;
+  preset: Preset;
+  boxRef: (element: HTMLDivElement | null) => void;
+  onMeasured: () => void;
 };
 
 const MIN_BOX_HEIGHT = 208;
@@ -53,10 +66,15 @@ const TESTIMONIAL_GAP = 30;
 const LIST_TOP = 298;
 const LIST_BOTTOM_PADDING = 60;
 
-function TestimonialBox({ testimonial, preset, boxRef, onMeasured }) {
-  const quoteMeasureRef = useRef(null);
-  const heightRef = useRef(MIN_BOX_HEIGHT);
-  const fontRef = useRef(QUOTE_BASE_FONT_SIZE);
+function TestimonialBox({
+  testimonial,
+  preset,
+  boxRef,
+  onMeasured,
+}: TestimonialBoxProps) {
+  const quoteMeasureRef = useRef<HTMLParagraphElement | null>(null);
+  const heightRef = useRef<number>(MIN_BOX_HEIGHT);
+  const fontRef = useRef<number>(QUOTE_BASE_FONT_SIZE);
 
   const quoteWidth = 654;
   const quoteTop = 45;
@@ -64,43 +82,42 @@ function TestimonialBox({ testimonial, preset, boxRef, onMeasured }) {
   useEffect(() => {
     const measure = () => {
       const el = quoteMeasureRef.current;
-      const box = boxRef.current;
+
+      /*
+       * boxRef is a callback ref, so we cannot access .current from it.
+       * Instead, find the containing testimonial box from the measuring
+       * paragraph.
+       */
+      const box = el?.parentElement;
 
       if (!el || !box) return;
 
       let fontSize = QUOTE_BASE_FONT_SIZE;
       let textHeight = 0;
 
-      for (
-        ;
-        fontSize >= QUOTE_MIN_FONT_SIZE;
-        fontSize--
-      ) {
+      for (; fontSize >= QUOTE_MIN_FONT_SIZE; fontSize--) {
         el.style.fontSize = `${fontSize}px`;
+
         el.style.lineHeight = `${Math.round(
-          fontSize * QUOTE_LINE_HEIGHT_RATIO
+          fontSize * QUOTE_LINE_HEIGHT_RATIO,
         )}px`;
 
         textHeight = el.scrollHeight;
 
-        const projectedHeight =
-          quoteTop + textHeight + 20;
+        const projectedHeight = quoteTop + textHeight + 20;
 
-        if (
-          projectedHeight <=
-          MAX_BOX_HEIGHT_BEFORE_SHRINK
-        ) {
+        if (projectedHeight <= MAX_BOX_HEIGHT_BEFORE_SHRINK) {
           break;
         }
       }
 
       const requiredHeight = Math.max(
         MIN_BOX_HEIGHT,
-        quoteTop + textHeight + 20
+        quoteTop + textHeight + 20,
       );
 
       const lineHeight = Math.round(
-        fontSize * QUOTE_LINE_HEIGHT_RATIO
+        fontSize * QUOTE_LINE_HEIGHT_RATIO,
       );
 
       fontRef.current = fontSize;
@@ -108,14 +125,16 @@ function TestimonialBox({ testimonial, preset, boxRef, onMeasured }) {
 
       box.style.height = `${requiredHeight}px`;
 
-      const quoteEl = box.querySelector(
-        "[data-quote-text]"
+      const quoteEl = box.querySelector<HTMLElement>(
+        "[data-quote-text]",
       );
-      const nameEl = box.querySelector(
-        "[data-quote-name]"
+
+      const nameEl = box.querySelector<HTMLElement>(
+        "[data-quote-name]",
       );
-      const borderEl = box.querySelector(
-        "[data-quote-border]"
+
+      const borderEl = box.querySelector<HTMLElement>(
+        "[data-quote-border]",
       );
 
       if (quoteEl) {
@@ -131,7 +150,7 @@ function TestimonialBox({ testimonial, preset, boxRef, onMeasured }) {
         borderEl.style.height = `${requiredHeight}px`;
       }
 
-      onMeasured?.();
+      onMeasured();
     };
 
     measure();
@@ -148,8 +167,7 @@ function TestimonialBox({ testimonial, preset, boxRef, onMeasured }) {
       resizeObserver.disconnect();
       window.removeEventListener("resize", measure);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [testimonial.quote]);
+  }, [testimonial.quote, onMeasured]);
 
   return (
     <div
@@ -209,7 +227,7 @@ function TestimonialBox({ testimonial, preset, boxRef, onMeasured }) {
           textAlign: preset.quoteAlign,
           fontSize: QUOTE_BASE_FONT_SIZE,
           lineHeight: `${Math.round(
-            QUOTE_BASE_FONT_SIZE * QUOTE_LINE_HEIGHT_RATIO
+            QUOTE_BASE_FONT_SIZE * QUOTE_LINE_HEIGHT_RATIO,
           )}px`,
         }}
       >
@@ -255,16 +273,17 @@ function TestimonialBox({ testimonial, preset, boxRef, onMeasured }) {
 }
 
 export default function Testimonials() {
-  const sectionRef = useRef(null);
-  const headingRef = useRef(null);
-  const descriptionRef = useRef(null);
-  const viewportRef = useRef(null);
-  const trackRef = useRef(null);
-  const boxRefs = useRef([]);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const headingRef = useRef<HTMLDivElement | null>(null);
+  const descriptionRef = useRef<HTMLParagraphElement | null>(null);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
 
-  const stRef = useRef(null);
-  const trackHeightRef = useRef(0);
-  const viewportHeightRef = useRef(0);
+  const boxRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const stRef = useRef<ScrollTrigger | null>(null);
+  const trackHeightRef = useRef<number>(0);
+  const viewportHeightRef = useRef<number>(0);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -288,7 +307,7 @@ export default function Testimonials() {
               start: "top 85%",
               toggleActions: "play none none reverse",
             },
-          }
+          },
         );
       }
 
@@ -307,14 +326,14 @@ export default function Testimonials() {
               start: "top 85%",
               toggleActions: "play none none reverse",
             },
-          }
+          },
         );
       }
 
       const getMaxScroll = () =>
         Math.max(
           0,
-          trackHeightRef.current - viewportHeightRef.current
+          trackHeightRef.current - viewportHeightRef.current,
         );
 
       stRef.current = ScrollTrigger.create({
@@ -325,9 +344,13 @@ export default function Testimonials() {
         scrub: true,
         anticipatePin: 1,
         invalidateOnRefresh: true,
+
         onUpdate: (self) => {
           const maxScroll = getMaxScroll();
-          gsap.set(trackEl, { y: -maxScroll * self.progress });
+
+          gsap.set(trackEl, {
+            y: -maxScroll * self.progress,
+          });
         },
       });
 
@@ -342,18 +365,21 @@ export default function Testimonials() {
 
       measureViewport();
       measureTrack();
+
       ScrollTrigger.refresh();
 
       const viewportObserver = new ResizeObserver(() => {
         measureViewport();
         ScrollTrigger.refresh();
       });
+
       viewportObserver.observe(viewportEl);
 
       const trackObserver = new ResizeObserver(() => {
         measureTrack();
         ScrollTrigger.refresh();
       });
+
       trackObserver.observe(trackEl);
 
       requestAnimationFrame(() => {
@@ -388,10 +414,11 @@ export default function Testimonials() {
       ===================================================== */}
 
       <div
-        className="absolute left-0 top-0 w-full h-full pointer-events-none overflow-hidden"
+        className="absolute left-0 top-0 h-full w-full pointer-events-none overflow-hidden"
         style={{ zIndex: 0 }}
       >
         {/* Dark overlay group */}
+
         {[
           { height: 834, top: -13 },
           { height: 830.85, top: -9.85 },
@@ -413,6 +440,7 @@ export default function Testimonials() {
         ))}
 
         {/* Gradient layers */}
+
         {[
           { height: 813, top: 8 },
           { height: 813, top: 8 },
@@ -440,14 +468,23 @@ export default function Testimonials() {
 
       <div
         className="relative mx-auto h-full"
-        style={{ width: "100%", maxWidth: 1440, zIndex: 1 }}
+        style={{
+          width: "100%",
+          maxWidth: 1440,
+          zIndex: 1,
+        }}
       >
         {/* Heading */}
 
         <div
           ref={headingRef}
           className="absolute"
-          style={{ width: 624, height: 147, top: 75, left: 411 }}
+          style={{
+            width: 624,
+            height: 147,
+            top: 75,
+            left: 411,
+          }}
         >
           <h2
             className="futura-medium w-full text-[50px] leading-[75px] tracking-[0.05em] text-white"
@@ -469,13 +506,12 @@ export default function Testimonials() {
             left: 351,
           }}
         >
-          This is a tribute to our friends at Family Script, who have
-          been unwavering pillars of support throughout our journey,
-          alongside many others who have also played pivotal roles
-          in our endeavors.
+          This is a tribute to our friends at Family Script, who have been
+          unwavering pillars of support throughout our journey, alongside many
+          others who have also played pivotal roles in our endeavors.
         </p>
 
-        {/* Testimonials window (internal pinned scroll) */}
+        {/* Testimonials window */}
 
         <div
           ref={viewportRef}
@@ -501,7 +537,11 @@ export default function Testimonials() {
               >
                 <TestimonialBox
                   testimonial={testimonial}
-                  preset={i % 2 === 0 ? LEFT_PRESET : RIGHT_PRESET}
+                  preset={
+                    i % 2 === 0
+                      ? LEFT_PRESET
+                      : RIGHT_PRESET
+                  }
                   boxRef={(el) => {
                     boxRefs.current[i] = el;
                   }}
@@ -509,6 +549,7 @@ export default function Testimonials() {
                     if (trackRef.current) {
                       trackHeightRef.current =
                         trackRef.current.scrollHeight;
+
                       ScrollTrigger.refresh();
                     }
                   }}
@@ -521,3 +562,4 @@ export default function Testimonials() {
     </section>
   );
 }
+

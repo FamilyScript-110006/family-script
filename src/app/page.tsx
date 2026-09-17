@@ -1,6 +1,7 @@
 // app/page.tsx
 
 import Hero from "./components/homepage/Hero";
+
 import WhoAreWe from "./components/homepage/WhoAreWe";
 import WhatWeDo from "./components/homepage/WhatWeDo";
 import WhatWeOffer from "./components/homepage/WhatWeOffer";
