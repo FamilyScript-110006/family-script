@@ -2,15 +2,12 @@
 
 import Link from "next/link";
 import type { Project } from "../../../data/projects";
-import PageGradientBackground from "../layout/PageGradientBackground";
 
 type ProjectDetailsProps = {
   project: Project;
 };
 
-export default function ProjectDetails({
-  project,
-}: ProjectDetailsProps) {
+export default function ProjectDetails({ project }: ProjectDetailsProps) {
   const gallery = project.gallery;
 
   return (
@@ -51,11 +48,6 @@ export default function ProjectDetails({
               "radial-gradient(ellipse at center, rgba(72,29,44,0.18) 0%, rgba(35,16,25,0.18) 100%)",
           }}
         />
-
-        {/* Same top/bottom darkening rects as every other non-homepage
-            page — no base-color layer here, so the cover photo (and
-            the tint layers above) stay visible underneath. */}
-        <PageGradientBackground includeBase={false} />
       </div>
 
       {/* =========================================================
@@ -71,74 +63,96 @@ export default function ProjectDetails({
           min-h-screen
           w-full
           max-w-[1350px]
-          px-5
+          px-2
           pb-10
           pt-24
-          sm:px-7
+          sm:px-3
           sm:pt-28
           md:block
-          md:px-8
+          md:px-4
           md:pt-28
-          lg:px-10
+          lg:px-5
           lg:pt-28
         "
       >
         {/* BREADCRUMB */}
 
-        <div className="mb-6 flex items-center gap-2 md:mb-7">
-          <Link
-            href="/"
-            className="
-              futura-light
-              text-[9px]
-              uppercase
-              tracking-wide
-              text-white/45
-              transition-colors
-              hover:text-white
-              md:text-[11px]
-            "
-          >
-            Home
-          </Link>
+{/* BREADCRUMB */}
 
-          <span className="futura-light text-[9px] text-white/25 md:text-[11px]">
-            &gt;&gt;
-          </span>
+<div className="mb-6 flex items-center gap-2 md:mb-7">
+  <Link
+    href="/"
+    className="
+      futura-light
+      text-[9px]
+      uppercase
+      tracking-wide
+      text-white/45
+      transition-colors
+      hover:text-white
+      md:text-[11px]
+    "
+  >
+    Home
+  </Link>
 
-          <Link
-            href="/projects"
-            className="
-              futura-light
-              text-[9px]
-              uppercase
-              tracking-wide
-              text-white/45
-              transition-colors
-              hover:text-white
-              md:text-[11px]
-            "
-          >
-            Projects
-          </Link>
+  <span className="futura-light text-[9px] text-white/25 md:text-[11px]">
+    &gt;&gt;
+  </span>
 
-          <span className="futura-light text-[9px] text-white/25 md:text-[11px]">
-            &gt;&gt;
-          </span>
+  <Link
+    href="/projects"
+    className="
+      futura-light
+      text-[9px]
+      uppercase
+      tracking-wide
+      text-white/45
+      transition-colors
+      hover:text-white
+      md:text-[11px]
+    "
+  >
+    Projects
+  </Link>
 
-          <span
-            className="
-              futura-light
-              text-[9px]
-              uppercase
-              tracking-wide
-              text-white/30
-              md:text-[11px]
-            "
-          >
-            {project.category}
-          </span>
-        </div>
+  <span className="futura-light text-[9px] text-white/25 md:text-[11px]">
+    &gt;&gt;
+  </span>
+
+  <Link
+    href={`/projects/${project.category.toLowerCase()}`}
+    className="
+      futura-light
+      text-[9px]
+      uppercase
+      tracking-wide
+      text-white/45
+      transition-colors
+      hover:text-white
+      md:text-[11px]
+    "
+  >
+    {project.category}
+  </Link>
+
+  <span className="futura-light text-[9px] text-white/25 md:text-[11px]">
+    &gt;&gt;
+  </span>
+
+  <span
+    className="
+      futura-light
+      text-[9px]
+      uppercase
+      tracking-wide
+      text-white
+      md:text-[11px]
+    "
+  >
+    {project.title}
+  </span>
+</div>
 
         {/* DESKTOP CONTENT */}
 
@@ -149,7 +163,7 @@ export default function ProjectDetails({
             flex-col
             gap-10
             lg:flex-row
-            lg:items-start
+            lg:items-stretch
             lg:gap-12
           "
         >
@@ -157,12 +171,12 @@ export default function ProjectDetails({
 
           <div
             className="
-              mt-8
+              mt-12
               flex
               w-full
               shrink-0
               flex-col
-              justify-start
+              justify-end
               md:mt-12
               lg:mt-6
               lg:w-[42%]
@@ -171,9 +185,9 @@ export default function ProjectDetails({
           >
             <h1
               className="
-                futura-light
-                max-w-[470px]
-                text-[32px]
+                futura-semibold
+                max-w-auto
+                text-[20px]
                 uppercase
                 leading-[0.92]
                 tracking-[0.015em]
@@ -181,7 +195,7 @@ export default function ProjectDetails({
                 sm:text-[40px]
                 md:text-[46px]
                 lg:text-[50px]
-                xl:text-[54px]
+                xl:text-[40px]
               "
             >
               {project.title}
@@ -189,23 +203,24 @@ export default function ProjectDetails({
 
             <div
               className="
-                mt-5
-                flex
-                flex-col
-                gap-2
-                lg:mt-6
-              "
+    mt-5
+    flex
+    flex-row
+    items-center
+    justify-between
+    lg:mt-6
+  "
             >
               <span
                 className="
-                  futura-light
-                  text-[10px]
-                  uppercase
-                  tracking-wide
-                  text-white/75
-                  md:text-[11px]
-                  lg:text-[12px]
-                "
+      futura-light
+      text-[10px]
+      uppercase
+      tracking-wide
+      text-white/75
+      md:text-[11px]
+      lg:text-[12px]
+    "
               >
                 {project.subtitle}
               </span>
@@ -213,14 +228,14 @@ export default function ProjectDetails({
               {project.location && (
                 <span
                   className="
-                    futura-light
-                    text-[10px]
-                    uppercase
-                    tracking-wide
-                    text-white/75
-                    md:text-[11px]
-                    lg:text-[12px]
-                  "
+        futura-light
+        text-[10px]
+        uppercase
+        tracking-wide
+        text-white/75
+        md:text-[11px]
+        lg:text-[12px]
+      "
                 >
                   {project.location}
                 </span>
@@ -230,7 +245,7 @@ export default function ProjectDetails({
             <div
               className="
                 mt-7
-                max-w-[480px]
+                max-w-auto
                 space-y-5
                 lg:mt-8
                 lg:space-y-5
@@ -255,17 +270,22 @@ export default function ProjectDetails({
               ))}
             </div>
 
-            <div className="mt-6">
-              <span
+            <div className="mt-6 flex justify-end">
+              <Link
+                href="/projects"
                 className="
-                  futura-light
-                  text-[9px]
-                  tracking-wide
-                  text-white/45
-                "
+      futura-light
+      text-[12px]
+      tracking-wide
+      text-white/25
+      transition-colors
+      duration-300
+      hover:text-white
+      cursor-pointer
+    "
               >
                 Read more &gt;&gt;
-              </span>
+              </Link>
             </div>
           </div>
 
@@ -336,12 +356,12 @@ export default function ProjectDetails({
                         project.slug === "dr-v-k-kutty"
                           ? "scale-[3]"
                           : project.slug === "vinod-kumar-khanna"
-                          ? "scale-[1.35]"
-                          : project.slug === "vasant-valley-school"
-                          ? "scale-[1.85]"
-                          : project.slug === "stapati-architects"
-                          ? "scale-[2]"
-                          : "scale-[1.40]"
+                            ? "scale-[1.35]"
+                            : project.slug === "vasant-valley-school"
+                              ? "scale-[1.85]"
+                              : project.slug === "stapati-architects"
+                                ? "scale-[2]"
+                                : "scale-[1.40]"
                       }
 
                       translate-x-[50%]
@@ -426,16 +446,6 @@ export default function ProjectDetails({
           md:hidden
         "
         style={{
-          /*
-           * SAME BACKGROUND FEEL AS THE PROJECTS PAGE
-           *
-           * TOP + SIDES = darker burgundy
-           * CENTER = slightly lighter burgundy
-           * BOTTOM = darker burgundy
-           *
-           * This removes the obvious #532439 block
-           * and blends the colours smoothly.
-           */
           background: `
             radial-gradient(
               ellipse at center,
@@ -458,7 +468,7 @@ export default function ProjectDetails({
             relative
             z-10
             w-full
-            px-[18px]
+            px-[10px]
             pb-8
             pt-[33px]
           "
@@ -555,12 +565,12 @@ export default function ProjectDetails({
                     project.slug === "dr-v-k-kutty"
                       ? "scale-[1.45]"
                       : project.slug === "vinod-kumar-khanna"
-                      ? "scale-[0.95]"
-                      : project.slug === "vasant-valley-school"
-                      ? "scale-[1.1]"
-                      : project.slug === "stapati-architects"
-                      ? "scale-[1.15]"
-                      : "scale-[1]"
+                        ? "scale-[0.95]"
+                        : project.slug === "vasant-valley-school"
+                          ? "scale-[1.1]"
+                          : project.slug === "stapati-architects"
+                            ? "scale-[1.15]"
+                            : "scale-[1]"
                   }
                 `}
               />
@@ -695,11 +705,7 @@ type GalleryImageProps = {
   className?: string;
 };
 
-function GalleryImage({
-  src,
-  alt,
-  className = "",
-}: GalleryImageProps) {
+function GalleryImage({ src, alt, className = "" }: GalleryImageProps) {
   if (!src) {
     return (
       <div

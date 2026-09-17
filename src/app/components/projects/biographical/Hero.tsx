@@ -118,7 +118,7 @@ export default function Hero() {
             &gt;&gt;
           </span>
 
-          <span className="futura-light text-[10px] uppercase tracking-wide text-white/35 md:text-[13px]">
+          <span className="futura-light text-[10px] uppercase tracking-wide text-white md:text-[13px]">
             Biographical
           </span>
         </div>

@@ -1,11 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SocialIcons from "../layout/SocialIcos";
-import PageGradientBackground from "../layout/PageGradientBackground";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,142 +25,147 @@ const beliefs = [
   },
 ];
 
-// Replace these URLs later if the Reels change — nothing else needs to.
+// Replace these video IDs later if the videos change — nothing else needs to.
 const episodes = [
-  { id: 0, url: "https://www.instagram.com/reel/DUOAJcEjVIJ/" },
-  { id: 1, url: "https://www.instagram.com/reel/DUvDWA0k-Sl/" },
-  { id: 2, url: "https://www.instagram.com/reel/DVqDNltDcM2/" },
-  { id: 3, url: "https://www.instagram.com/reel/DV-VEcRq6hS/" },
-  { id: 4, url: "https://www.instagram.com/reel/DZhxhlUzTbd/" },
+  { id: 0, videoId: "xUYfI1E5kyk" },
+  { id: 1, videoId: "hIplt2UFAJY" },
+  { id: 2, videoId: "rKIaru5KwhE" },
+  { id: 3, videoId: "4f1xzJKXA2M" },
+  { id: 4, videoId: "UQ7KKXZixAU" },
 ];
 
-declare global {
-  interface Window {
-    instgrm?: {
-      Embeds: { process: () => void };
-    };
-  }
-}
+/* =============================================================
+   YOUTUBE HOVER-TO-PLAY EMBED (9:16 crop, chromeless)
 
-// Instagram's embed.js is loaded once and shared across every card on the
-// page, rather than injecting a fresh <script> per embed.
-let igScriptPromise: Promise<void> | null = null;
+   - At rest: iframe is mounted but paused, showing YouTube's own
+     paused-frame preview (so there's no extra thumbnail request/
+     flash-of-different-image on hover).
+   - On hover (desktop): postMessage tells the existing iframe to
+     playVideo — muted stays off since the request was for full
+     hover autoplay with sound; browsers allow unmuted autoplay
+     triggered by a genuine user gesture like mouseenter.
+   - On mouse leave: pauseVideo.
+   - Uses youtube-nocookie.com + every "chromeless" param
+     (controls, modestbranding, rel, iv_load_policy, disablekb,
+     fs, cc_load_policy) so no YouTube title bar, logo, related-
+     video grid, captions button, or keyboard hint ever renders.
+   - The iframe is deliberately oversized (316% width, 100%
+     height) and centered, then clipped by the wrapper — this
+     crops a 16:9 source down to a 9:16 frame instead of
+     letterboxing it, and as a side effect crops away YouTube's
+     corner watermark, which sits outside the visible center
+     strip. The top/bottom black fades give a second layer of
+     cover for anything left at the very top/bottom edge.
+   ============================================================= */
+function YouTubeHoverVideo({ youtubeId }: { youtubeId: string }) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
-function loadInstagramEmbedScript(): Promise<void> {
-  if (typeof window === "undefined") return Promise.resolve();
-  if (window.instgrm) return Promise.resolve();
-  if (igScriptPromise) return igScriptPromise;
+  const videoUrl = `https://www.youtube-nocookie.com/embed/${youtubeId}?controls=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&iv_load_policy=3&disablekb=1&fs=0&cc_load_policy=0&showinfo=0&loop=1&playlist=${youtubeId}`;
 
-  igScriptPromise = new Promise((resolve, reject) => {
-    const existing = document.querySelector<HTMLScriptElement>(
-      'script[src="https://www.instagram.com/embed.js"]',
+  const sendCommand = (command: string) => {
+    iframeRef.current?.contentWindow?.postMessage(
+      JSON.stringify({
+        event: "command",
+        func: command,
+        args: [],
+      }),
+      "*",
     );
-    if (existing) {
-      existing.addEventListener("load", () => resolve());
-      existing.addEventListener("error", () =>
-        reject(new Error("ig embed script failed")),
-      );
-      return;
-    }
-    const script = document.createElement("script");
-    script.src = "https://www.instagram.com/embed.js";
-    script.async = true;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error("ig embed script failed"));
-    document.body.appendChild(script);
-  });
+  };
 
-  return igScriptPromise;
-}
+  const handleMouseEnter = () => {
+    sendCommand("playVideo");
+  };
 
-function InstagramEmbed({ url }: { url: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [status, setStatus] = useState<"loading" | "loaded" | "failed">(
-    "loading",
-  );
-
-  useEffect(() => {
-    let cancelled = false;
-    let observer: MutationObserver | undefined;
-
-    loadInstagramEmbedScript()
-      .then(() => {
-        if (cancelled) return;
-
-        window.instgrm?.Embeds.process();
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setStatus("failed");
-        }
-      });
-
-    if (containerRef.current) {
-      observer = new MutationObserver(() => {
-        if (containerRef.current?.querySelector("iframe")) {
-          setStatus("loaded");
-          observer?.disconnect();
-        }
-      });
-
-      observer.observe(containerRef.current, {
-        childList: true,
-        subtree: true,
-      });
-    }
-
-    const timeoutId = setTimeout(() => {
-      if (!cancelled && !containerRef.current?.querySelector("iframe")) {
-        setStatus("failed");
-      }
-    }, 7000);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timeoutId);
-      observer?.disconnect();
-    };
-  }, [url]);
-
-  if (status === "failed") {
-    return (
-      <div className="flex aspect-[9/13] w-full flex-col items-center justify-center gap-3 rounded-[8px] border border-white/25 bg-white/[0.03] px-6 text-center">
-        <span className="futura-light text-[11px] tracking-wide text-white/60">
-          This Reel couldn&apos;t load here.
-        </span>
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="futura-light text-[12px] tracking-wide text-white underline underline-offset-4 hover:text-white/80"
-        >
-          View on Instagram &rarr;
-        </a>
-      </div>
-    );
-  }
+  const handleMouseLeave = () => {
+    sendCommand("pauseVideo");
+  };
 
   return (
     <div
-      ref={containerRef}
-      className="w-full  rounded-[8px]"
-      style={{ minHeight: status === "loading" ? 420 : undefined }}
+      className="
+        group
+        relative
+        aspect-[16/9]
+        w-full
+        overflow-hidden
+        rounded-[10px]
+        bg-black
+      "
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onTouchStart={handleMouseEnter}
     >
-      <blockquote
-        className="instagram-media"
-        data-instgrm-permalink={`${url}?utm_source=ig_embed&utm_campaign=loading`}
-        data-instgrm-version="14"
-        style={{
-          background: "#FFF",
-          border: 0,
-          borderRadius: "3px",
-          margin: 0,
-          maxWidth: "100%",
-          minWidth: "270px",
-          padding: 0,
-          width: "100%",
-        }}
+      <iframe
+        ref={iframeRef}
+        src={videoUrl}
+        title=""
+        tabIndex={-1}
+        className="
+          pointer-events-none
+          absolute
+          left-1/2
+          top-1/2
+          h-full
+          w-[316%]
+          -translate-x-1/2
+          -translate-y-1/2
+          border-0
+        "
+        allow="autoplay; encrypted-media; picture-in-picture"
       />
+
+      {/* TOP BLACK FADE — also covers any residual title-bar area */}
+      <div
+        className="
+          pointer-events-none
+          absolute
+          inset-x-0
+          top-0
+          z-10
+          h-16
+          bg-gradient-to-b
+          from-black/70
+          via-black/20
+          to-transparent
+        "
+      />
+
+      {/* BOTTOM BLACK FADE — also covers the YouTube watermark corner */}
+      <div
+        className="
+          pointer-events-none
+          absolute
+          inset-x-0
+          bottom-0
+          z-10
+          h-20
+          bg-gradient-to-t
+          from-black/80
+          via-black/25
+          to-transparent
+        "
+      />
+
+      {/* HOVER TEXT */}
+      <div
+        className="
+          pointer-events-none
+          absolute
+          bottom-4
+          left-1/2
+          z-20
+          -translate-x-1/2
+          opacity-70
+          transition-opacity
+          duration-300
+          group-hover:opacity-0
+        "
+      >
+        <span className="futura-light text-[9px] uppercase tracking-[0.2em] text-white/80">
+          Hover to play
+        </span>
+      </div>
     </div>
   );
 }
@@ -335,17 +339,25 @@ export default function Hero() {
   }, []);
 
   return (
-    <main className="relative min-h-screen w-full  bg-[#532439] text-white">
-      <PageGradientBackground />
-
+    <main className="relative min-h-screen w-full overflow-hidden bg-[#532439] text-white">
       <SocialIcons />
+
+      {/* =========================================================
+          TOP / BOTTOM BLACK VIGNETTE
+          Purely decorative, sits above the background color but
+          below the actual content so it never blocks interaction.
+          ========================================================= */}
+
+      <div className="pointer-events-none absolute left-0 top-0 z-10 h-40 w-full bg-gradient-to-b from-black/80 via-black/30 to-transparent md:h-56" />
+
+      <div className="pointer-events-none absolute bottom-0 left-0 z-10 h-48 w-full bg-gradient-to-t from-black/85 via-black/35 to-transparent md:h-64" />
 
       {/* =========================================================
           MAIN CONTENT
           Existing navbar/header remains handled by the codebase.
           ========================================================= */}
 
-      <section className="relative z-10 mx-auto w-full max-w-[1400px] px-6 pb-24 pt-14 md:px-[5%] md:pt-16">
+      <section className="relative z-20 mx-auto w-full max-w-[1400px] px-6 pb-24 pt-14 md:px-[5%] md:pt-16">
         {/* ==================================================
             FOUNDING BELIEFS TITLE
             ================================================== */}
@@ -388,7 +400,7 @@ export default function Hero() {
               <div
                 className={`
                   absolute top-1/2 h-[100px] w-[100px]
-                  -translate-y-1/2 
+                  -translate-y-1/2
                   rounded-[6px]
                   border border-[#E9E7DA]/25
                   shadow-lg
@@ -449,13 +461,14 @@ export default function Hero() {
           </p>
 
           <p className="futura-light mt-4 text-[14px] leading-[1.75] tracking-wide text-white/80 md:text-[16px]">
-            We envision to be globally recognised as an inspirational powerhouse
-            by 2028 - a living library with a virtual vault of memories.
+            We envision to be globally recognised as an inspirational
+            powerhouse by 2028 - a living library with a virtual vault of
+            memories.
           </p>
 
           <p className="futura-light mt-4 text-[14px] leading-[1.75] tracking-wide text-white/80 md:text-[16px]">
-            Our work aligns with UN SDG 11.4 to protect and safeguard intangible
-            heritage.
+            Our work aligns with UN SDG 11.4 to protect and safeguard
+            intangible heritage.
           </p>
 
           <p className="futura-light mt-4 text-[14px] leading-[1.75] tracking-wide text-white/80 md:text-[16px]">
@@ -470,18 +483,18 @@ export default function Hero() {
 
         <div
           ref={episodesRef}
-          className="mx-auto mt-20 flex w-full max-w-[1100px] flex-wrap justify-center gap-x-10 gap-y-14 md:mt-24"
+          className="mx-auto mt-20 flex w-full max-w-[1200px] flex-wrap justify-center gap-x-10 gap-y-16 md:mt-24"
         >
           {episodes.map((episode) => (
             <div
               key={episode.id}
-              className="w-full basis-full sm:basis-[calc(50%-20px)] md:basis-[calc(33.333%-28px)] md:max-w-[320px]"
+              className="w-full basis-full sm:basis-[calc(50%-20px)] md:basis-[calc(33.333%-27px)] md:max-w-[340px]"
             >
               <p className="futura-light mb-3 text-center text-[13px] uppercase tracking-[0.18em] text-white/70">
                 Episode - {episode.id}
               </p>
 
-              <InstagramEmbed url={episode.url} />
+              <YouTubeHoverVideo youtubeId={episode.videoId} />
 
               <p className="futura-light mt-3 text-center text-[9px] leading-[1.5] tracking-wide text-white/55">
                 The beginning of a dream, where ideas sparked into purpose and

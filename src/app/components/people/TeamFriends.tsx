@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import PageGradientBackground from "../layout/PageGradientBackground";
 
 const team = [
   {
@@ -98,27 +97,24 @@ const friends = [
 
 export default function TeamFriends() {
   return (
-    <section className="relative min-h-[160vh] w-full  bg-[#532439] text-white">
-      <PageGradientBackground />
+    <section className="relative min-h-[160vh] w-full bg-[#532439] text-white">
 
       {/* ================= CONTENT ================= */}
 
       <div className="relative z-10 mx-auto w-full max-w-[1500px] px-4 pb-10 pt-24 md:px-8 md:pt-28">
-        {/* =====================================================
-    OUR TEAM
-===================================================== */}
+
+        {/* ================= OUR TEAM ================= */}
 
         <div className="text-center">
-          <h2 className="futura-light text-[32px] uppercase tracking-[0.05em] text-white md:text-[40px] lg:text-[44px] pb-[40px]">
+          <h2 className="futura-light pb-[40px] text-[32px] uppercase tracking-[0.05em] text-white md:text-[40px] lg:text-[44px]">
             Our Team
           </h2>
         </div>
 
-        {/* =====================================================
-    TEAM
-===================================================== */}
+        {/* ================= TEAM ================= */}
 
         <div className="relative mx-auto mt-14 w-full max-w-[1250px]">
+
           {/* ================= RECTANGLE ================= */}
 
           <div className="relative h-[200px] border border-white/25">
@@ -134,15 +130,7 @@ export default function TeamFriends() {
                       alt={member.name}
                       fill
                       sizes="33vw"
-                      className="
-                object-contain
-                object-bottom
-                transition-all
-                duration-500
-                ease-out
-                hover:scale-[1.04]
-                hover:-translate-y-1
-              "
+                      className="object-contain object-bottom transition-all duration-500 ease-out hover:-translate-y-1 hover:scale-[1.04]"
                     />
                   </div>
                 </div>
@@ -150,9 +138,7 @@ export default function TeamFriends() {
             </div>
           </div>
 
-          {/* =================================================
-      NAMES + DESCRIPTIONS
-  ================================================= */}
+          {/* ================= NAMES + DESCRIPTIONS ================= */}
 
           <div className="grid grid-cols-3">
             {team.map((member) => (
@@ -160,7 +146,7 @@ export default function TeamFriends() {
                 key={member.name}
                 className="flex flex-col items-center pt-5 text-center"
               >
-                <h3 className="futura-light text-[12px] uppercase tracking-[0.06em] text-[#e7ad55] md:text-[14px]">
+                <h3 className="futura-medium text-[12px] uppercase tracking-[0.06em] text-[#e7ad55] md:text-[14px]">
                   {member.name}
                 </h3>
 
@@ -173,15 +159,11 @@ export default function TeamFriends() {
           </div>
         </div>
 
-        {/* =====================================================
-            SPACE BETWEEN SECTIONS
-        ===================================================== */}
+        {/* ================= SPACE BETWEEN SECTIONS ================= */}
 
         <div className="h-[10vh]" />
 
-        {/* =====================================================
-            FRIENDS TITLE
-        ===================================================== */}
+        {/* ================= FRIENDS TITLE ================= */}
 
         <div className="text-center">
           <h2 className="futura-light text-[22px] uppercase tracking-[0.06em] text-white md:text-[28px] lg:text-[30px]">
@@ -196,9 +178,7 @@ export default function TeamFriends() {
           </p>
         </div>
 
-        {/* =====================================================
-            FRIENDS GRID
-        ===================================================== */}
+        {/* ================= FRIENDS GRID ================= */}
 
         <div className="mx-auto mt-16 grid w-full max-w-[1250px] grid-cols-3 gap-x-8 gap-y-14 sm:grid-cols-4 md:grid-cols-6 md:gap-x-12 md:gap-y-16">
           {friends.map((friend) => (
@@ -208,7 +188,7 @@ export default function TeamFriends() {
             >
               {/* IMAGE */}
 
-              <div className="relative aspect-square w-[95px]  rounded-full md:w-[115px] lg:w-[125px]">
+              <div className="relative aspect-square w-[95px] overflow-hidden rounded-full md:w-[115px] lg:w-[125px]">
                 <Image
                   src={friend.image}
                   alt={friend.name}

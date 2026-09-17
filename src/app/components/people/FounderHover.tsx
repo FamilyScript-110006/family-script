@@ -39,7 +39,7 @@ export default function FounderHover({
       ========================================================= */}
 
       <div
-        className={`absolute bottom-[6%] left-0 right-0 h-[48%] border border-white/30 transition-opacity duration-500 ${
+        className={`absolute bottom-[5%] left-0 right-0 h-[48%] border border-white/30 transition-opacity duration-500 ${
           activeFounder !== null ? "opacity-0" : "opacity-100"
         }`}
       >
@@ -78,7 +78,7 @@ export default function FounderHover({
 
       <div
         onMouseEnter={() => handleEnter(0)}
-        className={`absolute bottom-[6%] left-[16%] z-30 h-[72%] w-[30%] overflow-visible ${
+        className={`absolute bottom-[3%] left-[16%] z-30 h-[72%] w-[30%] overflow-visible ${
           activeFounder === 1
             ? "pointer-events-none"
             : "cursor-pointer"
@@ -103,7 +103,7 @@ export default function FounderHover({
 
       <div
         onMouseEnter={() => handleEnter(1)}
-        className={`absolute bottom-[6%] right-[16%] z-30 h-[72%] w-[30%] overflow-visible ${
+        className={`absolute bottom-[5%] right-[16%] z-30 h-[72%] w-[30%] overflow-visible ${
           activeFounder === 0
             ? "pointer-events-none"
             : "cursor-pointer"

@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import PageGradientBackground from "../../layout/PageGradientBackground";
 
 const institutionalProjects = [
   {
@@ -27,8 +26,6 @@ export default function Hero() {
         text-white
       "
     >
-      <PageGradientBackground />
-
       {/* =====================================================
           MAIN CONTENT
       ===================================================== */}

@@ -1,40 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 export default function SocialIcons() {
-  const [visible, setVisible] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setVisible(false);
-    }, 4000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <>
       {/* Invisible hover area */}
-      <div
-        className="fixed bottom-0 right-0 z-40 h-40 w-20"
-        onMouseEnter={() => setVisible(true)}
-      />
+      <div className="fixed bottom-0 right-0 z-40 h-40 w-20" />
 
       {/* Social Icons */}
-      <div
-        onMouseEnter={() => setVisible(true)}
-        className={`fixed bottom-8 right-7 z-50 flex flex-col items-center gap-3 transition-all duration-700 ease-out ${
-          visible
-            ? "translate-x-0 opacity-100"
-            : "pointer-events-none translate-x-12 opacity-0"
-        }`}
-      >
+      <div className="fixed bottom-8 right-7 z-50 flex flex-col items-center gap-3">
         {/* Facebook */}
         <a
           href="#"
           aria-label="Facebook"
-          className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-[#555]"
+          className="flex h-5 w-5 items-center justify-center rounded-full bg-[#222] text-white"
         >
           <svg
             width="12"
@@ -50,7 +28,7 @@ export default function SocialIcons() {
         <a
           href="#"
           aria-label="Instagram"
-          className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-[#555]"
+          className="flex h-5 w-5 items-center justify-center rounded-full bg-[#222] text-white"
         >
           <svg
             width="11"
@@ -76,7 +54,7 @@ export default function SocialIcons() {
         <a
           href="#"
           aria-label="YouTube"
-          className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-[#555]"
+          className="flex h-5 w-5 items-center justify-center rounded-full bg-[#222] text-white"
         >
           <svg
             width="11"

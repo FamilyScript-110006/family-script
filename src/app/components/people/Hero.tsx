@@ -3,7 +3,6 @@
 "use client";
 
 import FounderHover, { type Founder } from "./FounderHover";
-import PageGradientBackground from "../layout/PageGradientBackground";
 
 const founders: Founder[] = [
   {
@@ -34,11 +33,11 @@ const founders: Founder[] = [
 export default function Hero() {
   return (
     <section className="relative min-h-screen w-full bg-[#532439] text-white">
-      <PageGradientBackground />
 
       {/* ================= CONTENT ================= */}
 
       <div className="relative z-10 mx-auto min-h-screen w-full max-w-[1400px] px-8 pb-12 pt-[150px] md:px-[7%] md:pt-[145px]">
+
         {/* ================= HEADING ================= */}
 
         <div className="relative z-50 text-center">
@@ -63,3 +62,4 @@ export default function Hero() {
     </section>
   );
 }
+

@@ -96,7 +96,7 @@ export default function ProjectsPage() {
 
         {/* PROJECT GRID */}
 
-        <div className="mt-16 grid grid-cols-1 gap-12 md:mt-20 md:grid-cols-3 md:gap-x-[6%] md:gap-y-0">
+        <div className="mt-8 grid grid-cols-1 gap-8 md:mt-12 md:grid-cols-3 md:gap-x-[6%] md:gap-y-0">
           {projects.map((project) => (
             <Link
               key={project.title}

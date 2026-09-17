@@ -6,6 +6,7 @@ import Navbar from "./components/layout/Navbar";
 import BodyStyleReset from "./components/layout/BodyStyleReset";
 import ChunkErrorReload from "./components/layout/ChunkErrorReload";
 import PageTransitionProvider from "./components/transition/PageTransitionProvider";
+import Footer from "./components/layout/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -68,6 +69,8 @@ export default function RootLayout({
           <main className="flex-1">
             {children}
           </main>
+
+          <Footer/>
 
         </PageTransitionProvider>
 

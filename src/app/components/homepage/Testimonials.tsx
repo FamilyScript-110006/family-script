@@ -1,43 +1,29 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const BACKDROP_PHOTO = "/assets/testimonials/testimonials-bg.png";
-
-type Testimonial = {
-  quote: string;
-  name: string;
-  photo: string;
-};
-
-// Figma spec content, verbatim — the only testimonial photo that
-// actually exists on disk (public/assets/testimonials/KKS founder.jpg;
-// the other five referenced photos are missing files, not a code bug).
 const KKS_QUOTE =
   "It was thanks to the patience and professionalism of the FS team that later helped me select special moments from our family occasions to craft a permanent pathway that we can travel through and renew the warp and weft of family bonds.";
+
 const KKS_NAME = "Dr. Kshitij Kumar Sinha";
-const KKS_PHOTO = "/assets/testimonials/KKS founder.jpg";
 
-const TESTIMONIALS: Testimonial[] = Array.from({ length: 6 }, () => ({
-  quote: KKS_QUOTE,
-  name: KKS_NAME,
-  photo: KKS_PHOTO,
-}));
+const KKS_PHOTO =
+  "/assets/testimonials/KKS founder.jpg";
 
-type SidePreset = {
-  boxLeft: number;
-  photoLeft: number;
-  quoteLeft: number;
-  quoteAlign: "left" | "right";
-  nameLeft: number;
-  nameAlign: "left" | "right";
-};
+const TESTIMONIALS = Array.from(
+  { length: 6 },
+  () => ({
+    quote: KKS_QUOTE,
+    name: KKS_NAME,
+    photo: KKS_PHOTO,
+  })
+);
 
-const LEFT_PRESET: SidePreset = {
+const LEFT_PRESET = {
   boxLeft: 309,
   photoLeft: 204,
   quoteLeft: 421,
@@ -46,7 +32,7 @@ const LEFT_PRESET: SidePreset = {
   nameAlign: "left",
 };
 
-const RIGHT_PRESET: SidePreset = {
+const RIGHT_PRESET = {
   boxLeft: 204,
   photoLeft: 1054,
   quoteLeft: 321,
@@ -57,84 +43,101 @@ const RIGHT_PRESET: SidePreset = {
 
 const MIN_BOX_HEIGHT = 208;
 
-// Quote font sizing — the Figma spec (20px/30px line-height) was mocked
-// up against short placeholder text; real testimonial quotes run much
-// longer, so rendering all of them at a fixed 20px would make some boxes
-// grow very tall. Instead, quotes that would otherwise push the box past
-// MAX_BOX_HEIGHT_BEFORE_SHRINK shrink their font size (proportional
-// line-height, same 1.5x ratio as the spec) down to QUOTE_MIN_FONT_SIZE
-// before the box is allowed to grow further — keeps most boxes close to
-// the compact spec size without making any quote illegibly small.
 const QUOTE_BASE_FONT_SIZE = 20;
-const QUOTE_LINE_HEIGHT_RATIO = 1.5; // 30 / 20, per spec
+const QUOTE_LINE_HEIGHT_RATIO = 1.5;
 const QUOTE_MIN_FONT_SIZE = 15;
 const MAX_BOX_HEIGHT_BEFORE_SHRINK = 260;
 
-// Gap between every testimonial in the normal-flow list. Confirmed
-// against the exact Figma spec (upper/lower box positions) by working
-// backward from the given absolute coordinates — 30px, not the 60px
-// this was previously set to.
 const TESTIMONIAL_GAP = 30;
 
-// Testimonial list starts here, matching the original Figma-measured
-// position (298px below the canvas top) — everything below is normal
-// document flow, so it grows naturally to fit however tall the real
-// content is instead of being clipped to one fixed viewport.
 const LIST_TOP = 298;
+const LIST_BOTTOM_PADDING = 60;
 
-function TestimonialBox({
-  testimonial,
-  preset,
-}: {
-  testimonial: Testimonial;
-  preset: SidePreset;
-}) {
-  const quoteMeasureRef = useRef<HTMLParagraphElement>(null);
-  const [boxHeight, setBoxHeight] = useState(MIN_BOX_HEIGHT);
-  const [quoteFontSize, setQuoteFontSize] = useState(QUOTE_BASE_FONT_SIZE);
+function TestimonialBox({ testimonial, preset, boxRef, onMeasured }) {
+  const quoteMeasureRef = useRef(null);
+  const heightRef = useRef(MIN_BOX_HEIGHT);
+  const fontRef = useRef(QUOTE_BASE_FONT_SIZE);
 
   const quoteWidth = 654;
   const quoteTop = 45;
-  const quoteLineHeight = Math.round(quoteFontSize * QUOTE_LINE_HEIGHT_RATIO);
-  const nameWidth = 217;
-  // Name (20px tall) is anchored to the box's bottom edge, not a fixed
-  // offset from the top — at MIN_BOX_HEIGHT (208) this resolves to
-  // top:162 (matching the Figma spec's absolute top:460, i.e.
-  // LIST_TOP + 162), but for quotes that push boxHeight taller, it
-  // correctly follows the bottom instead of staying pinned where the
-  // quote text has since grown past it.
-  const NAME_BLOCK_BOTTOM_OFFSET = 46;
-  const nameTop = boxHeight - NAME_BLOCK_BOTTOM_OFFSET;
 
   useEffect(() => {
     const measure = () => {
       const el = quoteMeasureRef.current;
-      if (!el) return;
+      const box = boxRef.current;
 
-      // Try the full spec size first, then step down until the
-      // resulting box would fit under the cap or we hit the floor —
-      // whichever comes first. Each step forces a synchronous reflow
-      // of the (hidden) measuring paragraph, but this is a handful of
-      // iterations at most and only runs on mount/resize/quote change.
+      if (!el || !box) return;
+
       let fontSize = QUOTE_BASE_FONT_SIZE;
       let textHeight = 0;
-      for (; fontSize >= QUOTE_MIN_FONT_SIZE; fontSize--) {
+
+      for (
+        ;
+        fontSize >= QUOTE_MIN_FONT_SIZE;
+        fontSize--
+      ) {
         el.style.fontSize = `${fontSize}px`;
-        el.style.lineHeight = `${Math.round(fontSize * QUOTE_LINE_HEIGHT_RATIO)}px`;
+        el.style.lineHeight = `${Math.round(
+          fontSize * QUOTE_LINE_HEIGHT_RATIO
+        )}px`;
+
         textHeight = el.scrollHeight;
-        const projectedHeight = quoteTop + textHeight + 20;
-        if (projectedHeight <= MAX_BOX_HEIGHT_BEFORE_SHRINK) break;
+
+        const projectedHeight =
+          quoteTop + textHeight + 20;
+
+        if (
+          projectedHeight <=
+          MAX_BOX_HEIGHT_BEFORE_SHRINK
+        ) {
+          break;
+        }
       }
 
-      const requiredHeight = Math.max(MIN_BOX_HEIGHT, quoteTop + textHeight + 20);
+      const requiredHeight = Math.max(
+        MIN_BOX_HEIGHT,
+        quoteTop + textHeight + 20
+      );
 
-      setQuoteFontSize(fontSize);
-      setBoxHeight(requiredHeight);
+      const lineHeight = Math.round(
+        fontSize * QUOTE_LINE_HEIGHT_RATIO
+      );
+
+      fontRef.current = fontSize;
+      heightRef.current = requiredHeight;
+
+      box.style.height = `${requiredHeight}px`;
+
+      const quoteEl = box.querySelector(
+        "[data-quote-text]"
+      );
+      const nameEl = box.querySelector(
+        "[data-quote-name]"
+      );
+      const borderEl = box.querySelector(
+        "[data-quote-border]"
+      );
+
+      if (quoteEl) {
+        quoteEl.style.fontSize = `${fontSize}px`;
+        quoteEl.style.lineHeight = `${lineHeight}px`;
+      }
+
+      if (nameEl) {
+        nameEl.style.top = `${requiredHeight - 46}px`;
+      }
+
+      if (borderEl) {
+        borderEl.style.height = `${requiredHeight}px`;
+      }
+
+      onMeasured?.();
     };
 
     measure();
 
     const resizeObserver = new ResizeObserver(measure);
+
     if (quoteMeasureRef.current) {
       resizeObserver.observe(quoteMeasureRef.current);
     }
@@ -145,13 +148,20 @@ function TestimonialBox({
       resizeObserver.disconnect();
       window.removeEventListener("resize", measure);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [testimonial.quote]);
 
   return (
-    <div className="relative" style={{ width: 1440, height: boxHeight }}>
-      {/* Hidden measuring text — font-size/line-height are set
-          directly by the measure() effect above (it tries several
-          sizes while probing scrollHeight), so no size classes here. */}
+    <div
+      ref={boxRef}
+      className="relative"
+      style={{
+        width: 1440,
+        height: MIN_BOX_HEIGHT,
+      }}
+    >
+      {/* Hidden measuring text */}
+
       <p
         ref={quoteMeasureRef}
         aria-hidden="true"
@@ -169,21 +179,24 @@ function TestimonialBox({
         {testimonial.quote}
       </p>
 
-      {/* Rectangle */}
+      {/* Border */}
+
       <div
+        data-quote-border
         className="absolute rounded-[15px]"
         style={{
           width: 902,
-          height: boxHeight,
+          height: MIN_BOX_HEIGHT,
           top: 0,
           left: preset.boxLeft,
-          border: "0.5px solid #FFFFFF",
-          transition: "height 0.25s ease",
+          border: "0.5px solid rgba(255,255,255,0.9)",
         }}
       />
 
       {/* Quote */}
+
       <p
+        data-quote-text
         className="absolute whitespace-pre-line tracking-[0.05em]"
         style={{
           fontFamily: "Futura, sans-serif",
@@ -194,35 +207,36 @@ function TestimonialBox({
           left: preset.quoteLeft,
           color: "#FFF5E5",
           textAlign: preset.quoteAlign,
-          opacity: 1,
-          fontSize: quoteFontSize,
-          lineHeight: `${quoteLineHeight}px`,
-          transition: "font-size 0.25s ease, line-height 0.25s ease",
+          fontSize: QUOTE_BASE_FONT_SIZE,
+          lineHeight: `${Math.round(
+            QUOTE_BASE_FONT_SIZE * QUOTE_LINE_HEIGHT_RATIO
+          )}px`,
         }}
       >
         {testimonial.quote}
       </p>
 
       {/* Name */}
+
       <p
-        className="absolute text-[12px] leading-[20px] tracking-normal"
+        data-quote-name
+        className="absolute text-[12px] leading-[20px]"
         style={{
           fontFamily: "Futura, sans-serif",
           fontWeight: 400,
-          width: nameWidth,
+          width: 217,
           height: 20,
-          top: nameTop,
+          top: MIN_BOX_HEIGHT - 46,
           left: preset.nameLeft,
           color: "#D2C6B2",
           textAlign: preset.nameAlign,
-          opacity: 1,
-          transition: "top 0.25s ease",
         }}
       >
         {testimonial.name}
       </p>
 
       {/* Photo */}
+
       <div
         className="absolute rounded-[15px]"
         style={{
@@ -241,24 +255,28 @@ function TestimonialBox({
 }
 
 export default function Testimonials() {
-  const headingRef = useRef<HTMLDivElement>(null);
-  const descriptionRef = useRef<HTMLParagraphElement>(null);
-  const boxRefs = useRef<(HTMLDivElement | null)[]>([]);
-  // Scrollable region holding just the testimonial list — heading and
-  // description sit outside it (in the section's own normal flow), so
-  // scrolling within this box never moves them.
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  // Backdrop photo drifts at a fraction of the list's scroll speed
-  // (parallax), giving scroll position a visual cue independent of the
-  // ripple-style box fade-ins below.
-  const backdropImgRef = useRef<HTMLImageElement>(null);
+  const sectionRef = useRef(null);
+  const headingRef = useRef(null);
+  const descriptionRef = useRef(null);
+  const viewportRef = useRef(null);
+  const trackRef = useRef(null);
+  const boxRefs = useRef([]);
+
+  const stRef = useRef(null);
+  const trackHeightRef = useRef(0);
+  const viewportHeightRef = useRef(0);
 
   useEffect(() => {
+    const section = sectionRef.current;
+    const viewportEl = viewportRef.current;
+    const trackEl = trackRef.current;
+
+    if (!section || !viewportEl || !trackEl) return;
+
     const ctx = gsap.context(() => {
-      [headingRef.current, descriptionRef.current].forEach((el) => {
-        if (!el) return;
+      if (headingRef.current) {
         gsap.fromTo(
-          el,
+          headingRef.current,
           { opacity: 0, y: 30 },
           {
             opacity: 1,
@@ -266,154 +284,170 @@ export default function Testimonials() {
             duration: 1,
             ease: "power2.out",
             scrollTrigger: {
-              trigger: el,
+              trigger: headingRef.current,
               start: "top 85%",
               toggleActions: "play none none reverse",
             },
-          },
+          }
         );
-      });
+      }
 
-      boxRefs.current.forEach((el) => {
-        if (!el) return;
+      if (descriptionRef.current) {
         gsap.fromTo(
-          el,
-          { opacity: 0, y: 40 },
+          descriptionRef.current,
+          { opacity: 0, y: 30 },
           {
             opacity: 1,
             y: 0,
             duration: 1,
+            delay: 0.1,
             ease: "power2.out",
             scrollTrigger: {
-              // These boxes scroll inside scrollContainerRef, not the
-              // page — without pointing ScrollTrigger at that element,
-              // it would track window scroll instead and never fire
-              // correctly (or fire immediately, since scrolling the
-              // page itself no longer moves these boxes into view).
-              scroller: scrollContainerRef.current ?? undefined,
-              trigger: el,
-              start: "top 88%",
+              trigger: descriptionRef.current,
+              start: "top 85%",
               toggleActions: "play none none reverse",
             },
-          },
+          }
         );
+      }
+
+      const getMaxScroll = () =>
+        Math.max(
+          0,
+          trackHeightRef.current - viewportHeightRef.current
+        );
+
+      stRef.current = ScrollTrigger.create({
+        trigger: section,
+        start: "top top",
+        end: () => "+=" + Math.max(1, getMaxScroll()),
+        pin: true,
+        scrub: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const maxScroll = getMaxScroll();
+          gsap.set(trackEl, { y: -maxScroll * self.progress });
+        },
       });
 
-      requestAnimationFrame(() => ScrollTrigger.refresh());
-    });
+      const measureViewport = () => {
+        viewportHeightRef.current =
+          viewportEl.getBoundingClientRect().height;
+      };
 
-    return () => ctx.revert();
-  }, []);
+      const measureTrack = () => {
+        trackHeightRef.current = trackEl.scrollHeight;
+      };
 
-  // Backdrop parallax: driven directly off the list container's own
-  // scrollTop rather than a ScrollTrigger instance. A ScrollTrigger with
-  // `scroller` and `trigger` pointing at the same element measures that
-  // element's bounding box against itself, which collapses `start`/`end`
-  // to (near) the same point — i.e. zero scroll range, so nothing ever
-  // visibly moved. A plain scroll listener has no such geometry trap.
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    const img = backdropImgRef.current;
-    if (!container || !img) return;
+      measureViewport();
+      measureTrack();
+      ScrollTrigger.refresh();
 
-    // Backdrop drifts at 25% of the list's scroll speed.
-    const PARALLAX_FACTOR = 0.25;
+      const viewportObserver = new ResizeObserver(() => {
+        measureViewport();
+        ScrollTrigger.refresh();
+      });
+      viewportObserver.observe(viewportEl);
 
-    const onScroll = () => {
-      img.style.transform = `translateY(${container.scrollTop * PARALLAX_FACTOR}px)`;
+      const trackObserver = new ResizeObserver(() => {
+        measureTrack();
+        ScrollTrigger.refresh();
+      });
+      trackObserver.observe(trackEl);
+
+      requestAnimationFrame(() => {
+        measureViewport();
+        measureTrack();
+        ScrollTrigger.refresh();
+      });
+
+      return () => {
+        viewportObserver.disconnect();
+        trackObserver.disconnect();
+      };
+    }, section);
+
+    return () => {
+      ctx.revert();
     };
-
-    onScroll();
-    container.addEventListener("scroll", onScroll, { passive: true });
-    return () => container.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-[#460A26]">
+    <section
+      ref={sectionRef}
+      className="relative w-full bg-[#460A26]"
+      style={{
+        width: "100%",
+        height: "100vh",
+        overflow: "hidden",
+      }}
+    >
       {/* =====================================================
-          FIXED-HEIGHT BACKDROP BAND
+          BACKGROUND — gradient only, no photo. Full width.
+      ===================================================== */}
 
-          Stays exactly 823px tall behind the heading/description,
-          matching the original Figma artwork. The testimonial list
-          below flows naturally past this band as needed — it is no
-          longer clipped to a single viewport.
-          ===================================================== */}
       <div
-        className="absolute inset-x-0 top-0 overflow-hidden pointer-events-none"
-        style={{ width: "100%", height: 823, zIndex: 0 }}
+        className="absolute left-0 top-0 w-full h-full pointer-events-none overflow-hidden"
+        style={{ zIndex: 0 }}
       >
-        <img
-          ref={backdropImgRef}
-          src={BACKDROP_PHOTO}
-          alt=""
-          className="absolute inset-0 h-full w-full"
-          style={{
-            width: "100%",
-            height: 823,
-            objectFit: "cover",
-            objectPosition: "center center",
-          }}
-        />
-
-        {/* Group 41 */}
+        {/* Dark overlay group */}
         {[
-          { width: 1455.93, height: 834, top: -13, left: 2.02 },
-          { width: 1456.94, height: 830.85, top: -9.85, left: 1.01 },
-          { width: 1455.93, height: 834, top: -13, left: 2.02 },
-          { width: 1459.97, height: 394.45, top: 426.55, left: 2.02 },
-          { width: 1457.95, height: 830.85, top: -9.85, left: 2.02 },
+          { height: 834, top: -13 },
+          { height: 830.85, top: -9.85 },
+          { height: 834, top: -13 },
+          { height: 394.45, top: 426.55 },
+          { height: 830.85, top: -9.85 },
         ].map((rect, i) => (
           <div
             key={`group41-${i}`}
-            className="absolute"
+            className="absolute left-0 w-full"
             style={{
-              ...rect,
+              height: rect.height,
+              top: rect.top,
               opacity: 0.26,
               background:
-                "linear-gradient(356.76deg, rgba(0, 0, 0, 1) 2.81%, rgba(102, 102, 102, 0) 71.6%)",
+                "linear-gradient(356.76deg, rgba(0,0,0,1) 2.81%, rgba(102,102,102,0) 71.6%)",
             }}
           />
         ))}
 
         {/* Gradient layers */}
         {[
-          { width: 1436, height: 813, top: 8, left: 1 },
-          { width: 1436, height: 813, top: 8, left: 1 },
-          { width: 1436, height: 813, top: 8, left: 1 },
-          { width: 1436, height: 384, top: 437, left: 1 },
-          { width: 1436, height: 384, top: 437, left: 1 },
+          { height: 813, top: 8 },
+          { height: 813, top: 8 },
+          { height: 813, top: 8 },
+          { height: 384, top: 437 },
+          { height: 384, top: 437 },
         ].map((rect, i) => (
           <div
             key={`gradient-${i}`}
-            className="absolute"
+            className="absolute left-0 w-full"
             style={{
-              ...rect,
+              height: rect.height,
+              top: rect.top,
               opacity: 0.26,
               background:
-                "linear-gradient(356.76deg, rgba(0, 0, 0, 0.5) 2.81%, rgba(102, 102, 102, 0) 71.6%)",
+                "linear-gradient(356.76deg, rgba(0,0,0,0.5) 2.81%, rgba(102,102,102,0) 71.6%)",
             }}
           />
         ))}
       </div>
 
       {/* =====================================================
-          CONTENT CANVAS
+          CONTENT
+      ===================================================== */}
 
-          Retains the original 1440px coordinate system for the
-          heading/description. Fills the section's full height (fixed
-          at one viewport) rather than growing with content — the
-          testimonial list below is its own internally-scrollable
-          region instead of extending the page.
-          ===================================================== */}
       <div
         className="relative mx-auto h-full"
-        style={{ width: 1440, zIndex: 1 }}
+        style={{ width: "100%", maxWidth: 1440, zIndex: 1 }}
       >
         {/* Heading */}
+
         <div
           ref={headingRef}
           className="absolute"
-          style={{ width: 624, height: 147, top: 75, left: 411, opacity: 1 }}
+          style={{ width: 624, height: 147, top: 75, left: 411 }}
         >
           <h2
             className="futura-medium w-full text-[50px] leading-[75px] tracking-[0.05em] text-white"
@@ -424,6 +458,7 @@ export default function Testimonials() {
         </div>
 
         {/* Description */}
+
         <p
           ref={descriptionRef}
           className="futura-light absolute text-center text-[15px] leading-[20px] tracking-[0.05em] text-white"
@@ -432,38 +467,55 @@ export default function Testimonials() {
             height: 60.22304916381836,
             top: 162,
             left: 351,
-            opacity: 1,
           }}
         >
-          This is a tribute to our friends at Family Script, who have been
-          unwavering pillars of support throughout our journey, alongside many
-          others who have also played pivotal roles in our endeavors.
+          This is a tribute to our friends at Family Script, who have
+          been unwavering pillars of support throughout our journey,
+          alongside many others who have also played pivotal roles
+          in our endeavors.
         </p>
 
-        {/* Testimonial list — heading/description above stay put;
-            this is its own internally-scrollable region (native
-            overflow scroll, no wheel-hijacking) so the user scrolls
-            through testimonials without the heading moving. Boxes
-            alternate photo-left/photo-right styling by index. */}
+        {/* Testimonials window (internal pinned scroll) */}
+
         <div
-          ref={scrollContainerRef}
-          className="hide-scrollbar absolute overflow-y-auto"
-          style={{ top: LIST_TOP, left: 0, right: 0, bottom: 0 }}
+          ref={viewportRef}
+          className="absolute overflow-hidden"
+          style={{
+            top: LIST_TOP,
+            left: 0,
+            width: "100%",
+            height: `calc(100% - ${LIST_TOP}px - ${LIST_BOTTOM_PADDING}px)`,
+          }}
         >
-          {TESTIMONIALS.map((testimonial, i) => (
-            <div
-              key={i}
-              ref={(el) => {
-                boxRefs.current[i] = el;
-              }}
-              style={{ marginBottom: i === TESTIMONIALS.length - 1 ? 0 : TESTIMONIAL_GAP }}
-            >
-              <TestimonialBox
-                testimonial={testimonial}
-                preset={i % 2 === 0 ? LEFT_PRESET : RIGHT_PRESET}
-              />
-            </div>
-          ))}
+          <div ref={trackRef} style={{ width: 1440 }}>
+            {TESTIMONIALS.map((testimonial, i) => (
+              <div
+                key={i}
+                style={{
+                  width: 1440,
+                  marginBottom:
+                    i === TESTIMONIALS.length - 1
+                      ? 0
+                      : TESTIMONIAL_GAP,
+                }}
+              >
+                <TestimonialBox
+                  testimonial={testimonial}
+                  preset={i % 2 === 0 ? LEFT_PRESET : RIGHT_PRESET}
+                  boxRef={(el) => {
+                    boxRefs.current[i] = el;
+                  }}
+                  onMeasured={() => {
+                    if (trackRef.current) {
+                      trackHeightRef.current =
+                        trackRef.current.scrollHeight;
+                      ScrollTrigger.refresh();
+                    }
+                  }}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

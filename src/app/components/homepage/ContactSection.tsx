@@ -8,11 +8,7 @@ import {
   FiMail,
   FiPhone,
   FiUser,
-  FiInstagram,
-  FiLinkedin,
 } from "react-icons/fi";
-
-import Link from "next/link";
 
 import gsap from "gsap";
 
@@ -29,38 +25,6 @@ const FIELD_BG = "rgba(105, 31, 62, 0.78)";
 const FIELD_BORDER = "rgba(105, 31, 62, 0.25)";
 
 const FIELD_OPTION_BG = "#691f3e";
-
-/* ============================================================
-   FOOTER DATA
-============================================================ */
-
-type FooterLink = {
-  label: string;
-  href: string;
-};
-
-// Plain strings still work everywhere below — only entries that need a real
-// destination (like Testimonials) get upgraded to { label, href }.
-const COMPANY_LINKS: (string | FooterLink)[] = [
-  "About Us",
-  "Our Team",
-  "Our Story",
-  "Awards & Events",
-];
-
-const PROJECT_LINKS: (string | FooterLink)[] = [
-  "Portfolio Showcase",
-  "Videos",
-  "Behind The Scenes",
-  "Testimonials",
-];
-
-const LEGAL_LINKS: (string | FooterLink)[] = [
-  "Privacy Policy",
-  "Terms & Conditions",
-  "FAQs",
-  "Contact Us",
-];
 
 /* ============================================================
    FORM FIELD
@@ -325,352 +289,6 @@ function MessageField() {
 }
 
 /* ============================================================
-   FOOTER COLUMN
-============================================================ */
-
-function FooterColumn({
-  title,
-  links,
-}: {
-  title: string;
-  links: (string | FooterLink)[];
-}) {
-  return (
-    <div>
-      <h3
-        className="
-          futura-medium
-          text-[15px]
-          leading-none
-          text-white
-          md:text-[16px]
-        "
-      >
-        {title}
-      </h3>
-
-      <ul className="mt-4 space-y-2.5">
-        {links.map((link) => {
-          const label = typeof link === "string" ? link : link.label;
-          const href = typeof link === "string" ? "#" : link.href;
-
-          return (
-            <li key={label}>
-              <Link
-                href={href}
-                className="
-                  futura-light
-                  text-[13px]
-                  leading-none
-                  tracking-wide
-                  text-white/60
-                  transition-colors
-                  duration-200
-                  hover:text-white
-                  md:text-[14px]
-                "
-              >
-                {label}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-}
-
-/* ============================================================
-   FOOTER
-============================================================ */
-
-function ContactFooter() {
-  const currentYear = new Date().getFullYear();
-
-  return (
-    <footer
-      className="
-        relative
-        z-30
-        mt-auto
-        w-full
-        shrink-0
-        bg-[#57233b]
-        text-white
-      "
-    >
-      {/* ======================================================
-          FULL-WIDTH FOOTER
-
-          NO max-width.
-
-          This stretches from the absolute left edge
-          to the absolute right edge of the viewport.
-      ====================================================== */}
-
-      <div
-        //py-3 from py-5 & md:py-4 from
-        className="
-          w-full
-          px-8
-          py-3
-          md:px-12
-          md:py-4
-          lg:px-16
-          xl:px-20
-        "
-      >
-        {/* TOP DIVIDER */}
-
-        <div
-          //pt-3 from pt-5
-          className="
-            border-t
-            border-white/20
-            pt-3
-          "
-        >
-          {/* ==================================================
-              FOOTER GRID
-          ================================================== */}
-
-          <div
-            //gap-y-5 from gap-y-8
-            className="
-    grid
-    grid-cols-2
-    gap-x-12
-    gap-y-5
-    md:grid-cols-[1.35fr_1fr_1fr_1fr]
-    md:gap-x-16
-    lg:grid-cols-[1.45fr_1fr_1fr_1fr]
-    lg:gap-x-24
-  "
-          >
-            {/* ==================================================
-                FAMILY SCRIPT
-            ================================================== */}
-
-            <div
-              className="
-                col-span-2
-                md:col-span-1
-              "
-            >
-              <h2
-                className="
-                  futura-medium
-                  text-[16px]
-                  leading-none
-                  text-white
-                "
-              >
-                Family Script
-              </h2>
-
-              <p
-                className="
-                futura-light 
-                mt-2 
-                max-w-[340px] 
-                text-[11px] 
-                leading-[1.35] 
-                tracking-wide 
-                text-white/60 
-                md:text-[12px]"
-              >
-                An offering of M/s Prarabdha Info Solutions Pvt Ltd, Incubated
-                under IGDTUW-Anveshan Foundation, Delhi Registered under Startup
-                India and MSME Recognised
-              </p>
-
-              <p
-                className="
-                futura-light 
-                mt-2 
-                text-[11px] 
-                leading-[1.35] 
-                tracking-wide 
-                text-white/60 
-                md:text-[12px]"
-              >
-                Contact Us:
-                <br />
-                Prarabdha Info Solutions Private Limited,
-                <br />
-                IGDTUW-Anveshan Foundation Premises,
-                <br />
-                Kashmere Gate, Delhi-06, India
-              </p>
-
-              <p
-                className="
-                futura-light 
-                mt-2 
-                text-[11px] 
-                leading-[1.35] 
-                tracking-wide 
-                text-white/60 
-                md:text-[12px]"
-              >
-                Email: info@familyscript.com,
-                <br />
-                team@familyscript.in
-                <br />
-                +91 9560283939
-              </p>
-
-              {/* SOCIAL ICONS */}
-
-              <div className="mt-3 flex items-center gap-3">
-                <Link
-                  href="#"
-                  aria-label="Instagram"
-                  className="
-                    flex
-                    h-8
-                    w-8
-                    items-center
-                    justify-center
-                    rounded-full
-                    border
-                    border-white/20
-                    bg-white/[0.05]
-                    text-white/70
-                    transition-all
-                    duration-300
-                    hover:border-white/40
-                    hover:bg-white/10
-                    hover:text-white
-                  "
-                >
-                  <FiInstagram size={14} />
-                </Link>
-
-                <Link
-                  href="#"
-                  aria-label="LinkedIn"
-                  className="
-                    flex
-                    h-8
-                    w-8
-                    items-center
-                    justify-center
-                    rounded-full
-                    border
-                    border-white/20
-                    bg-white/[0.05]
-                    text-white/70
-                    transition-all
-                    duration-300
-                    hover:border-white/40
-                    hover:bg-white/10
-                    hover:text-white
-                  "
-                >
-                  <FiLinkedin size={14} />
-                </Link>
-
-                <Link
-                  href="#"
-                  aria-label="Email"
-                  className="
-                    flex
-                    h-8
-                    w-8
-                    items-center
-                    justify-center
-                    rounded-full
-                    border
-                    border-white/20
-                    bg-white/[0.05]
-                    text-white/70
-                    transition-all
-                    duration-300
-                    hover:border-white/40
-                    hover:bg-white/10
-                    hover:text-white
-                  "
-                >
-                  <FiMail size={14} />
-                </Link>
-              </div>
-            </div>
-
-            {/* ==================================================
-                COMPANY
-            ================================================== */}
-
-            <FooterColumn title="Company" links={COMPANY_LINKS} />
-
-            {/* ==================================================
-                PROJECTS
-            ================================================== */}
-
-            <FooterColumn title="Projects" links={PROJECT_LINKS} />
-
-            {/* ==================================================
-                LEGAL
-            ================================================== */}
-
-            <FooterColumn title="Legal" links={LEGAL_LINKS} />
-          </div>
-
-          {/* ==================================================
-              BOTTOM BAR
-          ================================================== */}
-
-          <div
-            className="
-              mt-3
-              border-t
-              border-white/20
-              pt-2
-            "
-          >
-            <div
-              className="
-                flex
-                flex-col
-                gap-2
-                md:flex-row
-                md:items-center
-                md:justify-between
-              "
-            >
-              <p
-                className="
-                  futura-light
-                  text-[10px]
-                  tracking-wide
-                  text-white/50
-                  md:text-[11px]
-                "
-              >
-                © {currentYear} Family Script by Prarabdha Info Solutions Pvt.
-                Ltd.
-              </p>
-
-              <p
-                className="
-                  futura-light
-                  text-[10px]
-                  tracking-wide
-                  text-white/50
-                  md:text-[11px]
-                "
-              >
-                All rights reserved
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-/* ============================================================
    SCROLL TO TOP
 ============================================================ */
 
@@ -691,7 +309,7 @@ function ScrollToTopButton() {
         group
         fixed
         bottom-6
-        right-6
+        right-12
         z-[100]
         flex
         h-11
@@ -711,8 +329,8 @@ function ScrollToTopButton() {
         hover:bg-[#581a34]
         focus:outline-none
         focus:ring-0
-        md:bottom-8
-        md:right-8
+        md:bottom-12
+        md:right-14
       "
     >
       <FiArrowUp
@@ -864,7 +482,6 @@ export default function ContactSection() {
       className="
         relative
         flex
-        min-h-[100svh]
         w-full
         flex-col
       "
@@ -872,21 +489,12 @@ export default function ContactSection() {
       {/* ======================================================
           BACKGROUND IMAGE
 
-          EXACTLY 100svh.
+          Matches the section's own height now (no more forced
+          100svh, since the section is no longer forced to be
+          a full screen tall).
       ====================================================== */}
 
-      <div
-        className="
-          pointer-events-none
-          absolute
-          inset-0
-          z-0
-          h-[100svh]
-          w-full
-          
-        "
-        aria-hidden="true"
-      >
+      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
         <img
           src="/assets/homepage/GET_YOUR_STORY_SCRIPTED.jpg"
           alt=""
@@ -917,22 +525,9 @@ export default function ContactSection() {
 
       {/* ======================================================
           MAIN CONTACT CONTENT
-
-          flex-1 means the Footer is pushed to
-          the bottom of the 100svh section.
       ====================================================== */}
 
-      <div
-        className="
-          relative
-          z-10
-          flex
-          min-h-0
-          w-full
-          flex-1
-          flex-col
-        "
-      >
+      <div className="relative z-10 w-full">
         {/* ====================================================
             CONTACT FORM
         ==================================================== */}
@@ -941,13 +536,13 @@ export default function ContactSection() {
           className="
             flex
             w-full
-            flex-1
             justify-center
             px-6
             pt-[6vh]
-            pb-3
+            pb-[6vh]
             md:px-10
             md:pt-[7vh]
+            md:pb-[7vh]
             lg:px-12
           "
         >
@@ -1057,16 +652,6 @@ export default function ContactSection() {
             </form>
           </div>
         </div>
-
-        {/* ====================================================
-            FOOTER
-
-            mt-auto pushes this to the bottom.
-
-            Footer itself is FULL WIDTH.
-        ==================================================== */}
-
-        <ContactFooter />
       </div>
 
       {/* ======================================================
