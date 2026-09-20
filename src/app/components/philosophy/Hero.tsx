@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SocialIcons from "../layout/SocialIcos";
@@ -57,115 +57,93 @@ const episodes = [
      strip. The top/bottom black fades give a second layer of
      cover for anything left at the very top/bottom edge.
    ============================================================= */
-function YouTubeHoverVideo({ youtubeId }: { youtubeId: string }) {
+function EpisodeThumbnail({
+  id,
+  youtubeId,
+}: {
+  id: number;
+  youtubeId: string;
+}) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [isHovering, setIsHovering] = useState(false);
 
   const videoUrl = `https://www.youtube-nocookie.com/embed/${youtubeId}?controls=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&iv_load_policy=3&disablekb=1&fs=0&cc_load_policy=0&showinfo=0&loop=1&playlist=${youtubeId}`;
 
+  // YouTube hosts this thumbnail for every video automatically — no upload needed.
+  const thumbnailUrl = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
+
   const sendCommand = (command: string) => {
     iframeRef.current?.contentWindow?.postMessage(
-      JSON.stringify({
-        event: "command",
-        func: command,
-        args: [],
-      }),
+      JSON.stringify({ event: "command", func: command, args: [] }),
       "*",
     );
   };
 
   const handleMouseEnter = () => {
+    setIsHovering(true);
     sendCommand("playVideo");
   };
 
   const handleMouseLeave = () => {
+    setIsHovering(false);
     sendCommand("pauseVideo");
   };
 
   return (
     <div
-      className="
-        group
-        relative
-        aspect-[16/9]
-        w-full
-        overflow-hidden
-        rounded-[10px]
-        bg-black
-      "
+      className="relative aspect-[16/9] w-full overflow-hidden rounded-[10px] bg-black"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleMouseEnter}
     >
+      {/* STATIC COVER — shown at rest, fades out on hover */}
+      <img
+        src={thumbnailUrl}
+        alt={`Episode ${id}`}
+        className={`
+          absolute inset-0 h-full w-full object-cover
+          transition-opacity duration-300
+          ${isHovering ? "opacity-0" : "opacity-100"}
+        `}
+      />
+
+      {/* DARKENING OVERLAY so the title stays readable on any thumbnail */}
+      <div
+        className={`
+          absolute inset-0 bg-black/40
+          transition-opacity duration-300
+          ${isHovering ? "opacity-0" : "opacity-100"}
+        `}
+      />
+
+      {/* EPISODE TITLE — centered on the cover itself */}
+      <p
+        className={`
+          absolute inset-0 z-10
+          flex items-center justify-center
+          futura-light text-[13px] uppercase tracking-[0.18em] text-white
+          transition-opacity duration-300
+          ${isHovering ? "opacity-0" : "opacity-100"}
+        `}
+      >
+        Episode - {id}
+      </p>
+
+      {/* LIVE VIDEO — always mounted so hover feels instant, revealed via opacity */}
       <iframe
         ref={iframeRef}
         src={videoUrl}
         title=""
         tabIndex={-1}
-        className="
-          pointer-events-none
-          absolute
-          left-1/2
-          top-1/2
-          h-full
-          w-[316%]
-          -translate-x-1/2
-          -translate-y-1/2
-          border-0
-        "
+        className={`
+          pointer-events-none absolute left-1/2 top-1/2
+          h-full w-[316%]
+          -translate-x-1/2 -translate-y-1/2 border-0
+          transition-opacity duration-300
+          ${isHovering ? "opacity-100" : "opacity-0"}
+        `}
         allow="autoplay; encrypted-media; picture-in-picture"
       />
-
-      {/* TOP BLACK FADE — also covers any residual title-bar area */}
-      <div
-        className="
-          pointer-events-none
-          absolute
-          inset-x-0
-          top-0
-          z-10
-          h-16
-          bg-gradient-to-b
-          from-black/70
-          via-black/20
-          to-transparent
-        "
-      />
-
-      {/* BOTTOM BLACK FADE — also covers the YouTube watermark corner */}
-      <div
-        className="
-          pointer-events-none
-          absolute
-          inset-x-0
-          bottom-0
-          z-10
-          h-20
-          bg-gradient-to-t
-          from-black/80
-          via-black/25
-          to-transparent
-        "
-      />
-
-      {/* HOVER TEXT */}
-      <div
-        className="
-          pointer-events-none
-          absolute
-          bottom-4
-          left-1/2
-          z-20
-          -translate-x-1/2
-          opacity-70
-          transition-opacity
-          duration-300
-          group-hover:opacity-0
-        "
-      >
-        <span className="futura-light text-[9px] uppercase tracking-[0.2em] text-white/80">
-          Hover to play
-        </span>
-      </div>
     </div>
   );
 }
@@ -339,7 +317,25 @@ export default function Hero() {
   }, []);
 
   return (
-    <main className="relative min-h-screen w-full overflow-hidden bg-[#532439] text-white">
+    <main
+      className="relative min-h-screen w-full overflow-hidden text-white"
+      style={{
+  background: `
+        linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.18) 0%,
+          rgba(0, 0, 0, 0.08) 15%,
+          rgba(0, 0, 0, 0.02) 30%,
+          rgba(0, 0, 0, 0) 45%,
+          rgba(0, 0, 0, 0) 65%,
+          rgba(0, 0, 0, 0.02) 80%,
+          rgba(0, 0, 0, 0.08) 92%,
+          rgba(0, 0, 0, 0.15) 100%
+        ),
+        #4A1F32
+      `,
+    }}
+    >
       <SocialIcons />
 
       {/* =========================================================
@@ -377,34 +373,71 @@ export default function Hero() {
 
         <div
           ref={beliefsRef}
-          className="mx-auto mt-10 grid w-full max-w-[1020px] gap-8 md:mt-12 md:grid-cols-2 md:gap-8 lg:gap-10"
+          className="
+            mx-auto mt-10 flex w-full flex-col items-center
+            gap-[35px]
+            md:mt-12
+            xl:flex-row xl:flex-wrap xl:justify-center xl:gap-12
+            xl:max-w-[1000px]
+          "
         >
           {beliefs.map((belief, index) => (
             <div
               key={belief.author}
               className={`
-                relative flex min-h-[170px] items-center
+                relative flex h-[166px] w-[265px] items-center
                 rounded-[8px] border border-[#E9E7DA]/25
-                px-7 py-6
+                px-4 py-4
                 transition-all duration-500
                 hover:-translate-y-1
                 hover:border-[#E9E7DA]/45
                 hover:bg-white/[0.025]
-                md:min-h-[180px]
-                lg:min-h-[190px]
-                ${index === 0 ? "pl-16 lg:pl-20" : "pr-16 lg:pr-20"}
+
+                ${
+                  index === 0
+                    ? "translate-x-[44px] pl-[82px]"
+                    : "-translate-x-[44px] pr-[82px]"
+                }
+
+                xl:h-[280px]
+                xl:w-[400px]
+                xl:translate-x-0
+                xl:px-7
+                xl:py-6
+
+                ${
+                  index === 0
+                    ? "xl:pl-16 xl:pl-20"
+                    : "xl:pr-16 xl:pr-20"
+                }
               `}
             >
               {/* Portrait */}
 
               <div
                 className={`
-                  absolute top-1/2 h-[100px] w-[100px]
+                  absolute top-1/2
+                  h-[108px] w-[93px]
                   -translate-y-1/2
-                  rounded-[6px]
+                  overflow-hidden
+                  rounded-[10px]
                   border border-[#E9E7DA]/25
                   shadow-lg
-                  ${index === 0 ? "left-[-38px]" : "right-[-38px]"}
+
+                  ${
+                    index === 0
+                      ? "left-[-46px]"
+                      : "right-[-46px]"
+                  }
+
+                  xl:h-[150px]
+                  xl:w-[150px]
+
+                  ${
+                    index === 0
+                      ? "xl:left-[-48px]"
+                      : "xl:right-[-48px]"
+                  }
                 `}
               >
                 <img
@@ -417,19 +450,61 @@ export default function Hero() {
               {/* Quote */}
 
               <div
-                className={`w-full ${
-                  index === 0 ? "text-left" : "ml-auto text-right"
-                }`}
+                className={`
+                  flex h-[135px] w-full flex-col justify-between
+                  translate-y-[5px]
+
+                  ${
+                    index === 0
+                      ? "ml-0 text-left"
+                      : "mr-0 ml-auto text-right"
+                  }
+
+                  xl:h-[180px]
+                  xl:translate-y-[15px]
+
+                  ${
+                    index === 0
+                      ? "xl:ml-12"
+                      : "xl:mr-12"
+                  }
+                `}
               >
                 <p
-                  className={`futura-light max-w-[200px] text-[12px] leading-[1.7] tracking-wide text-white/75 md:max-w-[210px] md:text-[13.5px] lg:max-w-[240px] ${
-                    index === 0 ? "" : "ml-auto"
-                  }`}
+                  className={`
+                    futura-light
+                    max-w-[135px]
+                    text-[8px]
+                    leading-[1.35]
+                    tracking-wide
+                    text-white/75
+
+                    xl:max-w-[210px]
+                    xl:text-[13.5px]
+                    xl:leading-[1.7]
+                    xl:max-w-[240px]
+
+                    ${index === 0 ? "" : "ml-auto"}
+                  `}
                 >
                   &quot;{belief.quote}&quot;
                 </p>
 
-                <p className="futura-light mt-4 text-[9.5px] text-white/55 md:text-[10px]">
+                <p
+                  className={`
+                    futura-light
+                    text-[7px]
+                    text-white/55
+
+                    xl:text-[10px]
+
+                    ${
+                      index === 0
+                        ? "text-right"
+                        : "text-left"
+                    }
+                  `}
+                >
                   {belief.author}
                 </p>
               </div>
@@ -490,11 +565,7 @@ export default function Hero() {
               key={episode.id}
               className="w-full basis-full sm:basis-[calc(50%-20px)] md:basis-[calc(33.333%-27px)] md:max-w-[340px]"
             >
-              <p className="futura-light mb-3 text-center text-[13px] uppercase tracking-[0.18em] text-white/70">
-                Episode - {episode.id}
-              </p>
-
-              <YouTubeHoverVideo youtubeId={episode.videoId} />
+              <EpisodeThumbnail id={episode.id} youtubeId={episode.videoId} />
 
               <p className="futura-light mt-3 text-center text-[9px] leading-[1.5] tracking-wide text-white/55">
                 The beginning of a dream, where ideas sparked into purpose and

@@ -13,27 +13,57 @@ type FooterLink = {
   href: string;
 };
 
-// Plain strings still work everywhere below — only entries that need a real
-// destination (like Testimonials) get upgraded to { label, href }.
 const COMPANY_LINKS: (string | FooterLink)[] = [
-  "About Us",
-  "Our Team",
-  "Our Story",
-  "Awards & Events",
+  {
+    label: "About Us",
+    href: "/",
+  },
+  {
+    label: "Our Team",
+    href: "/people",
+  },
+  {
+    label: "Our Story",
+    href: "/philosophy",
+  },
+  {
+    label: "Awards & Events",
+    href: "/projects/events",
+  },
 ];
 
 const PROJECT_LINKS: (string | FooterLink)[] = [
-  "Portfolio Showcase",
-  "Videos",
-  "Behind The Scenes",
-  "Testimonials",
+  {
+    label: "Portfolio Showcase",
+    href: "/projects",
+  },
+  {
+    label: "Videos",
+    href: "https://youtube.com/@familyscript?si=M1FVlrIhkU8s5arF",
+  },
+  {
+    label: "Testimonials",
+    href: "/#testimonials",
+  },
 ];
 
 const LEGAL_LINKS: (string | FooterLink)[] = [
-  "Privacy Policy",
-  "Terms & Conditions",
-  "FAQs",
-  "Contact Us",
+  {
+    label: "Privacy Policy",
+    href: "/privacy-policy",
+  },
+  {
+    label: "Terms & Conditions",
+    href: "/terms-and-conditions",
+  },
+  {
+    label: "FAQs",
+    href: "/faq",
+  },
+  {
+    label: "Contact Us",
+    href: "/#contact-us",
+  },
 ];
 
 /* ============================================================
@@ -75,30 +105,52 @@ function FooterColumn({
           space-y-2.5
         "
       >
-        {links.map((link) => {
-          const label = typeof link === "string" ? link : link.label;
-          const href = typeof link === "string" ? "#" : link.href;
+      {links.map((link) => {
+      const label = typeof link === "string" ? link : link.label;
+      const href = typeof link === "string" ? "/" : link.href;
 
-          return (
-            <li key={label}>
-              <Link
-                href={href}
-                className="
-                  futura-light
-                  text-[11px]
-                  leading-none
-                  tracking-wide
-                  text-white/55
-                  transition-colors
-                  duration-200
-                  hover:text-white/90
-                "
-              >
-                {label}
-              </Link>
-            </li>
-          );
-        })}
+      const isExternal = href.startsWith("http");
+
+      return (
+        <li key={label}>
+          {isExternal ? (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="
+                futura-light
+                text-[11px]
+                leading-none
+                tracking-wide
+                text-white/55
+                transition-colors
+                duration-200
+                hover:text-white/90
+              "
+            >
+              {label}
+            </a>
+          ) : (
+            <Link
+              href={href}
+              className="
+                futura-light
+                text-[11px]
+                leading-none
+                tracking-wide
+                text-white/55
+                transition-colors
+                duration-200
+                hover:text-white/90
+              "
+            >
+              {label}
+            </Link>
+          )}
+        </li>
+      );
+    })}
       </ul>
     </div>
   );

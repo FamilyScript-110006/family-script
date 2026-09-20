@@ -55,8 +55,9 @@
   --background: #ffffff;
   --foreground: #171717;
 
-  /* Testimonials / Products palette */
-  --dark-burgundy: #532439;
+  /* Testimonials/Products palette */
+  --muted-purple: #382c3b;
+  --dark-burgundy: #480424;
   --antique-gold: #cba356;
   --warm-beige: #d2c6b2;
   --soft-ivory: #e9e7da;
@@ -69,7 +70,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-
+  --color-muted-purple: var(--muted-purple);
   --color-dark-burgundy: var(--dark-burgundy);
   --color-antique-gold: var(--antique-gold);
   --color-warm-beige: var(--warm-beige);
