@@ -5,13 +5,17 @@ export type PolicyBlock = {
   paragraphs: string[];
 };
 
-export default function PolicySection({ blocks }: { blocks: PolicyBlock[] }) {
+export default function PolicySection({
+  blocks,
+}: {
+  blocks: PolicyBlock[];
+}) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6">
       {blocks.map((block, index) => (
         <div key={index}>
           {block.heading && (
-            <p className="futura-bold uppercase text-dark-burgundy text-[13px] md:text-[14px] tracking-wide mb-2">
+            <p className="futura-bold mb-2 text-[11px] uppercase tracking-wide text-dark-burgundy sm:text-[12px] md:text-[14px]">
               {block.heading}
             </p>
           )}
@@ -19,7 +23,7 @@ export default function PolicySection({ blocks }: { blocks: PolicyBlock[] }) {
           {block.paragraphs.map((paragraph, pIndex) => (
             <p
               key={pIndex}
-              className="futura-light text-dark-burgundy text-[13px] md:text-[14px] leading-[1.7] mb-3"
+              className="futura-light mb-3 text-[11.5px] leading-[1.65] text-dark-burgundy sm:text-[12.5px] md:text-[14px] md:leading-[1.7]"
             >
               {paragraph}
             </p>
