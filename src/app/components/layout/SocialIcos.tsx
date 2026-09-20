@@ -1,71 +1,178 @@
 "use client";
 
-export default function SocialIcons() {
-  return (
-    <>
-      {/* Invisible hover area */}
-      <div className="fixed bottom-0 right-0 z-40 h-40 w-20" />
+import { useEffect, useRef, useState } from "react";
 
-      {/* Social Icons */}
-      <div className="fixed bottom-8 right-7 z-50 flex flex-col items-center gap-3">
-        {/* Facebook */}
+export default function SocialIcons() {
+  const [hidden, setHidden] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const startHideTimer = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    timerRef.current = setTimeout(() => {
+      setHidden(true);
+    }, 5000);
+  };
+
+  const showIcons = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    setHidden(false);
+  };
+
+  useEffect(() => {
+    startHideTimer();
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div
+      className={`global-social-wrapper ${
+        hidden ? "social-hidden" : ""
+      }`}
+      onMouseEnter={showIcons}
+      onMouseLeave={startHideTimer}
+    >
+      <div className="global-social-icons">
+
+        {/* ==================================================
+            FACEBOOK
+        ================================================== */}
+
         <a
           href="#"
           aria-label="Facebook"
-          className="flex h-5 w-5 items-center justify-center rounded-full bg-[#222] text-white"
+          className="global-social-link"
         >
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path d="M14 8h3V4h-3c-3.3 0-5 2-5 5v3H6v4h3v8h4v-8h3l1-4h-4V9c0-.7.3-1 1-1z" />
-          </svg>
-        </a>
+          <svg viewBox="0 0 20 20" className="social-svg">
+            <mask id="facebook-mask">
+              <rect
+                width="20"
+                height="20"
+                fill="white"
+              />
 
-        {/* Instagram */}
-        <a
-          href="#"
-          aria-label="Instagram"
-          className="flex h-5 w-5 items-center justify-center rounded-full bg-[#222] text-white"
-        >
-          <svg
-            width="11"
-            height="11"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <rect x="3" y="3" width="18" height="18" rx="5" />
-            <circle cx="12" cy="12" r="4" />
+              <path
+                d="M11.55 17.5V10.85H13.8L14.15 8.25H11.55V6.6C11.55 5.85 11.8 5.35 12.85 5.35H14.25V3.05C13.6 2.95 12.95 2.9 12.3 2.9C9.75 2.9 8.1 4.45 8.1 7.1V8.25H6V10.85H8.1V17.5H11.55Z"
+                fill="black"
+              />
+            </mask>
+
             <circle
-              cx="17.5"
-              cy="6.5"
-              r="1"
-              fill="currentColor"
-              stroke="none"
+              cx="10"
+              cy="10"
+              r="9.5"
+              fill="white"
+              mask="url(#facebook-mask)"
             />
           </svg>
         </a>
 
-        {/* YouTube */}
+        {/* ==================================================
+            INSTAGRAM
+        ================================================== */}
+
+        <a
+          href="#"
+          aria-label="Instagram"
+          className="global-social-link"
+        >
+          <svg viewBox="0 0 20 20" className="social-svg">
+            <mask id="instagram-mask">
+              <rect
+                width="20"
+                height="20"
+                fill="white"
+              />
+
+              <rect
+                x="5"
+                y="5"
+                width="10"
+                height="10"
+                rx="3"
+                fill="none"
+                stroke="black"
+                strokeWidth="1.5"
+              />
+
+              <circle
+                cx="10"
+                cy="10"
+                r="2.5"
+                fill="none"
+                stroke="black"
+                strokeWidth="1.5"
+              />
+
+              <circle
+                cx="13.3"
+                cy="6.7"
+                r="0.8"
+                fill="black"
+              />
+            </mask>
+
+            <circle
+              cx="10"
+              cy="10"
+              r="9.5"
+              fill="white"
+              mask="url(#instagram-mask)"
+            />
+          </svg>
+        </a>
+
+        {/* ==================================================
+            YOUTUBE
+        ================================================== */}
+
         <a
           href="#"
           aria-label="YouTube"
-          className="flex h-5 w-5 items-center justify-center rounded-full bg-[#222] text-white"
+          className="global-social-link"
         >
           <svg
-            width="11"
-            height="11"
-            viewBox="0 0 24 24"
-            fill="currentColor"
+            viewBox="0 0 20 20"
+            className="social-svg"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.5 15.5v-7l6 3.5-6 3.5Z" />
+            {/* White outer circle */}
+            <circle
+              cx="10"
+              cy="10"
+              r="9.5"
+              fill="white"
+            />
+
+            {/* YouTube rounded rectangle */}
+            <rect
+              x="5.2"
+              y="6.2"
+              width="10"
+              height="7"
+              rx="1.8"
+              fill="#8a827d"
+            />
+
+            {/* White play button */}
+            <path
+              d="M9 8.5L12.2 10L9 11.5V8.5Z"
+              fill="white"
+            />
           </svg>
         </a>
+
       </div>
-    </>
+    </div>
   );
 }

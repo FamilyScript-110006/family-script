@@ -5,6 +5,8 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+import CTAButton from "../layout/CTAButton";
+
 gsap.registerPlugin(ScrollTrigger);
 
 /* ============================================================
@@ -12,39 +14,9 @@ gsap.registerPlugin(ScrollTrigger);
 ============================================================ */
 
 export default function WhatWeDo() {
-  /* ============================================================
-     REFS
-  ============================================================ */
-
-  /*
-   * page.tsx owns the actual homepage section:
-   *
-   * <section>
-   *   <WhatWeDo />
-   * </section>
-   *
-   * Therefore this component uses a DIV as its root.
-   */
-
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
   const contentRef = useRef<HTMLDivElement | null>(null);
-
-  const titleRef = useRef<HTMLDivElement | null>(null);
-
-  const rightTextRef = useRef<HTMLDivElement | null>(null);
-
-  const leftTextRef = useRef<HTMLDivElement | null>(null);
-
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
-
-  const topLeftBoxRef = useRef<HTMLDivElement | null>(null);
-
-  const topRightBoxRef = useRef<HTMLDivElement | null>(null);
-
-  const bottomRightBoxRef = useRef<HTMLDivElement | null>(null);
-
-  const bottomLeftBoxRef = useRef<HTMLDivElement | null>(null);
 
   /* ============================================================
      GSAP
@@ -52,84 +24,70 @@ export default function WhatWeDo() {
 
   useEffect(() => {
     const section = sectionRef.current;
-
     const content = contentRef.current;
 
-    const title = titleRef.current;
-
-    const rightText = rightTextRef.current;
-
-    const leftText = leftTextRef.current;
-
-    const button = buttonRef.current;
-
-    const topLeftBox = topLeftBoxRef.current;
-
-    const topRightBox = topRightBoxRef.current;
-
-    const bottomRightBox = bottomRightBoxRef.current;
-
-    const bottomLeftBox = bottomLeftBoxRef.current;
-
-    if (
-      !section ||
-      !content ||
-      !title ||
-      !rightText ||
-      !leftText ||
-      !button ||
-      !topLeftBox ||
-      !topRightBox ||
-      !bottomRightBox ||
-      !bottomLeftBox
-    ) {
+    if (!section || !content) {
       return;
     }
 
     const context = gsap.context(() => {
       /* ==================================================
-             INITIAL CONTENT STATE
-          ================================================== */
+         MOBILE + DESKTOP ELEMENTS
+      ================================================== */
 
-      gsap.set([topLeftBox, topRightBox, bottomRightBox, bottomLeftBox], {
+      const boxes = content.querySelectorAll(
+        ".wwd-composition-box",
+      );
+
+      const titles = content.querySelectorAll(
+        ".wwd-title",
+      );
+
+      const rightTexts = content.querySelectorAll(
+        ".wwd-right-text",
+      );
+
+      const leftTexts = content.querySelectorAll(
+        ".wwd-left-text",
+      );
+
+      /* ==================================================
+         INITIAL STATE
+      ================================================== */
+
+      gsap.set(boxes, {
         opacity: 0,
       });
 
-      gsap.set(title, {
+      gsap.set(titles, {
         opacity: 0,
         y: 35,
         scale: 0.96,
       });
 
-      gsap.set(rightText, {
+      gsap.set(rightTexts, {
         opacity: 0,
         x: 40,
       });
 
-      gsap.set(leftText, {
+      gsap.set(leftTexts, {
         opacity: 0,
         x: -40,
       });
 
-      gsap.set(button, {
-        opacity: 0,
-        y: 20,
-        scale: 0.96,
-      });
-
       /* ==================================================
-             ENTRANCE TIMELINE
-          ================================================== */
+         ENTRANCE TIMELINE
+      ================================================== */
 
       const entrance = gsap.timeline({
         paused: true,
       });
 
       /* --------------------------------------------------
-             TRANSPARENT COMPOSITION BOXES
-          -------------------------------------------------- */
+         TRANSPARENT COMPOSITION BOXES
+      -------------------------------------------------- */
 
-      entrance.to([topLeftBox, topRightBox, bottomRightBox, bottomLeftBox], {
+      entrance.to(boxes, {
         opacity: 1,
         duration: 0.65,
         ease: "power2.out",
@@ -137,11 +95,11 @@ export default function WhatWeDo() {
       });
 
       /* --------------------------------------------------
-             WHAT WE DO TITLE
-          -------------------------------------------------- */
+         TITLE
+      -------------------------------------------------- */
 
       entrance.to(
-        title,
+        titles,
         {
           opacity: 1,
           y: 0,
@@ -153,11 +111,11 @@ export default function WhatWeDo() {
       );
 
       /* --------------------------------------------------
-             RIGHT SIDE TEXT
-          -------------------------------------------------- */
+         RIGHT TEXT
+      -------------------------------------------------- */
 
       entrance.to(
-        rightText,
+        rightTexts,
         {
           opacity: 1,
           x: 0,
@@ -168,11 +126,11 @@ export default function WhatWeDo() {
       );
 
       /* --------------------------------------------------
-             LEFT SIDE TEXT
-          -------------------------------------------------- */
+         LEFT TEXT
+      -------------------------------------------------- */
 
       entrance.to(
-        leftText,
+        leftTexts,
         {
           opacity: 1,
           x: 0,
@@ -182,29 +140,9 @@ export default function WhatWeDo() {
         "-=0.62",
       );
 
-      /* --------------------------------------------------
-             CTA
-          -------------------------------------------------- */
-
-      entrance.to(
-        button,
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.65,
-          ease: "power3.out",
-        },
-        "-=0.45",
-      );
-
       /* ==================================================
-             SECTION ENTRANCE
-             
-             This controls ONLY the content animation.
-             
-             It does NOT animate the background.
-          ================================================== */
+         SECTION ENTRANCE
+      ================================================== */
 
       ScrollTrigger.create({
         trigger: section,
@@ -218,39 +156,11 @@ export default function WhatWeDo() {
         onEnterBack: () => {
           entrance.restart();
         },
-
-        /*
-         * IMPORTANT:
-         *
-         * No onLeaveBack reset — restart() already replays
-         * the entrance cleanly from either direction, so a
-         * separate reset step isn't needed.
-         */
       });
 
       /* ==================================================
-             NO BACKGROUND PARALLAX
-             
-             The background intentionally has NO GSAP
-             animation.
-             
-             It remains completely fixed.
-          ================================================== */
-
-      /* ==================================================
-             NO GRADIENT PARALLAX
-             
-             The colourisation also remains completely fixed.
-          ================================================== */
-
-      /* ==================================================
-             NO CONTENT PARALLAX
-             
-             The entrance animation above is sufficient.
-             
-             Keeping the composition stable makes the
-             background appear completely still.
-          ================================================== */
+         REFRESH
+      ================================================== */
 
       requestAnimationFrame(() => {
         ScrollTrigger.refresh();
@@ -274,30 +184,10 @@ export default function WhatWeDo() {
         h-full
         min-h-full
         w-full
-        
       "
     >
       {/* ======================================================
           BACKGROUND IMAGE
-
-          EXACT SAME SIZE AS PAGE.TSX SECTION.
-
-          page.tsx owns:
-
-          h-screen
-          min-h-screen
-          w-full
-          
-
-          Therefore this background uses:
-
-          inset-0
-          h-full
-          w-full
-
-          No oversizing.
-          No scaling.
-          No movement.
       ====================================================== */}
 
       <div
@@ -307,13 +197,13 @@ export default function WhatWeDo() {
           inset-0
           h-full
           w-full
-          
           bg-cover
           bg-center
           bg-no-repeat
         "
         style={{
-          backgroundImage: "url('/assets/Homepage/WHAT_WE_DO.jpg')",
+          backgroundImage:
+            "url('/assets/Homepage/WHAT_WE_DO.jpg')",
 
           backgroundSize: "cover",
 
@@ -326,10 +216,6 @@ export default function WhatWeDo() {
 
       {/* ======================================================
           STATIC MAROON / BURGUNDY COLOURISATION
-
-          This does NOT move.
-
-          It simply colourises the background image.
       ====================================================== */}
 
       <div
@@ -365,8 +251,6 @@ export default function WhatWeDo() {
 
       {/* ======================================================
           MAIN COMPOSITION
-
-          Background remains independent and static.
       ====================================================== */}
 
       <div
@@ -377,272 +261,487 @@ export default function WhatWeDo() {
           z-10
         "
       >
+
         {/* ====================================================
-            LEFT DARK TRANSPARENT BLOCK
+            ====================================================
+            DESKTOP COMPOSITION
+            ====================================================
         ==================================================== */}
 
         <div
-          ref={topLeftBoxRef}
           className="
+            hidden
+            md:block
             absolute
-            left-0
-            top-[23%]
-            h-[33%]
-            w-[19%]
+            inset-0
           "
-          style={{
-            background: "rgba(18, 15, 32, 0.58)",
-
-            backdropFilter: "blur(1px)",
-
-            WebkitBackdropFilter: "blur(1px)",
-          }}
-        />
-
-        {/* ====================================================
-            TITLE BOX
-        ==================================================== */}
-
-        <div
-          ref={titleRef}
-          className="
-            absolute
-            left-[25.2%]
-            top-[12%]
-            flex
-            h-[33%]
-            w-[19%]
-            items-center
-            justify-center
-            text-center
-          "
-          style={{
-            background: "rgba(164, 103, 40, 0.70)",
-          }}
         >
-          <h2
+
+          {/* ==================================================
+              LEFT DARK TRANSPARENT BLOCK
+          ================================================== */}
+
+          <div
             className="
-              futura-light
-              uppercase
-              text-[3.7vw]
-              leading-[1.18]
-              tracking-[0.02em]
-              text-white
+              wwd-composition-box
+              absolute
+              left-0
+              top-[23%]
+              h-[33%]
+              w-[19%]
             "
-          >
-            WHAT
-            <br />
-            WE
-            <br />
-            DO?
-          </h2>
-        </div>
+            style={{
+              background: "rgba(18, 15, 32, 0.58)",
+              backdropFilter: "blur(1px)",
+              WebkitBackdropFilter: "blur(1px)",
+            }}
+          />
 
-        {/* ====================================================
-            TOP RIGHT WHITE TRANSPARENT BLOCK
-        ==================================================== */}
+          {/* ==================================================
+              TITLE BOX
+          ================================================== */}
 
-        <div
-          ref={topRightBoxRef}
-          className="
-            absolute
-            right-0
-            top-0
-            h-[33%]
-            w-[19%]
-          "
-          style={{
-            background: "rgba(255, 255, 255, 0.42)",
-
-            backdropFilter: "blur(2px)",
-
-            WebkitBackdropFilter: "blur(2px)",
-          }}
-        />
-
-        {/* ====================================================
-            RIGHT GOLD CONTENT BLOCK
-        ==================================================== */}
-
-        <div
-          ref={rightTextRef}
-          className="
-            absolute
-            right-[12.7%]
-            top-[33.5%]
-            flex
-            h-[33.5%]
-            w-[37%]
-            items-center
-            justify-center
-            px-[4%]
-            text-center
-          "
-          style={{
-            background: "rgba(174, 111, 32, 0.62)",
-          }}
-        >
-          <p
+          <div
             className="
-              futura-light
-              max-w-[360px]
-              text-[15px]
-              leading-[1.35]
-              text-white
-              md:text-[17px]
-              lg:text-[18px]
+              wwd-title
+              absolute
+              left-[25.2%]
+              top-[12%]
+              flex
+              h-[33%]
+              w-[19%]
+              items-center
+              justify-center
+              text-center
             "
+            style={{
+              background: "rgba(164, 103, 40, 0.70)",
+            }}
           >
-            We explore{" "}
-            <span className="futura-medium">
-              Individual and
+            <h2
+              className="
+                futura-light
+                uppercase
+                text-[3.7vw]
+                leading-[1.18]
+                tracking-[0.02em]
+                text-white
+              "
+            >
+              WHAT
               <br />
-              Institutional legacies
-            </span>{" "}
-            through social
-            <br />
-            and spatial documentation.
-          </p>
-        </div>
-
-        {/* ====================================================
-            RIGHT BOTTOM WHITE TRANSPARENT BLOCK
-        ==================================================== */}
-
-        <div
-          ref={bottomRightBoxRef}
-          className="
-            absolute
-            bottom-0
-            right-0
-            h-[33%]
-            w-[19%]
-          "
-          style={{
-            background: "rgba(255, 255, 255, 0.40)",
-
-            backdropFilter: "blur(2px)",
-
-            WebkitBackdropFilter: "blur(2px)",
-          }}
-        />
-
-        {/* ====================================================
-            RIGHT VERTICAL LIGHT PANEL
-        ==================================================== */}
-
-        <div
-          className="
-            pointer-events-none
-            absolute
-            right-0
-            top-[33%]
-            h-[34%]
-            w-[19%]
-          "
-          style={{
-            background: "rgba(255, 255, 255, 0.12)",
-          }}
-        />
-
-        {/* ====================================================
-            LEFT BOTTOM GOLD CONTENT BLOCK
-        ==================================================== */}
-
-        <div
-          ref={leftTextRef}
-          className="
-            absolute
-            bottom-0
-            left-0
-            flex
-            h-[44%]
-            w-[37.8%]
-            flex-col
-            justify-center
-            px-[5.5%]
-            py-8
-            text-center
-          "
-          style={{
-            background: "rgba(169, 107, 33, 0.57)",
-          }}
-        >
-          <p
-            className="
-              futura-light
-              text-[15px]
-              leading-[1.45]
-              text-white
-              md:text-[17px]
-              lg:text-[18px]
-            "
-          >
-            We develop forward-looking
-            <br />
-            perspectives to create a legacy from
-            <br />
-            lesser-known histories. Our process is
-            <br />
-            interactive, collaborative and an
-            <br />
-            experience worth undertaking.
-          </p>
-
-          <p
-            className="
-              futura-light
-              mt-6
-              text-[15px]
-              leading-[1.45]
-              text-white
-              md:text-[17px]
-              lg:text-[18px]
-            "
-          >
-            We are empathetic listeners,{" "}
-            <span className="futura-medium">
-              We co-
+              WE
               <br />
-              create with you.
-            </span>
-          </p>
+              DO?
+            </h2>
+          </div>
+
+          {/* ==================================================
+              TOP RIGHT WHITE TRANSPARENT BLOCK
+          ================================================== */}
+
+          <div
+            className="
+              wwd-composition-box
+              absolute
+              right-0
+              top-0
+              h-[33%]
+              w-[19%]
+            "
+            style={{
+              background: "rgba(255, 255, 255, 0.42)",
+              backdropFilter: "blur(2px)",
+              WebkitBackdropFilter: "blur(2px)",
+            }}
+          />
+
+          {/* ==================================================
+              RIGHT GOLD CONTENT BLOCK
+          ================================================== */}
+
+          <div
+            className="
+              wwd-right-text
+              absolute
+              right-[12.7%]
+              top-[33.5%]
+              flex
+              h-[33.5%]
+              w-[37%]
+              items-center
+              justify-center
+              px-[4%]
+              text-center
+            "
+            style={{
+              background: "rgba(174, 111, 32, 0.62)",
+            }}
+          >
+            <p
+              className="
+                futura-light
+                max-w-[360px]
+                text-[15px]
+                leading-[1.35]
+                text-white
+                md:text-[17px]
+                lg:text-[18px]
+              "
+            >
+              We explore{" "}
+              <span className="futura-medium">
+                Individual and
+                <br />
+                Institutional legacies
+              </span>{" "}
+              through social
+              <br />
+              and spatial documentation.
+            </p>
+          </div>
+
+          {/* ==================================================
+              RIGHT BOTTOM WHITE TRANSPARENT BLOCK
+          ================================================== */}
+
+          <div
+            className="
+              wwd-composition-box
+              absolute
+              bottom-0
+              right-0
+              h-[33%]
+              w-[19%]
+            "
+            style={{
+              background: "rgba(255, 255, 255, 0.40)",
+              backdropFilter: "blur(2px)",
+              WebkitBackdropFilter: "blur(2px)",
+            }}
+          />
+
+          {/* ==================================================
+              RIGHT VERTICAL LIGHT PANEL
+          ================================================== */}
+
+          <div
+            className="
+              pointer-events-none
+              absolute
+              right-0
+              top-[33%]
+              h-[34%]
+              w-[19%]
+            "
+            style={{
+              background: "rgba(255, 255, 255, 0.12)",
+            }}
+          />
+
+          {/* ==================================================
+              LEFT BOTTOM GOLD CONTENT BLOCK
+          ================================================== */}
+
+          <div
+            className="
+              wwd-left-text
+              absolute
+              bottom-0
+              left-0
+              flex
+              h-[44%]
+              w-[37.8%]
+              flex-col
+              items-center
+              justify-center
+              px-[5.5%]
+              py-8
+              text-center
+            "
+            style={{
+              background: "rgba(169, 107, 33, 0.57)",
+            }}
+          >
+            <p
+              className="
+                futura-light
+                text-[15px]
+                leading-[1.45]
+                text-white
+                md:text-[17px]
+                lg:text-[18px]
+              "
+            >
+              We develop forward-looking
+              <br />
+              perspectives to create a legacy from
+              <br />
+              lesser-known histories. Our process is
+              <br />
+              interactive, collaborative and an
+              <br />
+              experience worth undertaking.
+            </p>
+
+            <p
+              className="
+                futura-light
+                mt-6
+                text-[15px]
+                leading-[1.45]
+                text-white
+                md:text-[17px]
+                lg:text-[18px]
+              "
+            >
+              We are empathetic listeners,{" "}
+              <span className="futura-medium">
+                We co-
+                <br />
+                create with you.
+              </span>
+            </p>
+          </div>
         </div>
 
         {/* ====================================================
-            CTA
+            ====================================================
+            MOBILE COMPOSITION
+            ====================================================
         ==================================================== */}
 
-        <button
-          ref={buttonRef}
-          type="button"
+        <div
           className="
-            futura-light
             absolute
-            bottom-[5.5%]
-            left-[41.8%]
-            rounded-full
-            border
-            border-white/35
-            bg-white/15
-            px-6
-            py-2
-            text-[11px]
-            tracking-[0.02em]
-            text-white
-            backdrop-blur-md
-            transition-all
-            duration-300
-            hover:border-white/60
-            hover:bg-white/25
-            md:px-7
-            md:py-2.5
-            md:text-[12px]
+            inset-0
+            md:hidden
           "
         >
-          Get your Story <span className="futura-bold">Scripted</span>
-          <span className="ml-2">&gt;&gt;</span>
-        </button>
+
+          {/* ==================================================
+              SUBTLE TOP LEFT PANEL
+          ================================================== */}
+
+          <div
+            className="
+              wwd-composition-box
+              absolute
+              left-0
+              top-[27%]
+              h-[15%]
+              w-[56%]
+            "
+            style={{
+              background: "rgba(35, 30, 40, 0.42)",
+              backdropFilter: "blur(2px)",
+              WebkitBackdropFilter: "blur(2px)",
+            }}
+          />
+
+          {/* ==================================================
+              MOBILE TITLE
+          ================================================== */}
+
+          <div
+            className="
+              wwd-title
+              absolute
+              left-[28%]
+              top-[3%]
+              flex
+              h-[20%]
+              w-[45%]
+              items-center
+              justify-center
+              text-center
+            "
+            style={{
+              background: "rgba(164, 103, 40, 0.72)",
+            }}
+          >
+            <h2
+              className="
+                futura-light
+                uppercase
+                text-[8.2vw]
+                leading-[1.15]
+                tracking-[0.015em]
+                text-white
+              "
+            >
+              WHAT
+              <br />
+              WE DO?
+            </h2>
+          </div>
+
+          {/* ==================================================
+              MOBILE FIRST TEXT PANEL
+          ================================================== */}
+
+          <div
+            className="
+              wwd-left-text
+              absolute
+              left-0
+              top-[27%]
+              flex
+              h-[15%]
+              w-[57%]
+              items-center
+              justify-center
+              px-[5%]
+              text-center
+            "
+            style={{
+              background: "rgba(154, 154, 154, 0.58)",
+              backdropFilter: "blur(2px)",
+              WebkitBackdropFilter: "blur(2px)",
+            }}
+          >
+            <p
+              className="
+                futura-light
+                text-[3vw]
+                leading-[1.28]
+                text-white
+              "
+            >
+              We explore{" "}
+              <span className="futura-medium">
+                Individual
+                <br />
+                and Institutional legacies
+              </span>
+              <br />
+              through social and spatial
+              <br />
+              documentation.
+            </p>
+          </div>
+
+          {/* ==================================================
+              MOBILE RIGHT SIDE LIGHT PANEL
+          ================================================== */}
+
+          <div
+            className="
+              wwd-composition-box
+              absolute
+              right-0
+              top-[20%]
+              h-[32%]
+              w-[22%]
+            "
+            style={{
+              background: "rgba(255, 255, 255, 0.10)",
+              backdropFilter: "blur(2px)",
+              WebkitBackdropFilter: "blur(2px)",
+            }}
+          />
+
+          {/* ==================================================
+              MOBILE LARGE LOWER CONTENT PANEL
+          ================================================== */}
+
+          <div
+            className="
+              wwd-right-text
+              absolute
+              right-0
+              top-[52%]
+              flex
+              h-[39%]
+              w-[57%]
+              flex-col
+              items-center
+              justify-center
+              px-[5%]
+              text-center
+            "
+            style={{
+              background: "rgba(103, 32, 67, 0.66)",
+              backdropFilter: "blur(2px)",
+              WebkitBackdropFilter: "blur(2px)",
+            }}
+          >
+            <p
+              className="
+                futura-light
+                text-[3vw]
+                leading-[1.32]
+                text-white
+              "
+            >
+              We develop forward-looking
+              <br />
+              perspectives to create a
+              <br />
+              legacy from lesser-known
+              <br />
+              histories. Our process is
+              <br />
+              <span className="futura-medium">
+                interactive, collaborative and
+              </span>
+              <br />
+              an experience worth
+              <br />
+              undertaking.
+            </p>
+
+            <p
+              className="
+                futura-light
+                mt-[5%]
+                text-[3vw]
+                leading-[1.35]
+                text-white
+              "
+            >
+              We are empathetic listeners,
+              <br />
+              <span className="futura-medium">
+                We co-create with you.
+              </span>
+            </p>
+          </div>
+
+          {/* ==================================================
+              MOBILE BOTTOM SUBTLE PANEL
+          ================================================== */}
+
+          <div
+            className="
+              wwd-composition-box
+              absolute
+              bottom-0
+              left-0
+              h-[10%]
+              w-full
+            "
+            style={{
+              background: "rgba(18, 15, 32, 0.18)",
+            }}
+          />
+        </div>
+
+        {/* ====================================================
+            CTA BUTTON
+        ==================================================== */}
+
+        <div
+          className="
+            absolute
+            left-1/2
+            top-[93%]
+            z-30
+            -translate-x-1/2
+          "
+        >
+          <CTAButton />
+        </div>
       </div>
     </div>
   );
