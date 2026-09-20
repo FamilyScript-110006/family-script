@@ -1,9 +1,9 @@
 "use client";
 
+import CTAButton from "../layout/CTAButton";
 import { useEffect, useRef, useState } from "react";
 
 import gsap from "gsap";
-
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -24,19 +24,6 @@ interface StatProps {
 ============================================================ */
 
 export default function WhoAreWe() {
-  /*
-   * IMPORTANT:
-   *
-   * page.tsx owns the actual homepage section:
-   *
-   * <section>
-   *   <WhoAreWe />
-   * </section>
-   *
-   * Therefore this component must NOT create another
-   * <section>.
-   */
-
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
   const backgroundRef = useRef<HTMLDivElement | null>(null);
@@ -51,7 +38,7 @@ export default function WhoAreWe() {
 
   const statsRef = useRef<HTMLDivElement | null>(null);
 
-  const ctaRef = useRef<HTMLButtonElement | null>(null);
+  const ctaRef = useRef<HTMLDivElement | null>(null);
 
   const [countStarted, setCountStarted] = useState(false);
 
@@ -91,20 +78,8 @@ export default function WhoAreWe() {
 
     const context = gsap.context(() => {
       /* ==================================================
-             BACKGROUND
-             
-             IMPORTANT:
-             
-             The background is completely static.
-             
-             No:
-             - yPercent
-             - scale animation
-             - parallax
-             - scrub
-             
-             It exactly fills the page.tsx section.
-          ================================================== */
+         BACKGROUND
+      ================================================== */
 
       gsap.set(background, {
         x: 0,
@@ -119,8 +94,8 @@ export default function WhoAreWe() {
       });
 
       /* ==================================================
-             INITIAL CONTENT STATE
-          ================================================== */
+         INITIAL CONTENT STATE
+      ================================================== */
 
       gsap.set([heading, description, stats, cta], {
         opacity: 0,
@@ -132,16 +107,16 @@ export default function WhoAreWe() {
       });
 
       /* ==================================================
-             ENTRANCE TIMELINE
-          ================================================== */
+         ENTRANCE TIMELINE
+      ================================================== */
 
       const entrance = gsap.timeline({
         paused: true,
       });
 
       /* --------------------------------------------------
-             HEADING
-          -------------------------------------------------- */
+         HEADING
+      -------------------------------------------------- */
 
       entrance.to(heading, {
         opacity: 1,
@@ -151,8 +126,8 @@ export default function WhoAreWe() {
       });
 
       /* --------------------------------------------------
-             DESCRIPTION
-          -------------------------------------------------- */
+         DESCRIPTION
+      -------------------------------------------------- */
 
       entrance.to(
         description,
@@ -166,8 +141,8 @@ export default function WhoAreWe() {
       );
 
       /* --------------------------------------------------
-             STATS
-          -------------------------------------------------- */
+         STATS
+      -------------------------------------------------- */
 
       entrance.to(
         stats,
@@ -185,8 +160,8 @@ export default function WhoAreWe() {
       );
 
       /* --------------------------------------------------
-             CTA
-          -------------------------------------------------- */
+         CTA
+      -------------------------------------------------- */
 
       entrance.to(
         cta,
@@ -201,12 +176,8 @@ export default function WhoAreWe() {
       );
 
       /* ==================================================
-             SECTION ENTER
-             
-             ScrollTrigger controls ONLY content.
-             
-             It does NOT animate the background.
-          ================================================== */
+         SECTION ENTER
+      ================================================== */
 
       ScrollTrigger.create({
         trigger: section,
@@ -220,43 +191,11 @@ export default function WhoAreWe() {
         onEnterBack: () => {
           entrance.restart();
         },
-
-        /*
-         * IMPORTANT:
-         *
-         * No onLeaveBack reset — restart() already replays
-         * the entrance cleanly from either direction, so a
-         * separate reset step isn't needed.
-         */
       });
 
       /* ==================================================
-             NO BACKGROUND PARALLAX
-             
-             Intentionally empty.
-             
-             The image must stay completely still.
-          ================================================== */
-
-      /* ==================================================
-             NO GRADIENT PARALLAX
-             
-             The colourisation remains completely static.
-          ================================================== */
-
-      /* ==================================================
-             NO CONTENT PARALLAX
-             
-             The content entrance is enough.
-             
-             This keeps the whole section stable and avoids
-             making the section look like the background is
-             moving.
-          ================================================== */
-
-      /* ==================================================
-             REFRESH
-          ================================================== */
+         REFRESH
+      ================================================== */
 
       requestAnimationFrame(() => {
         ScrollTrigger.refresh();
@@ -280,30 +219,10 @@ export default function WhoAreWe() {
         h-full
         min-h-full
         w-full
-        
       "
     >
       {/* ======================================================
           BACKGROUND IMAGE
-
-          EXACT SAME SIZE AS PAGE.TSX
-
-          page.tsx:
-
-          h-screen
-          min-h-screen
-          w-full
-          
-
-          Therefore this is:
-
-          inset-0
-          h-full
-          w-full
-
-          NO oversizing.
-          NO movement.
-          NO animation.
       ====================================================== */}
 
       <div
@@ -314,18 +233,14 @@ export default function WhoAreWe() {
           inset-0
           h-full
           w-full
-          
           bg-cover
           bg-center
           bg-no-repeat
         "
         style={{
           backgroundImage: "url('/assets/Homepage/WHO_WE_ARE.jpg')",
-
           backgroundSize: "cover",
-
           backgroundPosition: "center center",
-
           backgroundRepeat: "no-repeat",
         }}
         aria-hidden="true"
@@ -333,14 +248,6 @@ export default function WhoAreWe() {
 
       {/* ======================================================
           MAROON / BURGUNDY COLOURISATION
-
-          STATIC.
-
-          The colour does not move.
-          The colour does not fade.
-          The colour does not parallax.
-
-          It simply sits over the image.
       ====================================================== */}
 
       <div
@@ -361,8 +268,6 @@ export default function WhoAreWe() {
 
       {/* ======================================================
           VERY LIGHT DARK OVERLAY
-
-          STATIC.
       ====================================================== */}
 
       <div
@@ -379,8 +284,6 @@ export default function WhoAreWe() {
 
       {/* ======================================================
           CONTENT
-
-          The background remains independent and static.
       ====================================================== */}
 
       <div
@@ -410,9 +313,12 @@ export default function WhoAreWe() {
             flex-1
             flex-col
             items-center
-            px-6
+            px-5
             pb-12
-            pt-[22vh]
+            pt-[15vh]
+            sm:px-6
+            sm:pt-[18vh]
+            md:pt-[22vh]
           "
         >
           {/* ==================================================
@@ -423,10 +329,15 @@ export default function WhoAreWe() {
             ref={headingRef}
             className="
               futura-medium
+              mt=6
               uppercase
-              text-[2.65rem]
+              text-[2rem]
               leading-none
-              tracking-[0.08em]
+              tracking-[0.06em]
+              sm:text-[2.3rem]
+              sm:tracking-[0.07em]
+              md:text-[2.65rem]
+              md:tracking-[0.08em]
             "
           >
             Who Are We?
@@ -440,21 +351,25 @@ export default function WhoAreWe() {
             ref={descriptionRef}
             className="
               futura-light
-              mt-14
+              mt-10
+              w-full
               max-w-[750px]
+              sm:mt-12
+              md:mt-14
             "
           >
             <p
               className="
-                text-[18px]
-                leading-[1.5]
+                text-[16px]
+                leading-[1.55]
+                sm:text-[17px]
                 md:text-[20px]
+                md:leading-[1.5]
               "
             >
               <span className="futura-medium">Family Script (FS)</span> is a
-              venture of designers, historians, architects and
-              <br className="hidden md:block" />
-              educationists who{" "}
+              venture of designers, historians, architects and educationists
+              who{" "}
               <span className="futura-medium">
                 celebrate non-hegemonic histories of individuals and
                 collectives.
@@ -463,14 +378,16 @@ export default function WhoAreWe() {
 
             <p
               className="
-                mt-7
-                text-[18px]
-                leading-[1.5]
+                mt-6
+                text-[16px]
+                leading-[1.55]
+                sm:mt-7
+                sm:text-[17px]
                 md:text-[20px]
+                md:leading-[1.5]
               "
             >
               The untold stories of leaders, artists and changemakers are the
-              <br className="hidden md:block" />
               essence of our work.
             </p>
           </div>
@@ -482,11 +399,15 @@ export default function WhoAreWe() {
           <div
             ref={statsRef}
             className="
-              mt-16
+              mt-12
               flex
+              w-full
+              max-w-[520px]
               items-center
               justify-center
               text-white
+              sm:mt-14
+              md:mt-16
             "
           >
             <Stat
@@ -498,9 +419,11 @@ export default function WhoAreWe() {
 
             <div
               className="
-                h-14
+                h-12
                 w-px
+                shrink-0
                 bg-white/50
+                sm:h-14
               "
               aria-hidden="true"
             />
@@ -514,9 +437,11 @@ export default function WhoAreWe() {
 
             <div
               className="
-                h-14
+                h-12
                 w-px
+                shrink-0
                 bg-white/50
+                sm:h-14
               "
               aria-hidden="true"
             />
@@ -529,34 +454,24 @@ export default function WhoAreWe() {
             />
           </div>
 
-          {/* ==================================================
-              CTA
-          ================================================== */}
+          {/* ====================================================
+              GLOBAL CTA
+          ==================================================== */}
 
-          <button
+          <div
             ref={ctaRef}
-            type="button"
             className="
-              futura-light
-              mt-12
-              rounded-full
-              border
-              border-white/40
-              bg-white/15
-              px-10
-              py-4
-              text-[15px]
-              tracking-[0.05em]
-              text-white
-              backdrop-blur-sm
-              transition-colors
-              duration-300
-              hover:bg-white/25
+              absolute
+              left-1/2
+              top-[91%]
+              z-30
+              -translate-x-1/2
+              sm:top-[91%]
+              md:top-[91%]
             "
           >
-            Get your Story <span className="futura-bold">Scripted</span>
-            <span className="ml-3">&gt;&gt;</span>
-          </button>
+            <CTAButton />
+          </div>
         </div>
       </div>
     </div>
@@ -610,16 +525,19 @@ function Stat({ target, suffix, label, started }: StatProps) {
   return (
     <div
       className="
-        px-8
+        min-w-0
+        px-3
         text-center
+        sm:px-6
         md:px-12
       "
     >
       <div
         className="
           futura-bold
-          text-[32px]
+          text-[25px]
           leading-none
+          sm:text-[29px]
           md:text-[36px]
         "
       >
@@ -630,9 +548,12 @@ function Stat({ target, suffix, label, started }: StatProps) {
       <div
         className="
           futura-light
-          mt-3
+          mt-2
           whitespace-nowrap
-          text-[14px]
+          text-[10px]
+          leading-tight
+          sm:mt-3
+          sm:text-[12px]
           md:text-[15px]
         "
       >

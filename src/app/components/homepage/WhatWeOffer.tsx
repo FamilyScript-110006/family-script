@@ -2,12 +2,12 @@
 
 "use client";
 
+import CTAButton from "../layout/CTAButton";
 import Link from "next/link";
 
 import { useEffect, useRef } from "react";
 
 import gsap from "gsap";
-
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -17,19 +17,6 @@ gsap.registerPlugin(ScrollTrigger);
 ============================================================ */
 
 export default function WhatWeOffer() {
-  /*
-   * IMPORTANT:
-   *
-   * page.tsx owns the actual homepage section:
-   *
-   * <section>
-   *   <WhatWeOffer />
-   * </section>
-   *
-   * Therefore this component uses a DIV as its root.
-   *
-   */
-
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const backgroundRef = useRef<HTMLDivElement>(null);
@@ -44,9 +31,9 @@ export default function WhatWeOffer() {
 
   const servicesRef = useRef<HTMLDivElement>(null);
 
-  /* ==========================================================
+  /* ============================================================
      GSAP
-  ========================================================== */
+  ============================================================ */
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -75,25 +62,13 @@ export default function WhatWeOffer() {
       return;
     }
 
-    /*
-     * Find service cards.
-     */
-
-    const boxes = services.querySelectorAll<HTMLElement>(".service-box");
+    const boxes =
+      services.querySelectorAll<HTMLElement>(".service-box");
 
     const ctx = gsap.context(() => {
       /* ==================================================
-             INITIAL STATES
-          ================================================== */
-
-      /*
-       * IMPORTANT:
-       *
-       * The background itself is NOT animated.
-       *
-       * It stays exactly where it is and exactly
-       * the same size as the page.tsx section.
-       */
+         INITIAL STATES
+      ================================================== */
 
       gsap.set(background, {
         x: 0,
@@ -106,10 +81,6 @@ export default function WhatWeOffer() {
         y: 0,
       });
 
-      /*
-       * Content animation.
-       */
-
       gsap.set(heading, {
         opacity: 0,
         y: 45,
@@ -120,12 +91,6 @@ export default function WhatWeOffer() {
         opacity: 0,
         y: 35,
       });
-
-      /*
-       * Keep the service container visible.
-       *
-       * Individual cards animate instead.
-       */
 
       gsap.set(services, {
         opacity: 1,
@@ -138,18 +103,16 @@ export default function WhatWeOffer() {
       });
 
       /* ==================================================
-             ENTRANCE TIMELINE
-          ================================================== */
+         ENTRANCE TIMELINE
+      ================================================== */
 
       const entrance = gsap.timeline({
         paused: true,
       });
 
-      /*
-       * --------------------------------------------------
-       * HEADING
-       * --------------------------------------------------
-       */
+      /* --------------------------------------------------
+         HEADING
+      -------------------------------------------------- */
 
       entrance.to(heading, {
         opacity: 1,
@@ -159,11 +122,9 @@ export default function WhatWeOffer() {
         ease: "power3.out",
       });
 
-      /*
-       * --------------------------------------------------
-       * INTRO
-       * --------------------------------------------------
-       */
+      /* --------------------------------------------------
+         INTRO
+      -------------------------------------------------- */
 
       entrance.to(
         intro,
@@ -176,11 +137,9 @@ export default function WhatWeOffer() {
         "-=0.58",
       );
 
-      /*
-       * --------------------------------------------------
-       * SERVICE BOXES
-       * --------------------------------------------------
-       */
+      /* --------------------------------------------------
+         SERVICE BOXES
+      -------------------------------------------------- */
 
       entrance.to(
         boxes,
@@ -199,8 +158,8 @@ export default function WhatWeOffer() {
       );
 
       /* ==================================================
-             SECTION ENTRANCE TRIGGER
-          ================================================== */
+         SECTION ENTRANCE
+      ================================================== */
 
       ScrollTrigger.create({
         trigger: section,
@@ -214,19 +173,11 @@ export default function WhatWeOffer() {
         onEnterBack: () => {
           entrance.restart();
         },
-
-        /*
-         * IMPORTANT:
-         *
-         * Don't reset everything to the invisible
-         * starting state when navigating backwards —
-         * restart() already replays the entrance cleanly.
-         */
       });
 
       /* ==================================================
-             REFRESH
-          ================================================== */
+         REFRESH
+      ================================================== */
 
       requestAnimationFrame(() => {
         ScrollTrigger.refresh();
@@ -238,9 +189,9 @@ export default function WhatWeOffer() {
     };
   }, []);
 
-  /* ==========================================================
+  /* ============================================================
      RENDER
-  ========================================================== */
+  ============================================================ */
 
   return (
     <div
@@ -250,29 +201,10 @@ export default function WhatWeOffer() {
         h-full
         min-h-full
         w-full
-        
       "
     >
       {/* ======================================================
           BACKGROUND IMAGE
-          
-          EXACTLY MATCHES PAGE.TSX SECTION
-          
-          page.tsx:
-          
-          h-screen
-          min-h-screen
-          w-full
-          
-          
-          Therefore:
-          
-          inset-0
-          w-full
-          h-full
-          
-          No oversizing.
-          No movement.
       ====================================================== */}
 
       <div
@@ -283,13 +215,13 @@ export default function WhatWeOffer() {
           inset-0
           h-full
           w-full
-          
           bg-cover
           bg-center
           bg-no-repeat
         "
         style={{
-          backgroundImage: "url('/assets/Homepage/WHAT_WE_OFFER.jpg')",
+          backgroundImage:
+            "url('/assets/Homepage/WHAT_WE_OFFER.jpg')",
 
           backgroundSize: "cover",
 
@@ -302,11 +234,6 @@ export default function WhatWeOffer() {
 
       {/* ======================================================
           COLOURISATION / MAROON GRADIENT
-          
-          STATIC.
-          
-          This is what gives the image the burgundy /
-          maroon colourised appearance.
       ====================================================== */}
 
       <div
@@ -356,150 +283,321 @@ export default function WhatWeOffer() {
           text-white
         "
       >
-        {/* ====================================================
-            HEADING
-        ==================================================== */}
-
-        <h2
-          ref={headingRef}
-          className="
-            futura-light
-            absolute
-            left-0
-            right-0
-            top-[22%]
-            text-center
-            text-[3.6vw]
-            uppercase
-            leading-none
-            tracking-[0.04em]
-          "
-        >
-          WHAT WE OFFER?
-        </h2>
 
         {/* ====================================================
-            INTRO TEXT
+            ====================================================
+            DESKTOP VERSION
+            ====================================================
         ==================================================== */}
 
         <div
-          ref={introRef}
           className="
-            futura-light
             absolute
-            left-0
-            right-0
-            top-[37%]
-            text-center
-            text-[1.55vw]
-            leading-[1.5]
+            inset-0
+            hidden
+            md:block
           "
         >
-          <p>A nonlinear, open-ended process</p>
 
-          <p>Recording Oral History and Material Memory</p>
+          {/* ==================================================
+              HEADING
+          ================================================== */}
 
-          <p>
-            Driving a{" "}
-            <span
-              className="
-                futura-medium
-                font-black
-                text-[#E9C892]
-              "
+          <h2
+            className="
+              futura-medium
+              absolute
+              left-0
+              right-0
+              top-[15%]
+              text-center
+              text-[3.6vw]
+              uppercase
+              leading-none
+              tracking-[0.04em]
+            "
+          >
+            WHAT WE OFFER?
+          </h2>
+
+          {/* ==================================================
+              INTRO
+          ================================================== */}
+
+          <div
+            className="
+              futura-light
+              absolute
+              left-0
+              right-0
+              top-[27%]
+              text-center
+              text-[1.55vw]
+              leading-[1.5]
+            "
+          >
+            <p>A nonlinear, open-ended process</p>
+
+            <p>
+              Recording Oral History and Material Memory
+            </p>
+
+            <p>
+              Driving a{" "}
+              <span
+                className="
+                  futura-medium
+                  font-black
+                  text-[#E9C892]
+                "
+              >
+                “Moving Methodology”
+              </span>
+            </p>
+          </div>
+
+          {/* ==================================================
+              DESKTOP SERVICES GRID
+          ================================================== */}
+
+          <div
+            className="
+              absolute
+              left-1/2
+              top-[48%]
+              grid
+              w-[75%]
+              -translate-x-1/2
+              grid-cols-3
+              gap-x-[15%]
+              gap-y-10
+            "
+          >
+            <div>
+              <ServiceBox>
+                Memoirs, Anthologies,
+                <br />
+                Biographies
+              </ServiceBox>
+            </div>
+
+            <div>
+              <ServiceBox>
+                Documentaries,
+                <br />
+                Short Films
+              </ServiceBox>
+            </div>
+
+            <div>
+              <ServiceBox>
+                Digital Archive Services
+              </ServiceBox>
+            </div>
+
+            <div>
+              <ServiceBox>
+                Exhibition Design
+              </ServiceBox>
+            </div>
+
+            <div>
+              <ServiceBox>
+                Life Writing Workshops
+              </ServiceBox>
+            </div>
+
+            <Link
+              href="/products"
+              className="block cursor-pointer"
             >
-              “Moving Methodology”
-            </span>
-          </p>
+              <ServiceBox>
+                Bespoke Journals
+              </ServiceBox>
+            </Link>
+          </div>
         </div>
 
         {/* ====================================================
-            SERVICES GRID
+            ====================================================
+            MOBILE VERSION
+            ====================================================
         ==================================================== */}
 
         <div
           ref={servicesRef}
           className="
             absolute
-            left-1/2
-            top-[56%]
-            grid
-            w-[75%]
-            -translate-x-1/2
-            grid-cols-3
-            gap-x-[15%]
-            gap-y-10
+            inset-0
+            md:hidden
           "
         >
-          {/* ==================================================
-              ROW 1
-          ================================================== */}
-
-          {/* --------------------------------------------------
-              MEMOIRS
-          -------------------------------------------------- */}
-
-          <div>
-            <ServiceBox>
-              Memoirs, Anthologies,
-              <br />
-              Biographies
-            </ServiceBox>
-          </div>
-
-          {/* --------------------------------------------------
-              DOCUMENTARIES
-          -------------------------------------------------- */}
-
-          <div>
-            <ServiceBox>
-              Documentaries,
-              <br />
-              Short Films
-            </ServiceBox>
-          </div>
-
-          {/* --------------------------------------------------
-              DIGITAL ARCHIVE
-          -------------------------------------------------- */}
-
-          <div>
-            <ServiceBox>Digital Archive Services</ServiceBox>
-          </div>
 
           {/* ==================================================
-              ROW 2
+              MOBILE HEADING
           ================================================== */}
 
-          {/* --------------------------------------------------
-              EXHIBITION
-          -------------------------------------------------- */}
-
-          <div>
-            <ServiceBox>Exhibition Design</ServiceBox>
-          </div>
-
-          {/* --------------------------------------------------
-              WORKSHOPS
-          -------------------------------------------------- */}
-
-          <div>
-            <ServiceBox>Life Writing Workshops</ServiceBox>
-          </div>
-
-          {/* --------------------------------------------------
-              BESPOKE JOURNALS
-          -------------------------------------------------- */}
-
-          <Link
-            href="/products"
+          <h2
             className="
-              block
-              cursor-pointer
+              absolute
+              left-0
+              right-0
+              top-[6%]
+              px-4
+              text-center
+              futura-light
+              text-[7.5vw]
+              uppercase
+              leading-[1.15]
+              tracking-[0.03em]
             "
           >
-            <ServiceBox>Bespoke Journals</ServiceBox>
-          </Link>
+            WHAT WE OFFER?
+          </h2>
+
+          {/* ==================================================
+              MOBILE INTRO
+          ================================================== */}
+
+          <div
+            className="
+              absolute
+              left-1/2
+              top-[25%]
+              w-[82%]
+              -translate-x-1/2
+              text-center
+              futura-light
+              text-[3.25vw]
+              leading-[1.45]
+            "
+          >
+            <p>
+              A nonlinear, open-ended process
+            </p>
+
+            <p>
+              Recording Oral History and Material Memory
+            </p>
+
+            <p>
+              Driving a{" "}
+              <span
+                className="
+                  futura-medium
+                  font-black
+                  text-[#E9C892]
+                "
+              >
+                “Moving Methodology”
+              </span>
+            </p>
+          </div>
+
+          {/* ==================================================
+              MOBILE SERVICES
+          ================================================== */}
+
+          <div
+            className="
+              absolute
+              left-1/2
+              top-[43%]
+              grid
+              w-[74%]
+              -translate-x-1/2
+              grid-cols-2
+              gap-x-[10%]
+              gap-y-[4.5%]
+            "
+          >
+
+            {/* ------------------------------------------------
+                MEMOIRS
+            ------------------------------------------------ */}
+
+            <div>
+              <ServiceBox mobile>
+                Memoirs, Anthologies,
+                <br />
+                Biographies
+              </ServiceBox>
+            </div>
+
+            {/* ------------------------------------------------
+                DOCUMENTARIES
+            ------------------------------------------------ */}
+
+            <div>
+              <ServiceBox mobile>
+                Documentaries,
+                <br />
+                Short Films
+              </ServiceBox>
+            </div>
+
+            {/* ------------------------------------------------
+                DIGITAL ARCHIVE
+            ------------------------------------------------ */}
+
+            <div>
+              <ServiceBox mobile>
+                Digital Archive Services
+              </ServiceBox>
+            </div>
+
+            {/* ------------------------------------------------
+                EXHIBITION
+            ------------------------------------------------ */}
+
+            <div>
+              <ServiceBox mobile>
+                Exhibition Design
+              </ServiceBox>
+            </div>
+
+            {/* ------------------------------------------------
+                LIFE WRITING
+            ------------------------------------------------ */}
+
+            <div>
+              <ServiceBox mobile>
+                Life Writing Workshops
+              </ServiceBox>
+            </div>
+
+            {/* ------------------------------------------------
+                BESPOKE JOURNALS
+            ------------------------------------------------ */}
+
+            <Link
+              href="/products"
+              className="
+                block
+                cursor-pointer
+              "
+            >
+              <ServiceBox mobile>
+                Bespoke Journals
+              </ServiceBox>
+            </Link>
+          </div>
+        </div>
+
+        {/* ====================================================
+            GLOBAL CTA
+        ==================================================== */}
+
+        <div
+          className="
+            absolute
+            left-1/2
+            top-[91%]
+            z-30
+            -translate-x-1/2
+          "
+        >
+          <CTAButton />
         </div>
       </div>
     </div>
@@ -510,26 +608,48 @@ export default function WhatWeOffer() {
    SERVICE BOX
 ============================================================ */
 
-function ServiceBox({ children }: { children: React.ReactNode }) {
+function ServiceBox({
+  children,
+  mobile = false,
+}: {
+  children: React.ReactNode;
+  mobile?: boolean;
+}) {
   return (
     <div
-      className="
+      className={`
         service-box
         futura-light
         flex
-        h-[100px]
         items-center
         justify-center
-        rounded-[10px]
-        bg-[rgba(72,58,70,0.55)]
-        px-5
         text-center
-        text-[1.15vw]
-        leading-[1.35]
         transition-all
         duration-300
-        hover:bg-[rgba(72,58,70,0.7)]
-      "
+
+        ${
+          mobile
+            ? `
+              h-[60px]
+              w-full
+              rounded-[6px]
+              bg-[rgba(160,115,59,0.8)]
+              px-2
+              text-[14px]
+              leading-[1.25]
+              hover:bg-[rgba(116,87,52,0.85)]
+            `
+            : `
+              h-[100px]
+              rounded-[10px]
+              bg-[rgba(72,58,70,0.55)]
+              px-5
+              text-[1.15vw]
+              leading-[1.35]
+              hover:bg-[rgba(72,58,70,0.7)]
+            `
+        }
+      `}
     >
       {children}
     </div>
