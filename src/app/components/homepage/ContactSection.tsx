@@ -478,6 +478,7 @@ export default function ContactSection() {
 
   return (
     <section
+      id="contact-us"
       ref={sectionRef}
       className="
         relative

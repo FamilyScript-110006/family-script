@@ -40,6 +40,7 @@ export default function Home() {
       ================================================== */}
 
       <section
+        id="who-are-we"
         className="
           relative
           h-screen
@@ -55,6 +56,7 @@ export default function Home() {
       ================================================== */}
 
       <section
+        id="what-we-do"
         className="
           relative
           h-screen
@@ -97,27 +99,19 @@ export default function Home() {
 
       {/* ==================================================
           TESTIMONIALS
-
-          Grows to fit its real content (variable-length
-          testimonials) — not forced to one viewport.
       ================================================== */}
 
-      <section className="relative w-full">
+      <section
+        id="testimonials"
+        className="relative w-full"
+      >
         <Testimonials />
       </section>
 
       {/* ==================================================
           CONTACT + FOOTER
 
-          IMPORTANT:
-
-          ContactSection ITSELF is the final section.
-
-          ContactSection contains:
-
-            Contact viewport
-                   +
-            Footer
+          ContactSection is the final section.
       ================================================== */}
 
       <ContactSection />
