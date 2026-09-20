@@ -13,7 +13,7 @@ export default function FaqAccordion({ items }: { items: FaqItem[] }) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-[950px] space-y-4">
+    <div className="mx-auto w-full max-w-[950px] space-y-3 sm:space-y-4">
       {items.map((item, index) => {
         const isOpen = openIndex === index;
 
@@ -22,21 +22,23 @@ export default function FaqAccordion({ items }: { items: FaqItem[] }) {
             key={item.question}
             className="overflow-hidden rounded-md bg-dark-burgundy"
           >
-            {/* ===== QUESTION (always visible, click target) ===== */}
             <button
               type="button"
               onClick={() => handleToggle(index)}
               aria-expanded={isOpen}
               className="
-                flex w-full items-center justify-between gap-4
-                px-6 py-5 md:px-8 md:py-6
+                flex w-full items-center justify-between gap-3
+                px-4 py-4
                 text-left
                 futura-light
-                text-[15px] md:text-[17px]
+                text-[13px]
+                leading-[1.45]
                 text-soft-ivory
+                sm:px-6 sm:py-5 sm:text-[15px]
+                md:px-8 md:py-6 md:text-[17px]
               "
             >
-              <span>{item.question}</span>
+              <span className="min-w-0 pr-2">{item.question}</span>
 
               <svg
                 viewBox="0 0 20 20"
@@ -57,14 +59,19 @@ export default function FaqAccordion({ items }: { items: FaqItem[] }) {
                 />
               </svg>
             </button>
+
             <div
               className={`
                 grid transition-all duration-300 ease-in-out
-                ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}
+                ${
+                  isOpen
+                    ? "grid-rows-[1fr] opacity-100"
+                    : "grid-rows-[0fr] opacity-0"
+                }
               `}
             >
-              <div className="overflow-hidden px-6 md:px-8">
-                <div className="pb-5 md:pb-6 futura-light text-[13px] md:text-[14px] leading-[1.6] text-soft-ivory/85">
+              <div className="overflow-hidden px-4 sm:px-6 md:px-8">
+                <div className="futura-light pb-4 text-[11.5px] leading-[1.6] text-soft-ivory/85 sm:pb-5 sm:text-[13px] md:pb-6 md:text-[14px]">
                   {item.answer.split("\n").map((line, i) => (
                     <p key={i} className={i > 0 ? "mt-1" : undefined}>
                       {line}

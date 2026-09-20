@@ -7,7 +7,13 @@ export default function PolicyPageWrapper({
 }) {
   return (
     <main
-      className="relative w-full min-h-screen pt-40 pb-24 px-6 md:px-16 lg:px-24"
+      className="
+        relative min-h-screen w-full
+        px-4 pb-16 pt-28
+        sm:px-6 sm:pt-32 sm:pb-20
+        md:px-16 md:pt-40
+        lg:px-24 lg:pb-24
+      "
       style={{
         background: `
           linear-gradient(
@@ -22,7 +28,9 @@ export default function PolicyPageWrapper({
         `,
       }}
     >
-      <div className="max-w-[900px]">{children}</div>
+      <div className="mx-auto w-full max-w-[900px]">
+        {children}
+      </div>
     </main>
   );
 }

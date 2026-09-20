@@ -6,7 +6,7 @@ import { FAQ_ITEMS } from "./faqData";
 export default function FaqPage() {
   return (
     <main
-      className="relative w-full min-h-screen pt-40 pb-20 px-6 md:px-12"
+      className="relative min-h-screen w-full px-4 pb-16 pt-28 sm:px-6 sm:pt-32 md:px-12 md:pb-20 md:pt-40"
       style={{
         background: `
           linear-gradient(
@@ -21,7 +21,7 @@ export default function FaqPage() {
         `,
       }}
     >
-      <h1 className="futura-light text-center text-[42px] md:text-[56px] tracking-wide text-muted-purple mb-10 md:mb-14">
+      <h1 className="futura-light mb-8 text-center text-[32px] tracking-wide text-muted-purple sm:text-[38px] md:mb-14 md:text-[56px]">
         FAQ
       </h1>
 
