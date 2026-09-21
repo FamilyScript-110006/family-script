@@ -123,7 +123,18 @@ export default function Hero() {
   }, []);
 
   return (
-    <main className="relative w-full overflow-x-hidden bg-[#532439] text-white">
+    <main
+      className="relative w-full overflow-x-hidden text-white"
+      style={{
+        background: `linear-gradient(
+          to bottom,
+          #431827 0%,
+          #3b1724 40%,
+          #331923 75%,
+          #2c1620 100%
+        )`,
+      }}
+    >
       <SocialIcons />
 
       {/* ========================================================= */}
@@ -161,8 +172,16 @@ export default function Hero() {
           w-screen
           -translate-x-1/2
           overflow-hidden
-          bg-[#532439]
         "
+        style={{
+          background: `linear-gradient(
+            to bottom,
+            #431827 0%,
+            #3b1724 40%,
+            #331923 75%,
+            #2c1620 100%
+          )`,
+        }}
       >
         {/* ===================================================== */}
         {/* FULL WIDTH TOP BLACK GRADIENT */}
@@ -180,8 +199,7 @@ export default function Hero() {
           "
           style={{
             background:
-              "linear-gradient(to bottom, #000000 0%, rgba(0,0,0,0.8) 15%, rgba(0,0,0,0.4) 45%, rgba(83,36,57,0) 100%)",
-          }}
+                "linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.18) 20%, rgba(0,0,0,0.06) 50%, rgba(83,36,57,0) 100%)"          }}
         />
 
         {/* ===================================================== */}
@@ -200,8 +218,7 @@ export default function Hero() {
           "
           style={{
             background:
-              "linear-gradient(to top, #000000 0%, rgba(0,0,0,0.8) 15%, rgba(0,0,0,0.4) 45%, rgba(83,36,57,0) 100%)",
-          }}
+              "linear-gradient(to top, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.18) 20%, rgba(0,0,0,0.06) 50%, rgba(83,36,57,0) 100%)"          }}
         />
 
         {/* ===================================================== */}

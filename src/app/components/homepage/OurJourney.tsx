@@ -1,15 +1,13 @@
 "use client";
 
 import React from "react";
-
-const JOURNEY_IMAGE = "/assets/journey/journey.jpg";
+import CTAButton from "../layout/CTAButton";
 
 type JourneyItem = {
   year: string;
   text: string;
   position: "top" | "bottom";
   image?: string;
-
   textTop?: string;
   textLeft?: string;
 };
@@ -447,29 +445,11 @@ export default function OurJourney() {
         </div>
 
         {/* ===================================================
-            DESKTOP BUTTON
+            GLOBAL CTA
         =================================================== */}
 
         <div className="mt-[-50px] flex justify-center">
-          <button
-            type="button"
-            className="
-              rounded-full
-              bg-[#6c5260]
-              px-[16px]
-              py-[4px]
-              text-[12px]
-              font-light
-              tracking-[0.4px]
-              text-white
-              shadow-sm
-              transition-all
-              duration-300
-              hover:bg-[#795c6c]
-            "
-          >
-            Get your Story Scripted&nbsp; &gt;&gt;
-          </button>
+          <CTAButton />
         </div>
       </div>
 
@@ -762,7 +742,7 @@ export default function OurJourney() {
         </div>
 
         {/* ===================================================
-            MOBILE BUTTON
+            GLOBAL CTA
         =================================================== */}
 
         <div
@@ -773,22 +753,7 @@ export default function OurJourney() {
             pb-[10px]
           "
         >
-          <button
-            type="button"
-            className="
-              rounded-full
-              bg-[#6c5260]
-              px-[13px]
-              py-[4px]
-              text-[9px]
-              font-light
-              tracking-[0.3px]
-              text-white
-              shadow-sm
-            "
-          >
-            Get your Story Scripted&nbsp; &gt;&gt;
-          </button>
+          <CTAButton />
         </div>
       </div>
     </section>

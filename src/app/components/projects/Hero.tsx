@@ -23,36 +23,18 @@ const projects = [
 
 export default function ProjectsPage() {
   return (
-    <main className="relative min-h-screen w-full overflow-x-hidden bg-[#32141f] text-white">
-      {/* =========================================================
-          BACKGROUND
-      ========================================================= */}
-
-      <div className="pointer-events-none absolute inset-0">
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to bottom, #431827 0%, #3b1724 38%, #2b1821 72%, #171319 100%)",
-          }}
-        />
-
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(circle at 50% 40%, rgba(119,57,65,0.12), transparent 55%)",
-          }}
-        />
-
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to bottom, transparent 55%, rgba(10,8,10,0.32) 100%)",
-          }}
-        />
-      </div>
+    <main
+        className="relative min-h-screen w-full overflow-x-hidden text-white"
+        style={{
+          background: `linear-gradient(
+            to bottom,
+            #431827 0%,
+            #3b1724 40%,
+            #331923 75%,
+            #2c1620 100%
+          )`,
+        }}
+      >
 
       {/* =========================================================
           DESKTOP VERSION

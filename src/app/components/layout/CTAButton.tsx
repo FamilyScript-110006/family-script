@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function CTAButton() {
   return (
     <Link
-      href="/contact"
+      href="/#contact-us"
       className="global-cta"
       aria-label="Get your Story Scripted"
     >

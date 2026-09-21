@@ -320,20 +320,13 @@ export default function Hero() {
     <main
       className="relative min-h-screen w-full overflow-hidden text-white"
       style={{
-  background: `
-        linear-gradient(
-          to bottom,
-          rgba(0, 0, 0, 0.18) 0%,
-          rgba(0, 0, 0, 0.08) 15%,
-          rgba(0, 0, 0, 0.02) 30%,
-          rgba(0, 0, 0, 0) 45%,
-          rgba(0, 0, 0, 0) 65%,
-          rgba(0, 0, 0, 0.02) 80%,
-          rgba(0, 0, 0, 0.08) 92%,
-          rgba(0, 0, 0, 0.15) 100%
-        ),
-        #4A1F32
-      `,
+  background: `linear-gradient(
+        to bottom,
+        #431827 0%,
+        #3b1724 40%,
+        #331923 75%,
+        #2c1620 100%
+      )`,
     }}
     >
       <SocialIcons />
@@ -344,10 +337,7 @@ export default function Hero() {
           below the actual content so it never blocks interaction.
           ========================================================= */}
 
-      <div className="pointer-events-none absolute left-0 top-0 z-10 h-40 w-full bg-gradient-to-b from-black/80 via-black/30 to-transparent md:h-56" />
-
-      <div className="pointer-events-none absolute bottom-0 left-0 z-10 h-48 w-full bg-gradient-to-t from-black/85 via-black/35 to-transparent md:h-64" />
-
+   <div className="pointer-events-none absolute left-0 top-0 z-10 h-40 w-full bg-gradient-to-b from-black/40 via-black/15 to-transparent md:h-56" />
       {/* =========================================================
           MAIN CONTENT
           Existing navbar/header remains handled by the codebase.

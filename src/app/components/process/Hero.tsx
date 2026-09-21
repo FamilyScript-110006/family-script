@@ -652,23 +652,17 @@ export default function Hero() {
     <main
       className="relative min-h-screen w-full text-[#F4F0E9]"
       style={{
-        background: `
-          linear-gradient(
-            to bottom,
-            rgba(0, 0, 0, 0.30) 0%,
-            rgba(0, 0, 0, 0.16) 18%,
-            rgba(0, 0, 0, 0.05) 35%,
-            rgba(0, 0, 0, 0) 50%,
-            rgba(0, 0, 0, 0) 65%,
-            rgba(0, 0, 0, 0.04) 80%,
-            rgba(0, 0, 0, 0.14) 92%,
-            rgba(0, 0, 0, 0.24) 100%
-          ),
-          #4A1F32
-        `,
+        background: `linear-gradient(
+        to bottom,
+        #431827 0%,
+        #3b1724 40%,
+        #331923 75%,
+        #2c1620 100%
+      )`,
       }}
     >
       <SocialIcons />
+   <div className="pointer-events-none absolute left-0 top-0 z-10 h-40 w-full bg-gradient-to-b from-black/40 via-black/15 to-transparent md:h-56" />
 
       <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1500px] flex-col px-[22px] pb-10 pt-[55px] sm:px-6 sm:pt-[70px] md:px-[4%] md:pb-16 md:pt-[150px]">
 

@@ -1,3 +1,4 @@
+// app/components/projects/ProjectDetails.tsx
 "use client";
 
 import Link from "next/link";

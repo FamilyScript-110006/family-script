@@ -451,7 +451,8 @@ export default function PageTransitionProvider({
           freezeCanvasRef.current.style.opacity = "0";
         }
         revealPageText(hiddenTextElementsRef);
-        router.push(url.pathname + url.search);
+        // router.push(url.pathname + url.search);
+        router.push(url.pathname + url.search + url.hash);
         return;
       }
 
@@ -461,10 +462,14 @@ export default function PageTransitionProvider({
       // Nav links sit near the top of the screen, so an origin derived
       // from click coordinates was pinned at the very edge, which is
       // what produced the lopsided "zoom" look.
-      void beginTransition(url.pathname + url.search, url.pathname, {
-        originX: 0.5,
-        originY: 1,
-      });
+      // void beginTransition(url.pathname + url.search, url.pathname, {
+      //   originX: 0.5,
+      //   originY: 1,
+      // });
+      void beginTransition(url.pathname + url.search + url.hash, url.pathname, {
+            originX: 0.5,
+            originY: 1,
+          });
     }
 
     document.addEventListener("click", handleClick, true);

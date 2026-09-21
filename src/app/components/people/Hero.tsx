@@ -32,8 +32,19 @@ const founders: Founder[] = [
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen w-full bg-[#532439] text-white">
-
+<section
+  className="relative min-h-screen w-full text-white"
+  style={{
+    background: `linear-gradient(
+      to bottom,
+      #431827 0%,
+      #3b1724 40%,
+      #331923 75%,
+      #2c1620 100%
+    )`,
+  }}
+>
+  <div className="pointer-events-none absolute left-0 top-0 z-10 h-40 w-full bg-gradient-to-b from-black/40 via-black/15 to-transparent md:h-56" />
       {/* ================= CONTENT ================= */}
 
       <div className="relative z-10 mx-auto min-h-screen w-full max-w-[1400px] px-8 pb-12 pt-[150px] md:px-[7%] md:pt-[145px]">
