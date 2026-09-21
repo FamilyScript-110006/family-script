@@ -584,34 +584,34 @@ export const projects: Project[] = [
     ],
 
     coverImage:
-      "/assets/projects/institutional/VASANT VALLEY SCHOOL.JPG",
+      "/assets/PROJECTS/institutional/VASANT VALLEY SCHOOL.JPG",
 
-    bookImage: "/assets/projects/institutional/vasant-valley-school/book.png",
+    bookImage: "/assets/PROJECTS/institutional/vasant-valley-school/book.png",
 
     gallery: [
       {
-        image: "/assets/projects/institutional/vasant-valley-school/1.jpg",
+        image: "/assets/PROJECTS/institutional/vasant-valley-school/1.jpg",
       },
       {
-        image: "/assets/projects/institutional/vasant-valley-school/2.jpg",
+        image: "/assets/PROJECTS/institutional/vasant-valley-school/2.jpg",
       },
       {
-        image: "/assets/projects/institutional/vasant-valley-school/3.jpg",
+        image: "/assets/PROJECTS/institutional/vasant-valley-school/3.jpg",
       },
       {
-        image: "/assets/projects/institutional/vasant-valley-school/4.jpg",
+        image: "/assets/PROJECTS/institutional/vasant-valley-school/4.jpg",
       },
       {
-        image: "/assets/projects/institutional/vasant-valley-school/5.jpg",
+        image: "/assets/PROJECTS/institutional/vasant-valley-school/5.jpg",
       },
       {
-        image: "/assets/projects/institutional/vasant-valley-school/6.jpg",
+        image: "/assets/PROJECTS/institutional/vasant-valley-school/6.jpg",
       },
       {
-        image: "/assets/projects/institutional/vasant-valley-school/7.jpg",
+        image: "/assets/PROJECTS/institutional/vasant-valley-school/7.jpg",
       },
       {
-        image: "/assets/projects/institutional/vasant-valley-school/8.jpg",
+        image: "/assets/PROJECTS/institutional/vasant-valley-school/8.jpg",
       },
       
     ],
@@ -643,34 +643,34 @@ export const projects: Project[] = [
     ],
 
     coverImage:
-      "/assets/projects/institutional/STAPATI.jpg",
+      "/assets/PROJECTS/institutional/STAPATI.jpg",
 
-    bookImage: "/assets/projects/institutional/stapati-architects/book.png",
+    bookImage: "/assets/PROJECTS/institutional/stapati-architects/book.png",
 
     gallery: [
       {
-        image: "/assets/projects/institutional/stapati-architects/1.jpg",
+        image: "/assets/PROJECTS/institutional/stapati-architects/1.jpg",
       },
       {
-        image: "/assets/projects/institutional/stapati-architects/2.jpg",
+        image: "/assets/PROJECTS/institutional/stapati-architects/2.jpg",
       },
       {
-        image: "/assets/projects/institutional/stapati-architects/3.jpg",
+        image: "/assets/PROJECTS/institutional/stapati-architects/3.jpg",
       },
       {
-        image: "/assets/projects/institutional/stapati-architects/4.jpg",
+        image: "/assets/PROJECTS/institutional/stapati-architects/4.jpg",
       },
       {
-        image: "/assets/projects/institutional/stapati-architects/5.jpg",
+        image: "/assets/PROJECTS/institutional/stapati-architects/5.jpg",
       },
         {
-        image: "/assets/projects/institutional/stapati-architects/6.jpg",
+        image: "/assets/PROJECTS/institutional/stapati-architects/6.jpg",
       },
         {
-        image: "/assets/projects/institutional/stapati-architects/7.jpg",
+        image: "/assets/PROJECTS/institutional/stapati-architects/7.jpg",
       },
         {
-        image: "/assets/projects/institutional/stapati-architects/8.jpg",
+        image: "/assets/PROJECTS/institutional/stapati-architects/8.jpg",
       },
     ],
 
