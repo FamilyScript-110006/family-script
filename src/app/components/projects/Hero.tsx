@@ -11,12 +11,12 @@ const projects = [
   },
   {
     title: "INSTITUTIONAL",
-    image: "/assets/projects/INSTITUTIONAL.png",
+    image: "/assets/PROJECTS/INSTITUTIONAL.png",
     href: "/projects/institutional",
   },
   {
     title: "EVENTS",
-    image: "/assets/projects/EVENTS.png",
+    image: "/assets/PROJECTS/EVENTS.png",
     href: "/projects/events",
   },
 ];

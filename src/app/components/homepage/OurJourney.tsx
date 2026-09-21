@@ -80,7 +80,7 @@ const journeyItems: JourneyItem[] = [
     year: "2024",
     text: "Exhibited Family Script projects and Indigo Chronicles, a set of three journals to Create, Cherish and Celebrate life, at DCWA’s Diplomatic Bazaar; bringing life documentation and legacy-making to a wider audience.",
     position: "top",
-    image: "/assets/OurJourney/2024.jpg",
+    image: "/assets/OurJourney/2024.JPG",
     textTop: "100px",
     textLeft: "-10px",
   },

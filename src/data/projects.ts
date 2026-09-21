@@ -321,7 +321,7 @@ export const projects: Project[] = [
 
     gallery: [
       {
-        image: "/assets/PROJECTS/BIOGRAPHICAL/SUDHA RAINA/1.jpg",
+        image: "/assets/PROJECTS/BIOGRAPHICAL/SUDHA RAINA/1.JPG",
       },
       {
         image: "/assets/PROJECTS/BIOGRAPHICAL/SUDHA RAINA/2.jpg",
@@ -432,16 +432,16 @@ export const projects: Project[] = [
         image: "/assets/PROJECTS/BIOGRAPHICAL/BELA DEVI/3.jpg",
       },
       {
-        image: "/assets/PROJECTS/BIOGRAPHICAL/BELA DEVI/4.jpg",
+        image: "/assets/PROJECTS/BIOGRAPHICAL/BELA DEVI/4.JPG",
       },
       {
-        image: "/assets/PROJECTS/BIOGRAPHICAL/BELA DEVI/5.jpg",
+        image: "/assets/PROJECTS/BIOGRAPHICAL/BELA DEVI/5.JPG",
       },
       {
-        image: "/assets/PROJECTS/BIOGRAPHICAL/BELA DEVI/6.jpg",
+        image: "/assets/PROJECTS/BIOGRAPHICAL/BELA DEVI/6.JPG",
       },
       {
-        image: "/assets/PROJECTS/BIOGRAPHICAL/BELA DEVI/7.jpg",
+        image: "/assets/PROJECTS/BIOGRAPHICAL/BELA DEVI/7.JPG",
       },
       {
         image: "/assets/PROJECTS/BIOGRAPHICAL/BELA DEVI/8.png",

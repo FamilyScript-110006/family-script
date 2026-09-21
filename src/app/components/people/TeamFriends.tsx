@@ -35,7 +35,7 @@ const friends = [
   },
   {
     name: "Nandini Mishra",
-    image: "/assets/People/Friends/nandini.png",
+    image: "/assets/People/Friends/Nandini.png",
   },
   {
     name: "Avantika Dewangan",
