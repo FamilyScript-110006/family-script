@@ -35,10 +35,10 @@ import {
   ContributorNotFoundError,
   ContributorAlreadyExistsError,
 } from "./tree.errors";
-import { TreeMemberRole, InvitationStatus } from "@prisma/client";
+import { Tree, TreeMemberRole, InvitationStatus } from "@prisma/client";
 import { canInviteMembers, canManageMembers } from "./tree.permissions";
 import { InsufficientPermissionsError } from "./tree.errors";
-import { TimelineEvent, GraphNode, GraphEdge, TreeAnalytics } from "./tree.types";
+import { TimelineEvent, GraphNode, GraphEdge, TreeAnalytics } from "./tree.validator";
 import { DerivedRelationshipsRequireFamilyTreeError } from "./tree.errors";
 import { deriveRelationships, DerivedRelationship } from "./relationship-deriver";
 

@@ -556,11 +556,7 @@ export class TreeImportExportService {
       for (const node of nodes) {
         const created = await tx.treeNode.create({
           data: {
-            tree: {
-              connect: {
-                id: tree.id,
-              },
-            },
+            treeId: tree.id,
 
             firstName: node.firstName,
             middleName: node.middleName ?? undefined,

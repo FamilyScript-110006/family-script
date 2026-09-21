@@ -314,8 +314,8 @@ export class TreeRepository {
    * so this upserts rather than requiring a separate "create" step.
    */
   async upsertFamilyProfile(
-    nodeId: string,
-    data: Prisma.FamilyProfileUncheckedCreateInput
+  nodeId: string,
+  data: Omit<Prisma.FamilyProfileUncheckedCreateInput, "nodeId">
   ): Promise<FamilyProfile> {
     return this.db.familyProfile.upsert({
       where: { nodeId },
@@ -336,9 +336,9 @@ export class TreeRepository {
   }
  
   async upsertOrganizationProfile(
-    nodeId: string,
-    data: Prisma.OrganizationProfileUncheckedCreateInput
-  ): Promise<OrganizationProfile> {
+  nodeId: string,
+  data: Omit<Prisma.OrganizationProfileUncheckedCreateInput, "nodeId">
+): Promise<OrganizationProfile> {
     return this.db.organizationProfile.upsert({
       where: { nodeId },
       create: {
@@ -358,9 +358,9 @@ export class TreeRepository {
   }
  
   async upsertTribeProfile(
-    nodeId: string,
-    data: Prisma.TribeProfileUncheckedCreateInput
-  ): Promise<TribeProfile> {
+  nodeId: string,
+  data: Omit<Prisma.TribeProfileUncheckedCreateInput, "nodeId">
+): Promise<TribeProfile> {
     return this.db.tribeProfile.upsert({
       where: { nodeId },
       create: {
@@ -492,17 +492,19 @@ export class TreeRepository {
    * Simplified node list for graph visualization — just what's
    * needed to draw a box (id + display label).
    */
-  async findNodesForGraph(treeId: string): Promise<TreeNode[]> {
-    return this.db.treeNode.findMany({
-      where: { treeId, deletedAt: null },
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        displayName: true,
-      } as any, // narrow select — full TreeNode type isn't strictly accurate here
-    });
-  }
+  async findNodesForGraph(
+  treeId: string,
+): Promise<Pick<TreeNode, "id" | "firstName" | "lastName" | "displayName">[]> {
+  return this.db.treeNode.findMany({
+    where: { treeId, deletedAt: null },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      displayName: true,
+    },
+  });
+}
  
   /**
    * Counts used for the analytics endpoint. Run together so the
