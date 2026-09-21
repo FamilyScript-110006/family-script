@@ -24,7 +24,7 @@ export default function PolicyPageWrapper({
             rgba(104, 104, 104, 0.2) 72%,
             rgba(104, 104, 104, 0.55) 100%
           ),
-          #e9e7da
+          #d2c6b2
         `,
       }}
     >

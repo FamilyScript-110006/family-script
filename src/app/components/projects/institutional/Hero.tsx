@@ -23,9 +23,17 @@ export default function Hero() {
         relative
         min-h-screen
         w-full
-        bg-[#532439]
         text-white
       "
+      style={{
+        background: `linear-gradient(
+          to bottom,
+          #431827 0%,
+          #3b1724 40%,
+          #331923 75%,
+          #2c1620 100%
+        )`,
+      }}
     >
       {/* =====================================================
           MAIN CONTENT

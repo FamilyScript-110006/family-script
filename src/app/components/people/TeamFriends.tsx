@@ -97,8 +97,19 @@ const friends = [
 
 export default function TeamFriends() {
   return (
-    <section className="relative min-h-[160vh] w-full bg-[#532439] text-white">
-
+<section
+  className="relative min-h-[160vh] w-full text-white"
+  style={{
+    background: `linear-gradient(
+      to bottom,
+      #431827 0%,
+      #3b1724 40%,
+      #331923 75%,
+      #2c1620 100%
+    )`,
+  }}
+>
+  <div className="pointer-events-none absolute left-0 top-0 z-10 h-40 w-full bg-gradient-to-b from-black/40 via-black/15 to-transparent md:h-56" />
       {/* ================= CONTENT ================= */}
 
       <div className="relative z-10 mx-auto w-full max-w-[1500px] px-4 pb-10 pt-24 md:px-8 md:pt-28">

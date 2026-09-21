@@ -58,36 +58,20 @@ const people = [
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen w-full overflow-x-hidden bg-[#480424] text-white">
-      {/* =====================================================
-          BACKGROUND
-      ===================================================== */}
+<section
+  className="relative min-h-screen w-full overflow-x-hidden text-white"
+  style={{
+    background: `linear-gradient(
+      to bottom,
+      #431827 0%,
+      #3b1724 40%,
+      #331923 75%,
+      #2c1620 100%
+    )`,
+  }}
+>
+  <div className="pointer-events-none absolute left-0 top-0 z-10 h-40 w-full bg-gradient-to-b from-black/40 via-black/15 to-transparent md:h-56" />
 
-      <div className="pointer-events-none absolute inset-0">
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to bottom, #431827 0%, #3b1724 38%, #2b1821 72%, #171319 100%)",
-          }}
-        />
-
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(circle at 50% 40%, rgba(119,57,65,0.12), transparent 55%)",
-          }}
-        />
-
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to bottom, transparent 55%, rgba(10,8,10,0.32) 100%)",
-          }}
-        />
-      </div>
 
       {/* =====================================================
           DESKTOP VERSION
