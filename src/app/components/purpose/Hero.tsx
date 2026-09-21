@@ -132,7 +132,7 @@ export default function Hero() {
 
       <section
         ref={bannerSectionRef}
-        className="relative left-1/2 h-[500px] w-screen -translate-x-1/2 overflow-hidden md:h-[260px]"
+        className="relative left-1/2 h-[320px] w-screen -translate-x-1/2 overflow-hidden md:h-[260px]"
       >
         <img
           ref={bannerBgRef}
@@ -140,6 +140,14 @@ export default function Hero() {
           alt="Family Script keepsakes"
           className="absolute inset-0 h-full w-full object-cover"
         />
+
+        <div
+    className="pointer-events-none absolute inset-0 z-10"
+    style={{
+      background:
+        "linear-gradient(to bottom, rgba(72,4,36,0.55) 0%, rgba(56,44,59,0.25) 45%, rgba(56,44,59,0.15) 100%)",
+    }}
+  />
       </section>
 
       {/* ========================================================= */}

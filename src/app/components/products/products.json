@@ -1,114 +1,99 @@
 [
   {
+    "id": "indigo-chronicles",
+    "name": "Indigo Chronicles",
+    "image": "/assets/Products/indigo-chronicles-1.png",
+    "gallery": [
+      "/assets/Products/indigo-chronicles-1.png",
+      "/assets/Products/indigo-chronicles-2.png",
+      "/assets/Products/indigo-chronicles-3.png",
+      "/assets/Products/indigo-chronicles-4.png",
+      "/assets/Products/indigo-chronicles-5.png",
+      "/assets/Products/indigo-chronicles-6.png"
+    ],
+    "description": "The Indigo Chronicles is a collection of three unique journals—Create, Cherish and Celebrate—crafted to cultivate personal growth and introspection. Each journal serves a unique purpose, empowering individuals to document their stories within the broader narrative of society. Perfect as a curated gift set, the Indigo Chronicles journals are a heartfelt present for loved ones, and invaluable tools for self-expression, reflection and recording memories.",
+    "segments": [
+      { "title": "Create", "description": "A personal planner." },
+      { "title": "Cherish", "description": "A memory journal." },
+      { "title": "Celebrate", "description": "A versatile diary." },
+      { "title": "User Manual", "description": "A guide with pro tips to help you make the most of your journals." },
+      { "title": "Welcome & Concept Notes", "description": "A custom welcome note and concept note included with the set." },
+      { "title": "Postcards, Bookmarks & Memo Pad", "description": "A set of special postcards, bookmarks, and a memo pad included within the journals — designed to evoke moments of nostalgia or send messages to loved ones." },
+      { "title": "Size", "description": "5.8 × 8.3 inches (A5)." },
+      { "title": "Cover Material", "description": "Hardcover, matte finish." },
+      { "title": "Paper Quality", "description": "Thick, acid-free 100gsm paper suitable for fountain pens and inks." },
+      { "title": "Binding", "description": "Smyth-sewn for durability and lay-flat use." },
+      { "title": "Page Count", "description": "240 pages per journal." },
+      { "title": "Page Typology", "description": "Ruled, plain and dotted." },
+      { "title": "Personalization", "description": "Add your family name or a custom message on the first page." }
+    ]
+  },
+  {
     "id": "cherish",
     "name": "Cherish: A Memory Journal",
-    "image": "/assets/Products/cherish.png",
+    "image": "/assets/Products/cherish-1.png",
+    "gallery": [
+      "/assets/Products/cherish-1.png",
+      "/assets/Products/cherish-2.png",
+      "/assets/Products/cherish-3.png",
+      "/assets/Products/cherish-4.png",
+      "/assets/Products/cherish-5.png",
+      "/assets/Products/cherish-6.png"
+    ],
     "description": "CHERISH is a memory journal that contains sections to record all your precious moments, serving as living archives of your memories. It allows the past to unfold like an old photograph or letter—capturing the essence of where you've been and who you've become. With its thoughtful features, it makes for an exceptional family heirloom and a meaningful gift for generations to come.",
     "segments": [
-      {
-        "title": "75 Unique Prompt Stickers",
-        "description": "Inspiring questions to spark your memories and reflections. Personalize your journal with peel-and-stick prompts designed for maximum flexibility."
-      },
-      {
-        "title": "Recipe Spreads",
-        "description": "A dedicated space to record family recipes or your own culinary adventures."
-      },
-      {
-        "title": "Timeline Charts",
-        "description": "Organize milestones and memories visually with flexible and easy-to-use charts."
-      },
-      {
-        "title": "Travel Maps",
-        "description": "Relive your travels and plan future adventures."
-      },
-      {
-        "title": "Ruled & Blank Pages",
-        "description": "A set of ruled and blank pages to allow you to both script and draw with ease."
-      }
+      { "title": "75 Unique Prompt Stickers", "description": "Inspiring questions to spark your memories and reflections. Personalize your journal with peel-and-stick prompts designed for maximum flexibility." },
+      { "title": "Recipe Spreads", "description": "A dedicated space to record family recipes or your own culinary adventures." },
+      { "title": "Timeline Charts", "description": "Organize milestones and memories visually with flexible and easy-to-use charts." },
+      { "title": "Travel Maps", "description": "Relive your travels and plan future adventures." },
+      { "title": "Ruled & Blank Pages", "description": "A set of ruled and blank pages to allow you to both script and draw with ease." }
+    ]
+  },
+  {
+    "id": "create",
+    "name": "Create: Planner",
+    "image": "/assets/Products/create-1.png",
+    "gallery": [
+      "/assets/Products/create-1.png",
+      "/assets/Products/create-2.png",
+      "/assets/Products/create-3.png",
+      "/assets/Products/create-4.png",
+      "/assets/Products/create-5.png",
+      "/assets/Products/create-6.png",
+      "/assets/Products/create-7.png",
+      "/assets/Products/create-8.png"
+    ],
+    "description": "In a world full of dreams, aspirations, and daily demands, the \"Create\" Planner stands as your trusted ally. It's a versatile tool designed to empower individuals from various walks of life—entrepreneurs with grand visions, students striving for academic excellence, or anyone on a journey of self-discovery.",
+    "segments": [
+      { "title": "Monthly Planner", "description": "Strategically plan each month with adaptable pages." },
+      { "title": "Weekly Planner", "description": "Break down goals efficiently with a meticulously designed layout." },
+      { "title": "Goal Setting", "description": "Transform dreams into actionable objectives." },
+      { "title": "To-Do Lists", "description": "Color-coded and stay organized, doubling as shopping lists when needed." },
+      { "title": "Brain Dump", "description": "Capture ideas and enhance focus." },
+      { "title": "Habit Trackers", "description": "Cultivate positive routines and monitor progress." },
+      { "title": "User Guide & Pro Tips", "description": "Included to help you harness the full potential of your planner." },
+      { "title": "Size", "description": "5.8 × 8.3 inches (A5)." },
+      { "title": "Binding", "description": "Smyth-sewn for durability and lay-flat use." },
+      { "title": "Page Typology", "description": "Plain and dotted." }
     ]
   },
   {
     "id": "celebrate",
     "name": "Celebrate: Day to Day Journal",
-    "image": "/assets/Products/celebrate.png",
+    "image": "/assets/Products/celebrate-1.png",
+    "gallery": [
+      "/assets/Products/celebrate-1.png",
+      "/assets/Products/celebrate-2.png"
+    ],
     "description": "The Celebrate Journal is a unique and versatile blank canvas that invites you to savor life's simple pleasures and celebrate the mundane moments that often go unnoticed. All pages are thoughtfully dotted, offering you the freedom to transform this journal into whatever inspires you—a scrapbook, a photography journal, or simply a place to put your thoughts on paper.",
     "segments": [
-      {
-        "title": "Premium Hardcover Binding",
-        "description": "Premium quality hardcover binding in matte finish."
-      },
-      {
-        "title": "Luxurious Paper",
-        "description": "High-quality 100gsm acid-free paper for a luxurious writing experience."
-      },
-      {
-        "title": "Smyth-Sewn Binding",
-        "description": "Smyth-sewn binding for durability and lay-flat convenience."
-      }
-    ]
-  },
-  {
-    "id": "create",
-    "name": "Create",
-    "image": "/assets/Products/create.png",
-    "description": "In a world full of dreams, aspirations, and daily demands, the \"Create\" Planner stands as your trusted ally. It's a versatile tool designed to empower individuals from various walks of life—entrepreneurs with grand visions, students striving for academic excellence, or anyone on a journey of self-discovery.",
-    "segments": [
-      {
-        "title": "Monthly Planner",
-        "description": "Strategically plan each month with adaptable pages."
-      },
-      {
-        "title": "Weekly Planner",
-        "description": "Break down goals efficiently with a meticulously designed layout."
-      },
-      {
-        "title": "Goal Setting",
-        "description": "Transform dreams into actionable objectives."
-      },
-      {
-        "title": "To-Do Lists",
-        "description": "Stay organized and maximize productivity."
-      },
-      {
-        "title": "Brain Dump",
-        "description": "Capture ideas and enhance focus."
-      },
-      {
-        "title": "Habit Trackers",
-        "description": "Cultivate positive routines and monitor progress."
-      }
-    ]
-  },
-  {
-    "id": "indigo-chronicles",
-    "name": "Indigo Chronicles: Set of 3 Journals",
-    "image": "/assets/Products/set.png",
-    "description": "The Indigo Chronicles is a collection of three unique journals—Create, Cherish and Celebrate—crafted to cultivate personal growth and introspection. Perfect as a curated gift set, the Indigo Chronicles journals are a heartfelt present for loved ones, and invaluable tools for self-expression, reflection and recording memories.",
-    "segments": [
-      {
-        "title": "Create",
-        "description": "A personal planner."
-      },
-      {
-        "title": "Cherish",
-        "description": "A memory journal."
-      },
-      {
-        "title": "Celebrate",
-        "description": "A versatile diary."
-      },
-      {
-        "title": "User Manual",
-        "description": "A guide with pro tips to help you make the most of your journals."
-      },
-      {
-        "title": "Welcome & Concept Notes",
-        "description": "A custom welcome note and concept note included with the set."
-      },
-      {
-        "title": "Postcards, Bookmarks & Memo Pad",
-        "description": "A set of postcards, bookmarks, and a memo pad included within the journals."
-      }
+      { "title": "Premium Hardcover Binding", "description": "Premium quality hardcover binding in matte finish." },
+      { "title": "Luxurious Paper", "description": "High-quality 100gsm acid-free paper for a luxurious writing experience." },
+      { "title": "Smyth-Sewn Binding", "description": "Smyth-sewn binding for durability and lay-flat convenience." },
+      { "title": "Size", "description": "5.8 × 8.3 inches (A5)." },
+      { "title": "Page Count", "description": "240 pages." },
+      { "title": "Page Typology", "description": "Dotted." },
+      { "title": "Personalization", "description": "Add your family name or a custom message on the first page." }
     ]
   }
 ]
