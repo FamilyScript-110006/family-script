@@ -6,12 +6,12 @@ import { splitHeadingLines } from "../../../utils/splitHeading";
 const institutionalProjects = [
   {
     name: "VASANT VALLEY SCHOOL",
-    image: "/assets/projects/institutional/VASANT VALLEY SCHOOL.jpg",
+    image: "/assets/PROJECTS/institutional/VASANT VALLEY SCHOOL.JPG",
     href: "/projects/institutional/vasant-valley-school",
   },
   {
     name: "STAPATI ARCHITECTS",
-    image: "/assets/projects/institutional/STAPATI.jpg",
+    image: "/assets/PROJECTS/institutional/STAPATI.jpg",
     href: "/projects/institutional/stapati-architects",
   },
 ];
