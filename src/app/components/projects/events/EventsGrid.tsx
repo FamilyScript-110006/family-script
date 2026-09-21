@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { events } from "../../../../data/events";
+import { splitHeadingLines } from "../../../utils/splitHeading";
 
 export default function EventsGrid() {
   return (
@@ -144,7 +145,11 @@ export default function EventsGrid() {
               text-[rgb(203_163_86)]
             "
           >
-            Events
+            {splitHeadingLines("Events").map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
           </h1>
 
           <p

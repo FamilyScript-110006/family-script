@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { splitHeadingLines } from "../../../utils/splitHeading";
 
 const people = [
   {
@@ -127,7 +128,11 @@ export default function Hero() {
 
         <div className="max-w-[650px]">
           <h1 className="futura-bold text-[44px] uppercase leading-none tracking-[0.01em] text-[#e7ad55] sm:text-[54px] md:text-[64px] lg:text-[68px]">
-            Biographical
+            {splitHeadingLines("Biographical").map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
           </h1>
 
           <p className="futura-light mt-7 max-w-[620px] text-[15px] leading-[1.6] tracking-wide text-white/65 sm:text-[17px] md:mt-9 md:text-[19px]">
@@ -152,8 +157,8 @@ export default function Hero() {
                 <div className="absolute inset-0 bg-black/5 transition-colors duration-500 group-hover:bg-black/0" />
               </div>
 
-              <div className="mt-4 text-center">
-                <h2 className="futura-light text-[15px] uppercase tracking-[0.16em] text-white md:text-[18px] lg:text-[20px]">
+              <div className="mt-4">
+                <h2 className="futura-light text-[11px] uppercase tracking-[0.14em] text-white md:text-[12px] lg:text-[13px]">
                   {person.name}
                 </h2>
               </div>
@@ -235,8 +240,8 @@ export default function Hero() {
 
               {/* NAME */}
 
-              <div className="mt-[6px] text-center">
-                <h2 className="futura-light text-[5.5px] uppercase leading-[1.25] tracking-[0.17em] text-white">
+              <div className="mt-[6px]">
+                <h2 className="futura-light text-[4.5px] uppercase leading-[1.25] tracking-[0.14em] text-white">
                   {person.name}
                 </h2>
               </div>

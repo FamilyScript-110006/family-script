@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { EventItem } from "../../../../data/events";
+import { splitHeadingLines } from "../../../utils/splitHeading";
+import EventDescription from "./EventDescription";
 
 type EventDetailsProps = {
   event: EventItem;
@@ -204,44 +206,19 @@ export default function EventDetails({
                   lg:text-[clamp(38px,3.1vw,58px)]
                 "
               >
-                {event.title}
+                {splitHeadingLines(event.title).map((line) => (
+                  <span key={line} className="block">
+                    {line}
+                  </span>
+                ))}
               </h1>
 
               {/* DESCRIPTION */}
 
-              {event.description.length > 0 && (
-                <div
-                  className="
-                    mt-8
-                    max-w-[600px]
-                    space-y-5
-                    sm:mt-10
-                    sm:space-y-6
-                    lg:mt-12
-                  "
-                >
-                  {event.description.map(
-                    (paragraph, index) => (
-                      <p
-                        key={index}
-                        className="
-                          futura-light
-                          text-[12px]
-                          leading-[1.48]
-                          tracking-[0.02em]
-                          text-[rgb(233_231_218)]/80
-                          sm:text-[13px]
-                          md:text-[14px]
-                          lg:text-[clamp(14px,1vw,17px)]
-                          lg:leading-[1.5]
-                        "
-                      >
-                        {paragraph}
-                      </p>
-                    ),
-                  )}
-                </div>
-              )}
+              <EventDescription
+                key={event.slug}
+                paragraphs={event.description}
+              />
             </div>
           </div>
 

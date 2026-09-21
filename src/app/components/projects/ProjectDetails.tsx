@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import type { Project } from "../../../data/projects";
+import { splitHeadingLines } from "../../utils/splitHeading";
 
 type ProjectDetailsProps = {
   project: Project;
@@ -9,6 +11,17 @@ type ProjectDetailsProps = {
 
 export default function ProjectDetails({ project }: ProjectDetailsProps) {
   const gallery = project.gallery;
+
+  // Read more / read less. Keyed by slug so the state resets when
+  // navigating between projects (same component instance is reused).
+  const [expandedSlug, setExpandedSlug] = useState<string | null>(null);
+  const expanded = expandedSlug === project.slug;
+  const hasMore = project.description.length > 1;
+  const visibleDescription = expanded
+    ? project.description
+    : project.description.slice(0, 1);
+  const toggleExpanded = () =>
+    setExpandedSlug(expanded ? null : project.slug);
 
   return (
     <main
@@ -63,15 +76,15 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
           min-h-screen
           w-full
           max-w-[1350px]
-          px-2
+          px-6
           pb-10
           pt-24
-          sm:px-3
+          sm:px-8
           sm:pt-28
           md:block
-          md:px-4
+          md:px-[6%]
           md:pt-28
-          lg:px-5
+          lg:px-[6%]
           lg:pt-28
         "
       >
@@ -198,7 +211,11 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
                 xl:text-[40px]
               "
             >
-              {project.title}
+              {splitHeadingLines(project.title).map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
             </h1>
 
             <div
@@ -251,7 +268,7 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
                 lg:space-y-5
               "
             >
-              {project.description.map((paragraph, index) => (
+              {visibleDescription.map((paragraph, index) => (
                 <p
                   key={index}
                   className="
@@ -270,23 +287,27 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
               ))}
             </div>
 
-            <div className="mt-6 flex justify-end">
-              <Link
-                href="/projects"
-                className="
-      futura-light
-      text-[12px]
-      tracking-wide
-      text-white/25
-      transition-colors
-      duration-300
-      hover:text-white
-      cursor-pointer
-    "
-              >
-                Read more &gt;&gt;
-              </Link>
-            </div>
+            {hasMore && (
+              <div className="mt-6 flex justify-end">
+                <button
+                  type="button"
+                  onClick={toggleExpanded}
+                  aria-expanded={expanded}
+                  className="
+                    futura-light
+                    text-[12px]
+                    tracking-wide
+                    text-white/25
+                    transition-colors
+                    duration-300
+                    hover:text-white
+                    cursor-pointer
+                  "
+                >
+                  {expanded ? "Read less <<" : "Read more >>"}
+                </button>
+              </div>
+            )}
           </div>
 
           {/* DESKTOP GALLERY */}
@@ -468,7 +489,7 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
             relative
             z-10
             w-full
-            px-[10px]
+            px-[30px]
             pb-8
             pt-[33px]
           "
@@ -486,7 +507,11 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
                 text-[#e3a94f]
               "
             >
-              {project.title}
+              {splitHeadingLines(project.title).map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
             </h1>
           </div>
 
@@ -522,21 +547,46 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
             </div>
           </div>
 
-          {/* FIRST DESCRIPTION */}
+          {/* DESCRIPTION (first paragraph; rest on "Read more") */}
 
           {project.description.length > 0 && (
             <div className="mb-[13px]">
-              <p
-                className="
-                  futura-light
-                  text-[12px]
-                  leading-[1.5]
-                  tracking-[0.01em]
-                  text-white/85
-                "
-              >
-                {project.description[0]}
-              </p>
+              <div className="space-y-[11px]">
+                {visibleDescription.map((paragraph, index) => (
+                  <p
+                    key={index}
+                    className="
+                      futura-light
+                      text-[12px]
+                      leading-[1.5]
+                      tracking-[0.01em]
+                      text-white/85
+                    "
+                  >
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+
+              {hasMore && (
+                <button
+                  type="button"
+                  onClick={toggleExpanded}
+                  aria-expanded={expanded}
+                  className="
+                    futura-light
+                    mt-[10px]
+                    text-[11px]
+                    tracking-wide
+                    text-white/60
+                    transition-colors
+                    duration-300
+                    hover:text-white
+                  "
+                >
+                  {expanded ? "Read less <<" : "Read more >>"}
+                </button>
+              )}
             </div>
           )}
 
@@ -557,7 +607,7 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
                 alt={`${project.title} book`}
                 className={`
                   h-auto
-                  w-[145px]
+                  w-[190px]
                   object-contain
                   drop-shadow-[0_8px_10px_rgba(0,0,0,0.45)]
 
@@ -574,27 +624,6 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
                   }
                 `}
               />
-            </div>
-          )}
-
-          {/* REMAINING DESCRIPTION */}
-
-          {project.description.length > 1 && (
-            <div className="space-y-[11px]">
-              {project.description.slice(1).map((paragraph, index) => (
-                <p
-                  key={index}
-                  className="
-                    futura-light
-                    text-[12px]
-                    leading-[1.5]
-                    tracking-[0.01em]
-                    text-white/85
-                  "
-                >
-                  {paragraph}
-                </p>
-              ))}
             </div>
           )}
 

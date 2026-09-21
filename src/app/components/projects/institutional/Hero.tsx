@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { splitHeadingLines } from "../../../utils/splitHeading";
 
 const institutionalProjects = [
   {
@@ -160,7 +161,11 @@ export default function Hero() {
               lg:text-[68px]
             "
           >
-            Institutional
+            {splitHeadingLines("Institutional").map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
           </h1>
 
           <p
@@ -253,14 +258,14 @@ export default function Hero() {
                 <h2
                   className="
                     futura-light
-                    text-[15px]
+                    text-[11px]
                     uppercase
-                    tracking-[0.16em]
+                    tracking-[0.14em]
                     text-white
 
-                    md:text-[18px]
+                    md:text-[12px]
 
-                    lg:text-[20px]
+                    lg:text-[13px]
                   "
                 >
                   {project.name}

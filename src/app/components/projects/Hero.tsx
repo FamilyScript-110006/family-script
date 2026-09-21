@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { splitHeadingLines } from "../../utils/splitHeading";
 
 const projects = [
   {
@@ -85,7 +86,11 @@ export default function ProjectsPage() {
           </p>
 
           <h1 className="futura-bold mt-3 text-[52px] uppercase leading-none tracking-[0.01em] text-[#e7ad55] md:text-[64px] lg:text-[68px]">
-            Projects
+            {splitHeadingLines("Projects").map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
           </h1>
 
           <p className="futura-light mt-9 max-w-[620px] text-[17px] leading-[1.6] tracking-wide text-white/65 md:text-[19px]">
@@ -113,8 +118,8 @@ export default function ProjectsPage() {
                 <div className="absolute inset-0 bg-black/5 transition-colors duration-500 group-hover:bg-black/0" />
               </div>
 
-              <div className="mt-5 text-center">
-                <h2 className="futura-light text-[18px] uppercase tracking-[0.35em] text-white md:text-[20px]">
+              <div className="mt-5">
+                <h2 className="futura-light text-[12px] uppercase tracking-[0.25em] text-white md:text-[13px]">
                   {project.title}
                 </h2>
               </div>

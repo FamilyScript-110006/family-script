@@ -48,13 +48,13 @@ export const projects: Project[] = [
 
     gallery: [
       {
-        image: "/assets/PROJECTS/BIOGRAPHICAL/AKHIL BAKSHI/1.jpeg",
+        image: "/assets/PROJECTS/BIOGRAPHICAL/AKHIL BAKSHI/1.jpg",
       },
       {
         image: "/assets/PROJECTS/BIOGRAPHICAL/AKHIL BAKSHI/2.jpg",
       },
       {
-        image: "/assets/PROJECTS/BIOGRAPHICAL/AKHIL BAKSHI/3.jpeg",
+        image: "/assets/PROJECTS/BIOGRAPHICAL/AKHIL BAKSHI/3.jpg",
       },
       {
         image: "/assets/PROJECTS/BIOGRAPHICAL/AKHIL BAKSHI/4.jpg",
@@ -363,11 +363,7 @@ export const projects: Project[] = [
     location: "DEFENCE COLONY, NEW DELHI",
 
     description: [
-      "Mr. Vinod Kumar Khanna’s life is a remarkable journey spanning decades, diverse domains, and geographies. His work has left a lasting imprint across regions, reflecting a life anchored in ambition, perseverance and humility. This biographical documentation project seeks to thoughtfully trace Mr. Khanna’s story, from his early life in undivided India and memories of Partition to the personal and professional achievements that shaped his worldview.",
-
-      "Through intimate conversations, personal recollections and careful documentation, Family Script captures the experiences, influences, relationships and defining moments that shaped his journey. The story explores the decisions he stood by, the values he upheld and the convictions that guided him through challenges and triumphs.",
-
-      "Together, these fragments will create a meaningful portrait of a life lived with purpose, resilience and enduring impact.",
+      "Mr. Vinod Kumar Khanna’s life is a remarkable journey spanning decades, diverse domains, and geographies. His work has left a lasting imprint across regions, reflecting a life anchored in ambition, perseverance and humility. This biographical documentation project seeks to thoughtfully trace Mr. Khanna’s story, from his early life in undivided India and memories of Partition to the personal and professional achievements that shaped his worldview. Through intimate conversations, personal recollections and careful documentation, Family Script captures the experiences, influences, relationships and defining moments that shaped his journey. The story explores the decisions he stood by, the values he upheld and the convictions that guided him through challenges and triumphs. Together, these fragments will create a meaningful portrait of a life lived with purpose, resilience and enduring impact.",
     ],
 
     coverImage: "/assets/PROJECTS/BIOGRAPHICAL/VINOD KUMAR KHANNA/cover.png",
@@ -397,7 +393,7 @@ export const projects: Project[] = [
         image: "/assets/PROJECTS/BIOGRAPHICAL/VINOD KUMAR KHANNA/7.jpg",
       },
         {
-        image: "/assets/PROJECTS/BIOGRAPHICAL/VINOD KUMAR KHANNA/6.jpeg",
+        image: "/assets/PROJECTS/BIOGRAPHICAL/VINOD KUMAR KHANNA/8.jpeg",
       },
     ],
 
