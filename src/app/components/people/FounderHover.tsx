@@ -30,10 +30,94 @@ export default function FounderHover({
   };
 
   return (
-    <div
-      onMouseLeave={handleLeave}
-      className="relative mx-auto h-[560px] w-full max-w-[1100px]"
-    >
+    <>
+      {/* =========================================================
+          MOBILE / TABLET LAYOUT (below md)
+          Normal document flow, centered, tap-to-expand bio.
+          No absolute positioning => nothing can bleed into the
+          next section, and every element stays centered.
+      ========================================================= */}
+
+      <div className="mx-auto flex w-full max-w-[420px] flex-col items-center gap-14 py-10 md:hidden">
+        {founders.map((founder, index) => {
+          const isOpen = activeFounder === index;
+          return (
+            <div
+              key={founder.name}
+              className="flex w-full flex-col items-center text-center"
+            >
+              {/* IMAGE */}
+              <button
+                type="button"
+                onClick={() =>
+                  setActiveFounder((current) =>
+                    current === index ? null : index,
+                  )
+                }
+                className="relative flex h-[280px] w-full items-end justify-center"
+                aria-expanded={isOpen}
+              >
+                <img
+                  src={founder.image}
+                  alt={founder.name}
+                  className="h-full w-auto max-w-[80%] object-contain"
+                />
+              </button>
+
+              {/* NAME */}
+              <h2 className="futura-bold mt-6 text-[14px] tracking-[0.01em] text-[#e7ad55]">
+                {founder.name}
+              </h2>
+
+              {/* ROLE */}
+              <p className="futura-light mt-3 text-[14px] text-[#e7ad55]">
+                {founder.role}
+              </p>
+
+              {/* DESCRIPTION */}
+              <div className="futura-light mt-3 text-[14px] leading-[1.45] text-white">
+                {founder.description.map((line) => (
+                  <p key={line}>{line}</p>
+                ))}
+              </div>
+
+              {/* BIO TOGGLE */}
+              <button
+                type="button"
+                onClick={() =>
+                  setActiveFounder((current) =>
+                    current === index ? null : index,
+                  )
+                }
+                className="futura-light mt-5 text-[13px] uppercase tracking-[0.05em] text-white/70 underline underline-offset-4"
+              >
+                {isOpen ? "Show less" : "Read bio"}
+              </button>
+
+              {/* BIO CONTENT */}
+              {isOpen && (
+                <div className="futura-light mt-5 max-w-[340px] text-[14px] leading-[1.55] tracking-[0.01em] text-white/85">
+                  {founder.bio.map((paragraph, pIndex) => (
+                    <p key={pIndex} className="mb-4 whitespace-pre-line">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* =========================================================
+          DESKTOP LAYOUT (md and up)
+          Original hover-based absolute positioned layout.
+      ========================================================= */}
+
+      <div
+        onMouseLeave={handleLeave}
+        className="relative mx-auto hidden h-[560px] w-full max-w-[1100px] md:block"
+      >
       {/* =========================================================
           DEFAULT BORDER
       ========================================================= */}
@@ -236,6 +320,7 @@ export default function FounderHover({
         </div>
       </div>
 
-    </div>
+      </div>
+    </>
   );
 }

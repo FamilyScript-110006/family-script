@@ -108,7 +108,7 @@ export default function Navbar() {
               hover:opacity-60
             "
           >
-            PROJECT
+            PROJECTS
           </Link>
 
           <Link
@@ -367,7 +367,7 @@ export default function Navbar() {
                 sm:text-[20px]
               "
             >
-              PROJECT
+              PROJECTS
             </Link>
 
             <Link

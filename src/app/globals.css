@@ -47,6 +47,13 @@
   font-weight: 700;
 }
 
+.futura-emphasis {
+  font-family: "Futura", sans-serif;
+  font-weight: 700;
+  font-size: 1.12em;
+  line-height: 1;
+}
+
 /* ============================================================
    ROOT VARIABLES
 ============================================================ */

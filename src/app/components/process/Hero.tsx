@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SocialIcons from "../layout/SocialIcos";
 
 interface ProcessStep {
@@ -647,6 +647,15 @@ const HIDE_DURATION = 150;
 
 export default function Hero() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [canHover, setCanHover] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const update = () => setCanHover(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   return (
     <main
@@ -718,7 +727,9 @@ export default function Hero() {
             md:justify-center
             md:gap-[32px]
           "
-          onMouseLeave={() => setActiveIndex(null)}
+          onMouseLeave={() => {
+            if (canHover) setActiveIndex(null);
+          }}
         >
           {processSteps.map((step, index) => {
             const isActive = activeIndex === index;
@@ -729,14 +740,19 @@ export default function Hero() {
                 tabIndex={0}
                 role="button"
                 aria-expanded={isActive}
-                onMouseEnter={() => setActiveIndex(index)}
+                onMouseEnter={() => {
+                  if (canHover) setActiveIndex(index);
+                }}
                 onClick={() =>
                   setActiveIndex((current) =>
                     current === index ? null : index,
                   )
                 }
-                onFocus={() => setActiveIndex(index)}
+                onFocus={() => {
+                  if (canHover) setActiveIndex(index);
+                }}
                 onBlur={(event) => {
+                  if (!canHover) return;
                   if (
                     !event.currentTarget.parentElement?.contains(
                       event.relatedTarget as Node,

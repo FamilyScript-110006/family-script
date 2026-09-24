@@ -27,11 +27,36 @@ const beliefs = [
 
 // Replace these video IDs later if the videos change — nothing else needs to.
 const episodes = [
-  { id: 0, videoId: "xUYfI1E5kyk" },
-  { id: 1, videoId: "hIplt2UFAJY" },
-  { id: 2, videoId: "rKIaru5KwhE" },
-  { id: 3, videoId: "4f1xzJKXA2M" },
-  { id: 4, videoId: "UQ7KKXZixAU" },
+  {
+    id: 0,
+    videoId: "xUYfI1E5kyk",
+    caption:
+      "Introducing FS Unplugged: our weekly series where we pause, rewind, and reflect.",
+  },
+  {
+    id: 1,
+    videoId: "hIplt2UFAJY",
+    caption:
+      "For the very first episode of FS Unplugged, our Co-founder, reflects on the practice of deep work",
+  },
+  {
+    id: 2,
+    videoId: "rKIaru5KwhE",
+    caption:
+      "The practice of telling a life story carries with it a profound responsibility.",
+  },
+  {
+    id: 3,
+    videoId: "4f1xzJKXA2M",
+    caption:
+      "Documentation becomes a way of holding on, allowing fragments of experience to remain within reach.",
+  },
+  {
+    id: 4,
+    videoId: "UQ7KKXZixAU",
+    caption:
+      "There are moments in every journey when a way of seeing begins to take shape.",
+  },
 ];
 
 /* =============================================================
@@ -66,8 +91,15 @@ function EpisodeThumbnail({
 }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isHovering, setIsHovering] = useState(false);
+  const [origin, setOrigin] = useState("");
 
-  const videoUrl = `https://www.youtube-nocookie.com/embed/${youtubeId}?controls=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&iv_load_policy=3&disablekb=1&fs=0&cc_load_policy=0&showinfo=0&loop=1&playlist=${youtubeId}`;
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
+
+  const videoUrl = `https://www.youtube-nocookie.com/embed/${youtubeId}?controls=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&iv_load_policy=3&disablekb=1&fs=0&cc_load_policy=0&showinfo=0&loop=1&playlist=${youtubeId}${
+    origin ? `&origin=${encodeURIComponent(origin)}` : ""
+  }`;
 
   // YouTube hosts this thumbnail for every video automatically — no upload needed.
   const thumbnailUrl = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
@@ -94,7 +126,6 @@ function EpisodeThumbnail({
       className="relative aspect-[16/9] w-full overflow-hidden rounded-[10px] bg-black"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      onTouchStart={handleMouseEnter}
     >
       {/* STATIC COVER — shown at rest, fades out on hover */}
       <img
@@ -375,9 +406,9 @@ export default function Hero() {
             <div
               key={belief.author}
               className={`
-                relative flex h-[166px] w-[265px] items-center
+                relative flex min-h-[170px] w-[min(300px,calc(100vw_-_84px))] items-center
                 rounded-[8px] border border-[#E9E7DA]/25
-                px-4 py-4
+                py-6
                 transition-all duration-500
                 hover:-translate-y-1
                 hover:border-[#E9E7DA]/45
@@ -385,8 +416,8 @@ export default function Hero() {
 
                 ${
                   index === 0
-                    ? "translate-x-[44px] pl-[82px]"
-                    : "-translate-x-[44px] pr-[82px]"
+                    ? "translate-x-[24px] pl-[72px] pr-5"
+                    : "-translate-x-[24px] pl-5 pr-[72px]"
                 }
 
                 xl:h-[280px]
@@ -416,8 +447,8 @@ export default function Hero() {
 
                   ${
                     index === 0
-                      ? "left-[-46px]"
-                      : "right-[-46px]"
+                      ? "left-[-40px]"
+                      : "right-[-40px]"
                   }
 
                   xl:h-[150px]
@@ -441,13 +472,13 @@ export default function Hero() {
 
               <div
                 className={`
-                  flex h-[135px] w-full flex-col justify-between
-                  translate-y-[5px]
+                  flex h-auto w-full flex-col gap-3 text-center
+                  xl:justify-between
 
                   ${
                     index === 0
-                      ? "ml-0 text-left"
-                      : "mr-0 ml-auto text-right"
+                      ? "ml-0 xl:text-left"
+                      : "mr-0 ml-auto xl:text-right"
                   }
 
                   xl:h-[180px]
@@ -463,9 +494,9 @@ export default function Hero() {
                 <p
                   className={`
                     futura-light
-                    max-w-[135px]
-                    text-[8px]
-                    leading-[1.35]
+                    mx-auto max-w-[230px]
+                    text-[12px]
+                    leading-[1.6]
                     tracking-wide
                     text-white/75
 
@@ -474,7 +505,7 @@ export default function Hero() {
                     xl:leading-[1.7]
                     xl:max-w-[240px]
 
-                    ${index === 0 ? "" : "ml-auto"}
+                    ${index === 0 ? "xl:mx-0" : "xl:mr-0 xl:ml-auto"}
                   `}
                 >
                   &quot;{belief.quote}&quot;
@@ -483,15 +514,16 @@ export default function Hero() {
                 <p
                   className={`
                     futura-light
-                    text-[7px]
+                    text-center
+                    text-[10px]
                     text-white/55
 
                     xl:text-[10px]
 
                     ${
                       index === 0
-                        ? "text-right"
-                        : "text-left"
+                        ? "xl:text-right"
+                        : "xl:text-left"
                     }
                   `}
                 >
@@ -510,33 +542,35 @@ export default function Hero() {
           ref={philosophyTextRef}
           className="mx-auto mt-16 w-full max-w-[820px] text-center md:mt-20"
         >
-          <p className="futura-light text-[14px] leading-[1.75] tracking-wide text-white/80 md:text-[16px]">
-            We believe that documentation is an invaluable strategic asset.
+          <p className="futura-light text-balance text-[14px] leading-[1.75] tracking-wide text-white/80 md:text-wrap md:text-[16px]">
+            We believe that documentation is an invaluable{" "}
+            <span className="futura-emphasis whitespace-nowrap text-white">strategic asset.</span>
           </p>
 
-          <p className="futura-light mt-3 text-[14px] leading-[1.75] tracking-wide text-white/80 md:text-[16px]">
+          <p className="futura-light mt-3 text-balance text-[14px] leading-[1.75] tracking-wide text-white/80 md:text-wrap md:text-[16px]">
             It stems from a profound recognition of the inherent value and
             fragility of oral traditions and cultural heritage of individuals,
             families, institutions and communities.
           </p>
 
-          <p className="futura-light mt-4 text-[14px] leading-[1.75] tracking-wide text-white/80 md:text-[16px]">
-            At a civilisational level, our efforts shall feed into the
-            collective consciousness.
+          <p className="futura-light mt-4 text-balance text-[14px] leading-[1.75] tracking-wide text-white/80 md:text-wrap md:text-[16px]">
+            At a{" "}
+            <span className="futura-emphasis whitespace-nowrap text-white">civilisational level</span>
+            , our efforts shall feed into the collective consciousness.
           </p>
 
-          <p className="futura-light mt-4 text-[14px] leading-[1.75] tracking-wide text-white/80 md:text-[16px]">
-            We envision to be globally recognised as an inspirational
-            powerhouse by 2028 - a living library with a virtual vault of
-            memories.
+          <p className="futura-light mt-4 text-balance text-[14px] leading-[1.75] tracking-wide text-white/80 md:text-wrap md:text-[16px]">
+            We envision to be globally recognised as an inspirational{" "}
+            <span className="futura-emphasis whitespace-nowrap text-white">powerhouse by 2028</span>{" "}
+            - a living library with a virtual vault of memories.
           </p>
 
-          <p className="futura-light mt-4 text-[14px] leading-[1.75] tracking-wide text-white/80 md:text-[16px]">
+          <p className="futura-light mt-4 text-balance text-[14px] leading-[1.75] tracking-wide text-white/80 md:text-wrap md:text-[16px]">
             Our work aligns with UN SDG 11.4 to protect and safeguard
             intangible heritage.
           </p>
 
-          <p className="futura-light mt-4 text-[14px] leading-[1.75] tracking-wide text-white/80 md:text-[16px]">
+          <p className="futura-light mt-4 text-balance text-[14px] leading-[1.75] tracking-wide text-white/80 md:text-wrap md:text-[16px]">
             We are strong in publication design, content creation, multimedia
             storytelling, archival strategy and institutional branding.
           </p>
@@ -558,8 +592,7 @@ export default function Hero() {
               <EpisodeThumbnail id={episode.id} youtubeId={episode.videoId} />
 
               <p className="futura-light mt-3 text-center text-[9px] leading-[1.5] tracking-wide text-white/55">
-                The beginning of a dream, where ideas sparked into purpose and
-                our journey began.
+                {episode.caption}
               </p>
             </div>
           ))}

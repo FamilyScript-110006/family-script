@@ -4,6 +4,7 @@
 
 import { useState } from "react";
 import type { FaqItem } from "../../faq/faqData";
+import { getFaqGradient } from "./faqGradients";
 
 export default function FaqAccordion({ items }: { items: FaqItem[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -20,7 +21,8 @@ export default function FaqAccordion({ items }: { items: FaqItem[] }) {
         return (
           <div
             key={item.question}
-            className="overflow-hidden rounded-md bg-dark-burgundy"
+            className="overflow-hidden rounded-md"
+            style={{ background: getFaqGradient(index) }}
           >
             <button
               type="button"
