@@ -81,7 +81,7 @@ export default function Navbar() {
             Visible only on desktop.
         ================================================== */}
 
-        <div className="hidden items-center gap-12 md:flex">
+        <div className="hidden items-center gap-12 lg:flex">
 
           <Link
             href="/people"
@@ -189,7 +189,7 @@ export default function Navbar() {
             shrink-0
             items-center
             justify-center
-            md:hidden
+            lg:hidden
           "
         >
           <span className="relative block h-[18px] w-[20px]">
@@ -272,7 +272,7 @@ export default function Navbar() {
           fixed
           inset-0
           z-[1000]
-          md:hidden
+          lg:hidden
           transition-all
           duration-500
           ease-out

@@ -1,41 +1,23 @@
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+
 import productsData from "./products.json";
 import CTAButton from "../layout/CTAButton";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/* =========================================================
-   BRAND PALETTE
-   Muted Purple #382C3B · Dark Burgundy #480424
-   Antique Gold #CBA356 · Warm Beige #D2C6B2 · Soft Ivory #E9E7DA
-   (gold/beige/ivory are applied as literal Tailwind arbitrary
-   values below — [#CBA356] etc. — rather than as JS constants,
-   since they're used in one-off className strings, not logic.)
-   ========================================================= */
-
-const MUTED_PURPLE = "#382C3B";
-const DARK_BURGUNDY = "#480424";
-
 const INTRO_TEXT =
-  "Indigo Chronicles is a meticulously curated hamper that encapsulates the essence of documentation in myriad forms. At its core lies the central idea of documenting memories and experiences, encompassing cultural nuances, customs, and emotional landscapes for posterity.";
+  "Discover meaningful ways to preserve memories, celebrate milestones, and share your family's story.";
 
-const LIVE_CATALOG_URL = "https://familyscript.com/category/all-products";
+const LIVE_CATALOG_URL =
+  "https://familyscript.com/category/all-products";
 
-/* =========================================================
-   BANNER
-   ========================================================= */
-
-const BANNER_HEIGHT = 356;
 const BANNER_PHOTO = "/assets/Products/upper-img.png";
-
-/* =========================================================
-   TYPES
-   ========================================================= */
 
 type Segment = {
   title: string;
@@ -53,92 +35,26 @@ type Product = {
 
 const PRODUCTS = productsData as Product[];
 
-// All four products get a full stacked EXPLORE panel,
-// matching the Figma page (Indigo Chronicles, Cherish,
-// Create, Celebrate).
-const EXPLORE_IDS = ["indigo-chronicles", "cherish", "create", "celebrate"];
-
-/* =========================================================
-   ATMOSPHERIC OMBRÉ GRADIENT
-   ========================================================= */
-
-type Layer = {
-  x: number;
-  y: number;
-  color: string;
-  opacity: number;
-  w?: number;
-  h?: number;
-  fade?: number;
-};
-
-const BASE = DARK_BURGUNDY;
-
-function hexToRgb(hex: string): string {
-  const clean = hex.replace("#", "");
-  const r = parseInt(clean.substring(0, 2), 16);
-  const g = parseInt(clean.substring(2, 4), 16);
-  const b = parseInt(clean.substring(4, 6), 16);
-  return `${r}, ${g}, ${b}`;
-}
-
-function buildOmbre(layers: Layer[], base: string = BASE): string {
-  const radials = layers
-    .map((layer) => {
-      const w = layer.w ?? 140;
-      const h = layer.h ?? 55;
-      const fade = layer.fade ?? 72;
-
-      return `radial-gradient(
-        ellipse ${w}% ${h}% at ${layer.x}% ${layer.y}%,
-        rgba(${hexToRgb(layer.color)}, ${layer.opacity}) 0%,
-        transparent ${fade}%
-      )`;
-    })
-    .join(",\n");
-
-  return `${radials},\n${base}`;
-}
-
-const pageGradientLayers: Layer[] = [
-  { x: 50, y: 4, color: "#000000", opacity: 0.75, w: 160, h: 30, fade: 65 },
-  { x: 45, y: 18, color: MUTED_PURPLE, opacity: 0.55, w: 150, h: 42, fade: 70 },
-  { x: 55, y: 34, color: DARK_BURGUNDY, opacity: 0.6, w: 150, h: 46, fade: 72 },
-  { x: 50, y: 52, color: "#000000", opacity: 0.5, w: 155, h: 44, fade: 74 },
-  { x: 50, y: 70, color: MUTED_PURPLE, opacity: 0.5, w: 150, h: 38, fade: 70 },
-  { x: 50, y: 92, color: "#000000", opacity: 0.85, w: 165, h: 42, fade: 60 },
+const EXPLORE_IDS = [
+  "indigo-chronicles",
+  "cherish",
+  "create",
+  "celebrate",
 ];
-
-/* =========================================================
-   BANNER OVERLAY — a single soft plum-toned gradient, dark
-   at the top (where the nav sits) fading to clear toward the
-   bottom of the banner, matching the Figma reference.
-   ========================================================= */
 
 function BannerOverlay() {
   return (
     <div
       className="pointer-events-none absolute inset-0 z-10"
       style={{
-        background: `linear-gradient(
-          to bottom,
-          rgba(${hexToRgb(DARK_BURGUNDY)}, 0.55) 0%,
-          rgba(${hexToRgb(MUTED_PURPLE)}, 0.25) 45%,
-          rgba(${hexToRgb(MUTED_PURPLE)}, 0.15) 100%
-        )`,
+        background:
+          "linear-gradient(to bottom, rgba(53,16,31,0.55) 0%, rgba(57,14,33,0.22) 50%, rgba(37,8,23,0.12) 100%)",
       }}
     />
   );
 }
 
-/* =========================================================
-   PRODUCT THUMBNAIL (hover-to-preview, purely visual now —
-   no longer drives the EXPLORE section since that's stacked)
-   ========================================================= */
-
 function ThumbnailCard({ product }: { product: Product }) {
-  const [hovered, setHovered] = useState(false);
-
   const scrollToExplore = () => {
     document
       .getElementById(`explore-${product.id}`)
@@ -149,51 +65,36 @@ function ThumbnailCard({ product }: { product: Product }) {
     <button
       type="button"
       onClick={scrollToExplore}
-      className="w-[243px] shrink-0 text-left"
+      className="w-full max-w-[243px] shrink-0 text-left sm:w-[calc(50%-12px)] md:w-[220px] lg:w-[243px]"
       aria-label={`Jump to ${product.name}`}
     >
-      <div
-        className="h-[182px] w-[243px] overflow-hidden rounded-[4px] transition-[filter] duration-300 ease-out cursor-pointer"
-        style={{ filter: hovered ? "grayscale(0%)" : "grayscale(100%)" }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-      >
+      <div className="aspect-[4/3] w-full overflow-hidden rounded-lg">
         <img
           src={product.image}
           alt={product.name}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
         />
       </div>
 
-      <p className="futura-light mt-[20px] text-center text-[12px] leading-[13px] tracking-[0.05em] text-white">
+      <p className="futura-light mt-3 text-center text-xs leading-5 tracking-wide text-white sm:text-sm">
         {product.name}
       </p>
     </button>
   );
 }
 
-/* =========================================================
-   FULL EXPERIENCE — single pre-designed brochure image, not
-   a hand-built grid. Drop the flattened design export at
-   /public/assets/Products/indigo-brochure.png.
-   ========================================================= */
-
 function FullExperience() {
   return (
-    <div className="relative mt-[64px] w-full overflow-hidden rounded-[8px]">
+    <div className="relative mt-10 w-full overflow-hidden rounded-lg sm:mt-14 lg:mt-16">
       <img
         src="/assets/Products/indigo-brochure.png"
-        alt="The full Indigo Chronicles experience — postcards, journal spreads, and a look inside Cherish, Create and Celebrate"
+        alt="The Indigo Chronicles experience, including postcards and journal spreads"
         className="h-auto w-full"
       />
     </div>
   );
 }
 
-/* =========================================================
-   EXPLORE PANEL — one per product, alternating image/text
-   side, with a lightweight local carousel over `gallery`.
-   ========================================================= */
 
 function ExplorePanel({
   product,
@@ -204,25 +105,29 @@ function ExplorePanel({
   reverse: boolean;
   registerRef: (el: HTMLDivElement | null) => void;
 }) {
-  const gallery = product.gallery?.length ? product.gallery : [product.image];
+  const gallery =
+    product.gallery?.length ? product.gallery : [product.image];
+
   const [index, setIndex] = useState(0);
 
-  const goPrev = () => setIndex((i) => (i - 1 + gallery.length) % gallery.length);
-  const goNext = () => setIndex((i) => (i + 1) % gallery.length);
+  const goPrev = () =>
+    setIndex((i) => (i - 1 + gallery.length) % gallery.length);
+
+  const goNext = () =>
+    setIndex((i) => (i + 1) % gallery.length);
 
   const imageBlock = (
     <div className="relative w-full md:w-1/2">
-      <div className="overflow-hidden rounded-[8px]" style={{ height: 480 }}>
+      <div className="h-[200px] overflow-hidden rounded-lg sm:h-[240px] md:h-[280px] lg:h-[320px]">
         <img
           src={gallery[index]}
           alt={product.name}
           className="h-full w-full object-cover"
           onError={(e) => {
-            // Falls back to the product's main image if a
-            // numbered gallery file isn't uploaded yet, so
-            // clicking next/prev never shows a dead broken-
-            // image icon.
-            if (e.currentTarget.src !== window.location.origin + product.image) {
+            if (
+              e.currentTarget.src !==
+              window.location.origin + product.image
+            ) {
               e.currentTarget.src = product.image;
             }
           }}
@@ -231,19 +136,50 @@ function ExplorePanel({
 
       {gallery.length > 1 && (
         <>
+          {/* Previous Image */}
           <button
+            type="button"
             aria-label="Previous image"
             onClick={goPrev}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-[28px] text-white/80 hover:text-white"
+            className="absolute left-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-[#CBA356]/50 bg-[#35101f]/85 text-[#E9E7DA] shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-[#CBA356] hover:bg-[#CBA356] hover:text-[#35101f] sm:left-4 sm:h-11 sm:w-11"
           >
-            &lt;
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              className="h-4 w-4 sm:h-5 sm:w-5"
+            >
+              <path
+                d="M15 18l-6-6 6-6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </button>
+
+          {/* Next Image */}
           <button
+            type="button"
             aria-label="Next image"
             onClick={goNext}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[28px] text-white/80 hover:text-white"
+            className="absolute right-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-[#CBA356]/50 bg-[#35101f]/85 text-[#E9E7DA] shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-[#CBA356] hover:bg-[#CBA356] hover:text-[#35101f] sm:right-4 sm:h-11 sm:w-11"
           >
-            &gt;
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              className="h-4 w-4 sm:h-5 sm:w-5"
+            >
+              <path
+                d="M9 18l6-6-6-6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </button>
         </>
       )}
@@ -251,24 +187,32 @@ function ExplorePanel({
   );
 
   const textBlock = (
-    <div className="w-full text-white md:w-1/2 md:px-[5%]">
-      <div className="futura-medium text-[24px] leading-[60px] tracking-[0.3em]">
+    <div className="flex w-full flex-col text-white md:w-1/2 md:px-5 lg:px-8">
+      <p className="futura-medium text-xs tracking-[0.2em] text-[#D2C6B2] sm:text-sm">
         EXPLORE
-      </div>
-      <div className="futura-medium text-[45px] leading-[60px] tracking-[0.3em]">
-        {product.name.split(":")[0].toUpperCase()}
-      </div>
+      </p>
 
-      <div className="mt-8 flex flex-col gap-4">
-        {product.segments.map((segment) => (
-          <p
-            key={segment.title}
-            className="text-[20px] leading-[28px] tracking-[0.05em] text-[#E9E7DA]"
-          >
-            <span className="futura-medium">{segment.title}: </span>
-            <span className="futura-light">{segment.description}</span>
-          </p>
-        ))}
+      <h2 className="futura-medium mt-2 text-xl leading-tight tracking-wide sm:text-2xl md:text-3xl">
+        {product.name.split(":")[0].toUpperCase()}
+      </h2>
+
+      {/* Scrollable product content */}
+      <div className="mt-4 max-h-[180px] overflow-y-auto overscroll-contain pr-3 sm:max-h-[210px] md:max-h-[230px] lg:max-h-[260px]">
+        <div className="flex flex-col gap-3">
+          {product.segments.map((segment) => (
+            <p
+              key={segment.title}
+              className="text-xs leading-5 tracking-wide text-[#E9E7DA] sm:text-sm sm:leading-6"
+            >
+              <span className="futura-medium">
+                {segment.title}:{" "}
+              </span>
+              <span className="futura-light">
+                {segment.description}
+              </span>
+            </p>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -277,9 +221,8 @@ function ExplorePanel({
     <div
       ref={registerRef}
       id={`explore-${product.id}`}
-      className={`mt-[96px] flex w-full flex-col gap-[48px] scroll-mt-[100px] md:items-start ${
-        reverse ? "md:flex-row-reverse" : "md:flex-row"
-      }`}
+      className={`mt-10 flex w-full scroll-mt-24 flex-col gap-5 sm:mt-12 sm:gap-6 md:mt-16 md:items-center md:gap-8 lg:mt-20 ${reverse ? "md:flex-row-reverse" : "md:flex-row"
+        }`}
     >
       {imageBlock}
       {textBlock}
@@ -287,9 +230,6 @@ function ExplorePanel({
   );
 }
 
-/* =========================================================
-   PRODUCTS PAGE
-   ========================================================= */
 
 export default function Products() {
   const headingRef = useRef<HTMLDivElement>(null);
@@ -299,7 +239,9 @@ export default function Products() {
   const ctaRef = useRef<HTMLDivElement>(null);
   const exploreRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const exploreProducts = PRODUCTS.filter((p) => EXPLORE_IDS.includes(p.id));
+  const exploreProducts = PRODUCTS.filter((p) =>
+    EXPLORE_IDS.includes(p.id)
+  );
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -315,18 +257,18 @@ export default function Products() {
       targets.forEach((el) => {
         gsap.fromTo(
           el,
-          { opacity: 0, y: 40 },
+          { opacity: 0, y: 30 },
           {
             opacity: 1,
             y: 0,
-            duration: 1.1,
+            duration: 0.9,
             ease: "power2.out",
             scrollTrigger: {
               trigger: el,
-              start: "top 85%",
+              start: "top 88%",
               toggleActions: "play none none reverse",
             },
-          },
+          }
         );
       });
     });
@@ -335,22 +277,9 @@ export default function Products() {
   }, []);
 
   return (
-    <main
-      className="relative min-h-screen w-full overflow-x-hidden text-white"
-      style={{ background: buildOmbre(pageGradientLayers, BASE) }}
-    >
-      {/* TOP FADE — subtle, tinted to match the page, not pure black */}
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 z-[100] h-[150px]"
-        style={{
-          background: `linear-gradient(to bottom, rgba(${hexToRgb(
-            MUTED_PURPLE,
-          )}, 0.45), transparent)`,
-        }}
-      />
-
-      {/* BANNER */}
-      <div className="relative w-full overflow-hidden" style={{ height: BANNER_HEIGHT }}>
+    <main className="relative min-h-screen w-full overflow-x-hidden bg-gradient-to-b from-[#35101f] via-[#390e21] to-[#250817] text-white">
+      {/* Banner */}
+      <div className="relative h-[220px] w-full overflow-hidden sm:h-[280px] md:h-[320px] lg:h-[356px]">
         <img
           src={BANNER_PHOTO}
           alt=""
@@ -359,39 +288,41 @@ export default function Products() {
         <BannerOverlay />
       </div>
 
-      <div className="relative mx-auto w-full max-w-[1440px] px-[97px] pb-[120px]">
-        {/* OUR PRODUCTS heading */}
-        <div ref={headingRef} className="pt-[94px] text-center">
-          <h1 className="futura-light text-[48px] tracking-[0.15em] text-white">
+      <div className="relative mx-auto w-full max-w-[1440px] px-4 pb-16 sm:px-6 sm:pb-20 md:px-10 md:pb-24 lg:px-16 xl:px-24">
+        {/* Heading */}
+        <div
+          ref={headingRef}
+          className="pt-10 text-center sm:pt-14 md:pt-16 lg:pt-20"
+        >
+          <h1 className="futura-light text-2xl tracking-[0.1em] sm:text-3xl md:text-4xl lg:text-5xl">
             OUR <span className="futura-bold">PRODUCTS</span>
           </h1>
         </div>
 
-        {/* INTRO */}
+        {/* Intro */}
         <p
           ref={introRef}
-          className="futura-light mx-auto text-center text-[24px] leading-[28px] tracking-[0.08em] text-[#E9E7DA]"
-          style={{ width: "63.125%", maxWidth: 909, paddingTop: 40 }}
+          className="futura-light mx-auto max-w-3xl pt-5 text-center text-sm leading-6 tracking-wide text-[#E9E7DA] sm:pt-6 sm:text-base sm:leading-7 md:pt-8 md:text-lg lg:text-xl"
         >
           {INTRO_TEXT}
         </p>
 
-        {/* PRODUCT THUMBNAILS */}
+        {/* Product thumbnails */}
         <div
           ref={thumbsRef}
-          className="mt-[80px] flex w-full flex-wrap justify-center gap-x-[57px] gap-y-[40px]"
+          className="mt-8 grid grid-cols-2 justify-items-center gap-x-4 gap-y-7 sm:mt-10 sm:gap-x-6 sm:gap-y-8 md:mt-14 md:grid-cols-3 lg:mt-16 lg:grid-cols-4 lg:gap-x-8"
         >
           {PRODUCTS.map((product) => (
             <ThumbnailCard key={product.id} product={product} />
           ))}
         </div>
 
-        {/* FULL EXPERIENCE MOSAIC */}
+        {/* Full experience */}
         <div ref={experienceRef}>
           <FullExperience />
         </div>
 
-        {/* STACKED EXPLORE PANELS, alternating sides */}
+        {/* Explore sections */}
         {exploreProducts.map((product, i) => (
           <ExplorePanel
             key={product.id}
@@ -403,33 +334,26 @@ export default function Products() {
           />
         ))}
 
-        {/* Existing-site reference link */}
-        <div className="mt-[48px] flex justify-center">
+        {/* Existing catalog */}
+        <div className="mt-10 flex justify-center sm:mt-12">
           <Link
             href={LIVE_CATALOG_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="futura-medium w-fit text-[16px] tracking-[0.3em] text-white underline-offset-4 hover:underline"
+            className="futura-medium text-center text-xs tracking-[0.15em] text-white underline-offset-4 transition hover:underline sm:text-sm sm:tracking-[0.2em] md:text-base"
           >
             REFER EXISTING WEBSITE
           </Link>
         </div>
 
         {/* CTA */}
-        <div ref={ctaRef} className="mt-[96px] flex w-full justify-center">
+        <div
+          ref={ctaRef}
+          className="mt-14 flex w-full justify-center sm:mt-16 md:mt-20"
+        >
           <CTAButton />
         </div>
       </div>
-
-      {/* BOTTOM FADE — subtle, tinted to match the page, not pure black */}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-[100] h-[170px]"
-        style={{
-          background: `linear-gradient(to top, rgba(${hexToRgb(
-            DARK_BURGUNDY,
-          )}, 0.5), transparent)`,
-        }}
-      />
     </main>
   );
 }

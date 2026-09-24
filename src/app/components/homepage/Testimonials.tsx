@@ -2,7 +2,6 @@
 
 import CTAButton from "../layout/CTAButton";
 import { useEffect, useRef } from "react";
-
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -16,40 +15,25 @@ const TESTIMONIALS = [
   {
     quote:
       "“Over these past few months, they have become like friends of mine, spending hours listening to me, asking the right questions, and making me revisit my deepest memories. The comfort I felt with them was immense and helped me talk like I was talking to myself. Their professionalism, sensitivity, and quality of work is truly commendable.”",
-
-    name:
-      "Ms Reva Khanna, First Woman CA of Delhi Former President, DCWA",
-
+    name: "Ms Reva Khanna, First Woman CA of Delhi Former President, DCWA",
     photo: "/assets/testimonials/REVA KHANNA.png",
   },
-
   {
     quote:
       "“Thanks a lot for whatever you are doing for us even though we live each moment in Uppa’s thoughts, I believe you are God send for this purpose.”",
-
-    name:
-      "Dr. Saleeqath, Doctor at Dr. Kutty’s Healthcare and Nura Clinic, Calicut",
-
+    name: "Dr. Saleeqath, Doctor at Dr. Kutty’s Healthcare and Nura Clinic, Calicut",
     photo: "/assets/testimonials/SALEEQATH.jpg",
   },
-
   {
     quote:
       "“I’m happy with how the book turned out, it's truly magical. Thank you for bringing out the best in me and treating my story as your own. You made the process feel effortless and filled me with confidence. This book is one of my life's accomplishments. Your vision and dedication will inspire so many who hesitate to write or share.”",
-
-    name:
-      "Ms Renu Mehra, Board Member of Taravati Ram Gopal Mehra Foundation & Former District Chairperson, Rotary District, 309",
-
+    name: "Ms Renu Mehra, Board Member of Taravati Ram Gopal Mehra Foundation & Former District Chairperson, Rotary District, 309",
     photo: "/assets/testimonials/RENU MEHRA.png",
   },
-
   {
     quote:
       "“It was thanks to the patience and professionalism of the FS team that later helped me select special moments from our family occasions to craft a permanent pathway that we can travel through and renew the warp and weft of family bonds.”",
-
-    name:
-      "Ms Romonika D Sharan, Project Director, Policy & Communications at CSF",
-
+    name: "Ms Romonika D Sharan, Project Director, Policy & Communications at CSF",
     photo: "/assets/testimonials/ROMONIKA.png",
   },
 ];
@@ -62,110 +46,33 @@ type Testimonial = (typeof TESTIMONIALS)[number];
 
 function DesktopTestimonial({
   testimonial,
-  index,
 }: {
   testimonial: Testimonial;
-  index: number;
 }) {
-  const imageLeft = index % 2 === 0;
-
   return (
-    <div
-      className={`
-        relative
-        h-[208px]
-        w-[780px]
-        max-w-[calc(100vw-100px)]
-        rounded-[15px]
-        border
-        border-white/80
-        ${
-          imageLeft
-            ? "mr-[40px]"
-            : "ml-[40px]"
-        }
-      `}
-    >
-      {/* ======================================================
-          IMAGE
-      ====================================================== */}
+    <div className="relative h-[400px] w-full">
+      {/* Card border and content */}
+      <div className="absolute inset-y-0 left-[72px] right-0 flex items-center rounded-[16px] border border-white/70 pl-[255px] pr-[45px] py-[30px]">
+        <div className="flex h-full w-full flex-col justify-center">
+          {/* Quote */}
+          <p className="futura-light text-[clamp(14px,1.3vw,19px)] leading-[1.5] tracking-[0.01em] text-[#F4EDE9]">
+            {testimonial.quote}
+          </p>
 
+          {/* Author */}
+          <p className="futura-light mt-[18px] w-full text-right text-[13px] leading-[1.5] text-[#D2C6B2]">
+            {testimonial.name}
+          </p>
+        </div>
+      </div>
+
+      {/* Image overlapping the card */}
       <div
-        className={`
-          absolute
-          top-[12px]
-          h-[183px]
-          w-[158px]
-          rounded-[15px]
-          bg-cover
-          bg-center
-          bg-no-repeat
-          ${
-            imageLeft
-              ? "left-[-60px]"
-              : "right-[-60px]"
-          }
-        `}
+        className="absolute left-0 top-1/2 z-10 h-[230px] w-[200px] -translate-y-1/2 overflow-hidden rounded-[12px] bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url("${testimonial.photo}")`,
         }}
       />
-
-      {/* ======================================================
-          QUOTE
-      ====================================================== */}
-
-      <div
-        className={`
-          absolute
-          top-[30px]
-          ${
-            imageLeft
-              ? "left-[205px] right-[35px]"
-              : "left-[35px] right-[205px]"
-          }
-        `}
-      >
-        <p
-          className={`
-            futura-light
-            text-[15px]
-            leading-[1.5]
-            tracking-[0.04em]
-            text-[#FFF5E5]
-            ${
-              imageLeft
-                ? "text-left"
-                : "text-right"
-            }
-          `}
-        >
-          {testimonial.quote}
-        </p>
-      </div>
-
-      {/* ======================================================
-          NAME
-      ====================================================== */}
-
-      <p
-        className={`
-          futura-light
-          absolute
-          bottom-[18px]
-          max-w-[300px]
-          text-[11px]
-          leading-[1.35]
-          text-[#D2C6B2]
-          ${
-            imageLeft
-              ? "right-[35px] text-right"
-              : "left-[35px] text-left"
-          }
-        `}
-      >
-        {testimonial.name}
-      </p>
     </div>
   );
 }
@@ -176,105 +83,27 @@ function DesktopTestimonial({
 
 function MobileTestimonial({
   testimonial,
-  index,
 }: {
   testimonial: Testimonial;
-  index: number;
 }) {
-  const imageLeft = index % 2 === 0;
-
   return (
-    <div
-      className="
-        relative
-        mx-auto
-        h-[100px]
-        w-[calc(100%-28px)]
-        flex-shrink-0
-        rounded-[8px]
-        border
-        border-white/70
-      "
-    >
-      {/* ======================================================
-          PHOTO
-      ====================================================== */}
-
+    <div className="relative flex h-[410px] w-[min(300px,calc(100vw-40px))] flex-shrink-0 snap-center flex-col items-center justify-center rounded-[12px] border border-white/70 px-[22px] py-[24px] text-center">
+      {/* Image */}
       <div
-        className={`
-          absolute
-          top-[8px]
-          h-[82px]
-          w-[60px]
-          rounded-[6px]
-          bg-cover
-          bg-center
-          bg-no-repeat
-          ${
-            imageLeft
-              ? "left-[8px]"
-              : "right-[8px]"
-          }
-        `}
+        className="h-[125px] w-[105px] flex-shrink-0 rounded-[9px] bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url("${testimonial.photo}")`,
         }}
       />
 
-      {/* ======================================================
-          QUOTE
-      ====================================================== */}
-
-      <div
-        className={`
-          absolute
-          top-[9px]
-          ${
-            imageLeft
-              ? "left-[76px] right-[8px]"
-              : "left-[8px] right-[76px]"
-          }
-        `}
-      >
-        <p
-          className={`
-            futura-light
-            text-[10px]
-            leading-[1.35]
-            tracking-[0.015em]
-            text-[#FFF5E5]
-            ${
-              imageLeft
-                ? "text-left"
-                : "text-right"
-            }
-          `}
-        >
-          {testimonial.quote}
-        </p>
-      </div>
-
-      {/* ======================================================
-          NAME
-      ====================================================== */}
-
-      <p
-        className={`
-          futura-light
-          absolute
-          bottom-[6px]
-          max-w-[180px]
-          text-[6px]
-          leading-[1.2]
-          text-[#D2C6B2]
-          ${
-            imageLeft
-              ? "right-[8px] text-right"
-              : "left-[8px] text-left"
-          }
-        `}
-      >
+      {/* Name */}
+      <p className="futura-light mt-[16px] w-full text-center text-[10px] leading-[1.5] text-[#D2C6B2]">
         {testimonial.name}
+      </p>
+
+      {/* Quote */}
+      <p className="futura-light mt-[18px] w-full text-center text-[12px] leading-[1.55] tracking-[0.01em] text-[#FFF5E5]">
+        {testimonial.quote}
       </p>
     </div>
   );
@@ -285,27 +114,17 @@ function MobileTestimonial({
 ============================================================ */
 
 export default function Testimonials() {
-  const sectionRef =
-    useRef<HTMLElement | null>(null);
-
-  const desktopTrackRef =
-    useRef<HTMLDivElement | null>(null);
-
-  const desktopViewportRef =
-    useRef<HTMLDivElement | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const desktopTrackRef = useRef<HTMLDivElement | null>(null);
+  const desktopViewportRef = useRef<HTMLDivElement | null>(null);
+  const mobileViewportRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
 
-    const viewport =
-      desktopViewportRef.current;
+    if (!section) return;
 
-    const track =
-      desktopTrackRef.current;
-
-    if (!section || !viewport || !track) {
-      return;
-    }
+    let cleanupAutoScroll = () => {};
 
     const ctx = gsap.context(() => {
       /* ======================================================
@@ -326,10 +145,9 @@ export default function Testimonials() {
           scrollTrigger: {
             trigger: section,
             start: "top 80%",
-            toggleActions:
-              "play none none reverse",
+            toggleActions: "play none none reverse",
           },
-        },
+        }
       );
 
       /* ======================================================
@@ -351,10 +169,9 @@ export default function Testimonials() {
           scrollTrigger: {
             trigger: section,
             start: "top 80%",
-            toggleActions:
-              "play none none reverse",
+            toggleActions: "play none none reverse",
           },
-        },
+        }
       );
 
       /* ======================================================
@@ -376,59 +193,108 @@ export default function Testimonials() {
           scrollTrigger: {
             trigger: section,
             start: "top 75%",
-            toggleActions:
-              "play none none reverse",
+            toggleActions: "play none none reverse",
           },
-        },
+        }
       );
 
       /* ======================================================
-         DESKTOP INTERNAL SCROLL
+         HORIZONTAL AUTO-SCROLL
       ====================================================== */
 
-      const getMaxScroll = () =>
-        Math.max(
-          0,
-          track.scrollHeight -
-            viewport.clientHeight,
-        );
+      const viewports = [
+        desktopViewportRef.current,
+        mobileViewportRef.current,
+      ].filter(
+        (viewport): viewport is HTMLDivElement =>
+          viewport !== null
+      );
 
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
+      const paused = new Set<HTMLDivElement>();
 
-        end: () =>
-          `+=${Math.max(
-            1,
-            getMaxScroll(),
-          )}`,
+      const listeners = new Map<
+        HTMLDivElement,
+        {
+          enter: () => void;
+          leave: () => void;
+        }
+      >();
 
-        pin: true,
+      const pauseAutoScroll = (viewport: HTMLDivElement) =>
+        paused.add(viewport);
 
-        scrub: true,
+      const resumeAutoScroll = (viewport: HTMLDivElement) =>
+        paused.delete(viewport);
 
-        anticipatePin: 1,
+      viewports.forEach((viewport) => {
+        const enter = () => pauseAutoScroll(viewport);
+        const leave = () => resumeAutoScroll(viewport);
 
-        invalidateOnRefresh: true,
+        viewport.addEventListener("mouseenter", enter);
+        viewport.addEventListener("mouseleave", leave);
 
-        onUpdate: (self) => {
-          const maxScroll =
-            getMaxScroll();
-
-          gsap.set(track, {
-            y:
-              -maxScroll *
-              self.progress,
-          });
-        },
+        listeners.set(viewport, { enter, leave });
       });
+
+      let animationFrame = 0;
+      let lastTimestamp = performance.now();
+
+      const autoScroll = (timestamp: number) => {
+        const elapsed = timestamp - lastTimestamp;
+        lastTimestamp = timestamp;
+
+        viewports.forEach((viewport) => {
+          if (paused.has(viewport)) return;
+
+          const loopWidth =
+            viewport === mobileViewportRef.current
+              ? viewport.scrollWidth - viewport.clientWidth
+              : viewport.scrollWidth / 2;
+
+          const speed = 0.1;
+
+          const nextPosition =
+            viewport.scrollLeft + elapsed * speed;
+
+          viewport.scrollLeft =
+            nextPosition >= loopWidth
+              ? nextPosition - loopWidth
+              : nextPosition;
+        });
+
+        animationFrame =
+          window.requestAnimationFrame(autoScroll);
+      };
+
+      animationFrame =
+        window.requestAnimationFrame(autoScroll);
 
       requestAnimationFrame(() => {
         ScrollTrigger.refresh();
       });
+
+      cleanupAutoScroll = () => {
+        window.cancelAnimationFrame(animationFrame);
+
+        viewports.forEach((viewport) => {
+          const listener = listeners.get(viewport);
+          if (!listener) return;
+
+          viewport.removeEventListener(
+            "mouseenter",
+            listener.enter
+          );
+
+          viewport.removeEventListener(
+            "mouseleave",
+            listener.leave
+          );
+        });
+      };
     }, section);
 
     return () => {
+      cleanupAutoScroll();
       ctx.revert();
     };
   }, []);
@@ -440,297 +306,101 @@ export default function Testimonials() {
   return (
     <section
       ref={sectionRef}
-      className="
-        relative
-        h-screen
-        w-full
-        overflow-hidden
-        bg-[#460A26]
-        text-white
-      "
+      className="relative min-h-screen w-full overflow-hidden bg-[#2d0b1b] text-white"
     >
       {/* ======================================================
-          BACKGROUND
+          BACKGROUND — MATCHES OUR JOURNEY
       ====================================================== */}
 
-      <div
-        className="
-          pointer-events-none
-          absolute
-          inset-0
-        "
-      >
-        <div
-          className="
-            absolute
-            inset-0
-          "
-          style={{
-            background:
-              "linear-gradient(356.76deg, rgba(0,0,0,0.35) 2.81%, rgba(102,102,102,0) 71.6%)",
-          }}
-        />
-
-        <div
-          className="
-            absolute
-            inset-0
-          "
-          style={{
-            background:
-              "linear-gradient(to bottom, rgba(83,36,57,0.88) 0%, rgba(83,36,57,0.72) 40%, rgba(83,36,57,0.45) 100%)",
-          }}
-        />
-      </div>
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#35101f] via-[#390e21] to-[#250817]" />
 
       {/* ======================================================
           DESKTOP
       ====================================================== */}
 
-      <div
-        className="
-          relative
-          z-10
-          hidden
-          h-full
-          w-full
-          md:block
-        "
-      >
-        {/* ==================================================
-            HEADING
-        ================================================== */}
-
-        <div
-          className="
-            testimonials-heading
-            absolute
-            left-1/2
-            top-[7%]
-            w-full
-            -translate-x-1/2
-            text-center
-          "
-        >
-          <h2
-            className="
-              futura-medium
-              text-[clamp(35px,3.5vw,50px)]
-              leading-none
-              tracking-[0.05em]
-            "
-          >
+      <div className="relative z-10 hidden min-h-screen w-full md:block">
+        {/* Heading */}
+        <div className="testimonials-heading absolute left-1/2 top-[7%] w-full -translate-x-1/2 text-center">
+          <h2 className="futura-medium text-[clamp(35px,3.5vw,50px)] leading-none tracking-[0.05em]">
             TESTIMONIALS
           </h2>
         </div>
 
-        {/* ==================================================
-            DESCRIPTION
-        ================================================== */}
-
-        <p
-          className="
-            testimonials-description
-            futura-light
-            absolute
-            left-1/2
-            top-[17%]
-            w-[min(740px,80%)]
-            -translate-x-1/2
-            text-center
-            text-[clamp(12px,1vw,15px)]
-            leading-[1.45]
-            tracking-[0.04em]
-          "
-        >
-          This is a tribute to our friends at Family
-          Script, who have been unwavering pillars of
-          support throughout our journey, alongside
-          many others who have also played pivotal
-          roles in our endeavors.
+        {/* Description */}
+        <p className="testimonials-description futura-light absolute left-1/2 top-[17%] w-[min(740px,80%)] -translate-x-1/2 text-center text-[clamp(12px,1vw,15px)] leading-[1.45] tracking-[0.04em]">
+          This is a tribute to our friends at Family Script,
+          who have been unwavering pillars of support
+          throughout our journey, alongside many others who
+          have also played pivotal roles in our endeavors.
         </p>
 
-        {/* ==================================================
-            DESKTOP TESTIMONIAL VIEWPORT
-        ================================================== */}
-
+        {/* Desktop testimonial viewport */}
         <div
           ref={desktopViewportRef}
-          className="
-            absolute
-            left-1/2
-            top-[31%]
-            h-[55%]
-            w-full
-            -translate-x-1/2
-            overflow-hidden
-          "
+          className="absolute left-1/2 top-[31%] h-[460px] w-full -translate-x-1/2 overflow-x-auto overflow-y-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           <div
             ref={desktopTrackRef}
-            className="
-              flex
-              w-full
-              flex-col
-              gap-[12px]
-              pb-[20px]
-            "
+            className="flex w-max flex-row items-center gap-[24px] pb-[20px]"
           >
-            {TESTIMONIALS.map(
+            {[...TESTIMONIALS, ...TESTIMONIALS].map(
               (testimonial, index) => (
                 <div
-                  key={index}
-                  className="
-                    desktop-testimonial-card
-                    flex
-                    w-full
-                    flex-shrink-0
-                    justify-center
-                  "
+                  key={`${testimonial.name}-${index}`}
+                  className="desktop-testimonial-card flex w-[min(1050px,calc(100vw-100px))] flex-shrink-0 justify-center"
                 >
                   <DesktopTestimonial
                     testimonial={testimonial}
-                    index={index}
                   />
                 </div>
-              ),
+              )
             )}
           </div>
         </div>
 
-        {/* ==================================================
-            DESKTOP CTA
-        ================================================== */}
-
-        <div
-          className="
-            absolute
-            bottom-[4%]
-            left-1/2
-            z-30
-            -translate-x-1/2
-          "
-        >
+        {/* Desktop CTA */}
+        <div className="absolute bottom-[4%] left-1/2 z-30 -translate-x-1/2">
           <CTAButton />
         </div>
       </div>
 
       {/* ======================================================
-          MOBILE
+          MOBILE AND TABLET
       ====================================================== */}
 
-      <div
-        className="
-          relative
-          z-10
-          flex
-          h-full
-          w-full
-          flex-col
-          md:hidden
-        "
-      >
-        {/* ==================================================
-            MOBILE HEADING
-        ================================================== */}
-
-        <div
-          className="
-            testimonials-heading
-            flex
-            justify-center
-            pt-[50px]
-          "
-        >
-          <h2
-            className="
-              futura-medium
-              text-[21px]
-              leading-none
-              tracking-[0.07em]
-            "
-          >
+      <div className="relative z-10 flex min-h-screen w-full flex-col pb-[100px] md:hidden">
+        {/* Mobile heading */}
+        <div className="testimonials-heading flex justify-center pt-[50px]">
+          <h2 className="futura-medium text-[21px] leading-none tracking-[0.07em]">
             TESTIMONIALS
           </h2>
         </div>
 
-        {/* ==================================================
-            MOBILE DESCRIPTION
-        ================================================== */}
-
-        <p
-          className="
-            testimonials-description
-            futura-light
-            mx-auto
-            mt-[18px]
-            w-[78%]
-            text-center
-            text-[12px]
-            leading-[1.45]
-            tracking-[0.03em]
-          "
-        >
-          This is a tribute to our friends at Family
-          Script, who have been unwavering pillars of
-          support throughout our journey, alongside
-          many others who have also played pivotal
-          roles in our endeavors.
+        {/* Mobile description */}
+        <p className="testimonials-description futura-light mx-auto mt-[18px] w-[85%] text-center text-[12px] leading-[1.45] tracking-[0.03em]">
+          This is a tribute to our friends at Family Script,
+          who have been unwavering pillars of support
+          throughout our journey, alongside many others who
+          have also played pivotal roles in our endeavors.
         </p>
 
-        {/* ==================================================
-            MOBILE TESTIMONIAL AREA
-
-            3 CARDS ARE VISIBLE.
-            4TH CARD IS SCROLLABLE.
-        ================================================== */}
-
+        {/* Mobile testimonial viewport */}
         <div
-          className="
-            mx-auto
-            mt-[35px]
-            h-[330px]
-            w-full
-            overflow-y-auto
-            overflow-x-hidden
-            pb-[10px]
-            [scrollbar-width:none]
-            [&::-webkit-scrollbar]:hidden
-          "
+          ref={mobileViewportRef}
+          className="mx-auto mt-[35px] h-[430px] w-full snap-x snap-mandatory overflow-x-auto overflow-y-hidden pb-[10px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          <div
-            className="
-              flex
-              w-full
-              flex-col
-              gap-[15px]
-            "
-          >
-            {TESTIMONIALS.map(
-              (testimonial, index) => (
-                <MobileTestimonial
-                  key={index}
-                  testimonial={testimonial}
-                  index={index}
-                />
-              ),
-            )}
+          <div className="flex w-max flex-row items-center gap-[15px] px-[20px]">
+            {TESTIMONIALS.map((testimonial, index) => (
+              <MobileTestimonial
+                key={`${testimonial.name}-${index}`}
+                testimonial={testimonial}
+              />
+            ))}
           </div>
         </div>
 
-        {/* ==================================================
-            MOBILE CTA
-        ================================================== */}
-
-        <div
-          className="
-            absolute
-            bottom-[15px]
-            left-1/2
-            z-30
-            -translate-x-1/2
-          "
-        >
+        {/* Mobile CTA */}
+        <div className="mt-auto flex justify-center pt-6">
           <CTAButton />
         </div>
       </div>
