@@ -403,7 +403,7 @@ export default function ContactSection() {
         aria-hidden="true"
       >
         <img
-          src="/assets/homepage/GET_YOUR_STORY_SCRIPTED.jpg"
+          src="/assets/Homepage/GET_YOUR_STORY_SCRIPTED.jpg"
           alt=""
           className="absolute inset-0 h-full w-full object-cover object-center"
         />
