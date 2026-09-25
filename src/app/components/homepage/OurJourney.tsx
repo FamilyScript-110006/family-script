@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useRef, useState, useCallback } from "react";
-import CTAButton from "../layout/CTAButton";
 
 type JourneyItem = {
   year: string;
@@ -22,7 +21,7 @@ const journeyItems: JourneyItem[] = [
     year: "2017",
     text: "Incubated at IGDTUW-Anveshan Foundation and formally registered as Prarabdha Info Solutions Private Limited, marking Family Script’s first institutional milestone.",
     position: "bottom",
-    image: "/assets/OurJourney/2017.jpg",
+    image: "/assets/OurJourney/2017.png",
   },
   {
     year: "2018",
@@ -40,7 +39,7 @@ const journeyItems: JourneyItem[] = [
     year: "2020 - 2022",
     text: "A period of reflection and family time, amidst difficult circumstances, deepened our belief in preserving oral histories before they are lost.",
     position: "top",
-    image: "/assets/OurJourney/2020-2022.jpg",
+    image: "/assets/OurJourney/2020-2022.jpeg",
   },
   {
     year: "2023",
@@ -64,7 +63,7 @@ const journeyItems: JourneyItem[] = [
     year: "2025",
     text: "Family Script won the UX India 2025 Design Pitch Competition, emerging among 149 global entries and pitching to leading investors in Hyderabad.",
     position: "top",
-    image: "/assets/OurJourney/2025.jpeg",
+    image: "/assets/OurJourney/2025.png",
   },
   {
     year: "2026",
@@ -251,28 +250,7 @@ export default function OurJourney() {
           </button>
         </div>
 
-        {/* CTA — hidden on mobile */}
-        <div className="mt-8 hidden justify-center px-4 lg:flex">
-          <CTAButton />
-        </div>
-
-        {/* Pagination — hidden on mobile */}
-        <div className="mx-auto mt-6 hidden max-w-full flex-wrap items-center justify-center gap-2 px-4 lg:flex">
-          {journeyItems.map((item, index) => (
-            <button
-              key={`${item.year}-dot-${index}`}
-              type="button"
-              aria-label={`Go to ${item.year}`}
-              aria-current={activeIndex === index ? "step" : undefined}
-              onClick={() => scrollToItem(index)}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                activeIndex === index
-                  ? "w-7 bg-white"
-                  : "w-1.5 bg-white/30 hover:bg-white/60"
-              }`}
-            />
-          ))}
-        </div>
+        
       </div>
 
       {/* Scrollbar styling */}
