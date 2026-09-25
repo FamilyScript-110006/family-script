@@ -48,28 +48,28 @@ const journeyItems: JourneyItem[] = [
     image: "/assets/OurJourney/2023.jpg",
   },
   {
-    year: "2023-2026",
-    text: "28+ projects completed across biographies, memoirs, institutional histories, practice histories, and diverse forms of legacy documentation.",
-    position: "top",
-    image: "/assets/OurJourney/2023-2026.jpeg",
-  },
-  {
     year: "2024",
     text: "Exhibited Family Script projects and Indigo Chronicles, a set of three journals to Create, Cherish and Celebrate life, at DCWA’s Diplomatic Bazaar; bringing life documentation and legacy-making to a wider audience.",
-    position: "bottom",
+    position: "top",
     image: "/assets/OurJourney/2024.JPG",
   },
   {
     year: "2025",
     text: "Family Script won the UX India 2025 Design Pitch Competition, emerging among 149 global entries and pitching to leading investors in Hyderabad.",
-    position: "top",
+    position: "bottom",
     image: "/assets/OurJourney/2025.png",
   },
   {
     year: "2026",
     text: "Showcased Family Script’s Digital Model at the India Impact AI Summit 2026, representing Delhi Government-promoted startups and opening new institutional opportunities.",
-    position: "bottom",
+    position: "top",
     image: "/assets/OurJourney/2026.jpg",
+  },
+  {
+    year: "2023-2026",
+    text: "28+ projects completed across biographies, memoirs, institutional histories, practice histories, and diverse forms of legacy documentation.",
+    position: "bottom",
+    image: "/assets/OurJourney/2023-2026.jpg",
   },
 ];
 
@@ -89,12 +89,8 @@ export default function OurJourney() {
 
     if (!track || !item) return;
 
-    const left =
-      item.offsetLeft -
-      (track.clientWidth - item.clientWidth) / 2;
-
     track.scrollTo({
-      left,
+      left: item.offsetLeft,
       behavior: "smooth",
     });
 
@@ -105,8 +101,7 @@ export default function OurJourney() {
     const track = trackRef.current;
     if (!track) return;
 
-    const trackCenter =
-      track.getBoundingClientRect().left + track.clientWidth / 2;
+    const trackStart = track.getBoundingClientRect().left;
 
     let closestIndex = 0;
     let closestDistance = Infinity;
@@ -114,10 +109,9 @@ export default function OurJourney() {
     itemRefs.current.forEach((item, index) => {
       if (!item) return;
 
-      const itemCenter =
-        item.getBoundingClientRect().left + item.clientWidth / 2;
+      const itemStart = item.getBoundingClientRect().left;
 
-      const distance = Math.abs(trackCenter - itemCenter);
+      const distance = Math.abs(trackStart - itemStart);
 
       if (distance < closestDistance) {
         closestDistance = distance;
@@ -267,23 +261,11 @@ export default function OurJourney() {
         }
 
         .journey-track {
-          padding-inline: calc((100vw - 32px) / 2);
-        }
-
-        @media (min-width: 640px) {
-          .journey-track {
-            padding-inline: calc((100vw - 80px) / 2);
-          }
-        }
-
-        @media (min-width: 768px) {
-          .journey-track {
-            padding-inline: calc((100vw - min(25vw, 340px)) / 2);
-          }
+          padding-inline: 0;
         }
 
         .journey-item {
-          scroll-snap-align: center;
+          scroll-snap-align: start;
         }
       `}</style>
     </section>

@@ -20,8 +20,8 @@ const processSteps: ProcessStep[] = [
     description:
       "In this initial phase, Family Script conducts physical interviews, ensuring a meticulous capture of personal narratives and oral histories. Through these interactions, interviewers extract narratives, emotions, and memories from participants, laying the groundwork for the documentation process.",
     icon: "/process-icons/process-1.svg",
-    imageDesktop: "/assets/process/01_DESKTOP.png",
-    imageMobile: "/assets/process/01_MOBILE.png",
+    imageDesktop: "/assets/process/01_DESKTOP.jpg",
+    imageMobile: "/assets/process/01_DESKTOP.jpg",
   },
   {
     number: "02",
@@ -30,7 +30,7 @@ const processSteps: ProcessStep[] = [
       "Following the interviews, transcription transforms audio recordings into written text. This crucial step ensures accessibility and facilitates further analysis and content generation, providing a textual foundation for the subsequent stages of the process.",
     icon: "/process-icons/process-2.svg",
     imageDesktop: "/assets/process/02_DESKTOP.png",
-    imageMobile: "/assets/process/02_MOBILE.png",
+    imageMobile: "/assets/process/02_DESKTOP.png",
   },
   {
     number: "03",
@@ -38,8 +38,8 @@ const processSteps: ProcessStep[] = [
     description:
       "Family Script conducts archival assessments, examining photographs, letters, handwritten notes, documents and any material memory available. These artifacts are evaluated, ensuring their preservation and integration into the narrative framework.",
     icon: "/process-icons/process-3.svg",
-    imageDesktop: "/assets/process/03_DESKTOP.png",
-    imageMobile: "/assets/process/03_MOBILE.png",
+    imageDesktop: "/assets/process/03_DESKTOP.jpeg",
+    imageMobile: "/assets/process/03_DESKTOP.jpeg",
   },
   {
     number: "04",
@@ -47,8 +47,8 @@ const processSteps: ProcessStep[] = [
     description:
       "Through conceptualization, storyboarding, and narrative development, Family Script breathes life into raw data. Skilled storytellers weave together disparate elements, crafting comprehensive narratives that resonate with depths and entirety their essence.",
     icon: "/process-icons/process-4.svg",
-    imageDesktop: "/assets/process/04_DESKTOP.png",
-    imageMobile: "/assets/process/04_MOBILE.png",
+    imageDesktop: "/assets/process/04_DESKTOP.jpeg",
+    imageMobile: "/assets/process/04_MOBILE.jpeg",
   },
   {
     number: "05",
@@ -56,8 +56,8 @@ const processSteps: ProcessStep[] = [
     description:
       "Data segmentation and chapterization form the backbone of narrative organization. By categorizing and structuring content, we create a cohesive framework, facilitating seamless transitions and enhancing readability for both books and videos.",
     icon: "/process-icons/process-5.svg",
-    imageDesktop: "/assets/process/05_DESKTOP.png",
-    imageMobile: "/assets/process/05_MOBILE.png",
+    imageDesktop: "/assets/process/05_DESKTOP.jpeg",
+    imageMobile: "/assets/process/05_DESKTOP.jpeg",
   },
   {
     number: "06",
@@ -66,7 +66,7 @@ const processSteps: ProcessStep[] = [
       "Layout generation and formatting transform textual content into visually engaging formats. Attention to detail is paramount as we design layouts, selecting fonts, colors, and imagery to communicate content and enhance aesthetic appeal.",
     icon: "/process-icons/process-6.svg",
     imageDesktop: "/assets/process/06_DESKTOP.png",
-    imageMobile: "/assets/process/06_MOBILE.png",
+    imageMobile: "/assets/process/06_DESKTOP.png",
   },
   {
     number: "07",
@@ -74,8 +74,8 @@ const processSteps: ProcessStep[] = [
     description:
       "Rigorous quality checks ensure that every aspect of the project meets the exacting standards. From narrative coherence to visual presentation, meticulous scrutiny guarantees a final product of unparalleled excellence in tandem with the client's choice.",
     icon: "/process-icons/process-7.svg",
-    imageDesktop: "/assets/process/07_DESKTOP.png",
-    imageMobile: "/assets/process/07_MOBILE.png",
+    imageDesktop: "/assets/process/07_DESKTOP.jpeg",
+    imageMobile: "/assets/process/07_DESKTOP.jpeg",
   },
   {
     number: "08",
@@ -83,8 +83,8 @@ const processSteps: ProcessStep[] = [
     description:
       "In this pivotal stage, Family Script compiles books and videos, integrating multimodal content into cohesive deliverables. Seamlessly weaving together textual narratives, visual elements, and audiovisual components, the final products emerge as immersive and captivating experiences.",
     icon: "/process-icons/process-8.svg",
-    imageDesktop: "/assets/process/08_DESKTOP.png",
-    imageMobile: "/assets/process/08_MOBIKE.png",
+    imageDesktop: "/assets/process/08_DESKTOP.jpeg",
+    imageMobile: "/assets/process/08_DESKTOP.jpeg",
   },
   {
     number: "09",
@@ -92,8 +92,8 @@ const processSteps: ProcessStep[] = [
     description:
       "With the completion of the production process, we deliver the finished products to the clients. Whether in printed form or digital format, each deliverable represents the culmination of meticulous planning, creative vision, and dedication to preserving and sharing stories.",
     icon: "/process-icons/process-9.svg",
-    imageDesktop: "/assets/process/09_DESKTOP.png",
-    imageMobile: "/assets/process/09_MOBILE.png",
+    imageDesktop: "/assets/process/09_DESKTOP.jpeg",
+    imageMobile: "/assets/process/09_DESKTOP.jpeg",
   },
 ];
 
@@ -1050,9 +1050,9 @@ export default function Hero() {
 
                     </div>
 
-                    <div className="flex min-h-0 flex-1 flex-col px-[38px] pb-[22px] pt-[2px]">
+                    <div className="flex min-h-0 flex-1 flex-col px-[38px] pb-[18px] pt-[2px]">
 
-                      <div className="mt-auto">
+                      <div className="mt-[20px]">
 
                         <h2 className="futura-medium text-[19px] uppercase leading-[1.25] tracking-[0.025em] text-[#CBA356]">
                           {step.title}

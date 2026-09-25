@@ -594,7 +594,7 @@ export default function Hero() {
             >
               <EpisodeThumbnail id={episode.id} youtubeId={episode.videoId} />
 
-              <p className="futura-light mt-3 text-center text-[9px] leading-[1.5] tracking-wide text-white/55">
+              <p className="futura-light mt-3 text-center text-[12px] leading-[1.5] tracking-wide text-white/55">
                 {episode.caption}
               </p>
             </div>
