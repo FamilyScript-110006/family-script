@@ -39,6 +39,13 @@ export interface PageTransitionOptions {
   originY?: number;
   strength?: number;
   duration?: number;
+  // CSS-pixel viewport size the "before" frame was captured at
+  // (window.innerWidth/innerHeight at click time, before
+  // navigation). When provided, resizeCanvas locks to this instead
+  // of re-reading the live window size — see resizeCanvas's own
+  // comment for why that matters.
+  viewportWidth?: number;
+  viewportHeight?: number;
 }
 
 export interface PageTransitionCanvasHandle {
@@ -66,7 +73,17 @@ const DEFAULT_DURATION = 1250;
 // a high-DPI canvas ends up displaying a lower-resolution texture,
 // which the GPU has to upscale (visibly blurry, especially once the
 // ripple shader starts resampling it at shifting UV offsets).
-export const MAX_PIXEL_RATIO = 2;
+//
+// Was 2, then 1.5 — still too slow in practice. Dropping to 1 means
+// every navigation captures at native resolution regardless of
+// display DPI: on a 2x retina screen that's a further 56% pixel-count
+// cut on top of the 1.5 step (a (1/1.5)^2 factor), on top of the
+// original 75% cut from 2. domToCanvas's DOM-serialization cost is
+// roughly proportional to pixel count, so this is the highest-leverage
+// lever available for capture speed. The transition is ~1s and in
+// motion the whole time, so the softer edges at 1x are not visible in
+// practice.
+export const MAX_PIXEL_RATIO = 1;
 
 /* ============================================================
    EASING
@@ -295,7 +312,10 @@ const PageTransitionCanvas =
     ========================================================== */
 
     const resizeCanvas =
-      useCallback(() => {
+      useCallback((
+        overrideCssWidth?: number,
+        overrideCssHeight?: number,
+      ) => {
         const canvas =
           canvasRef.current;
 
@@ -316,11 +336,33 @@ const PageTransitionCanvas =
             MAX_PIXEL_RATIO,
           );
 
+        // When the caller (renderTransition) passes the viewport size
+        // it captured the "before" frame at, use THAT instead of
+        // re-reading window.innerWidth/innerHeight live. Between the
+        // click and this call, navigation has already happened —
+        // if the live viewport size has drifted at all (web font
+        // swap reflow, a dev-tools panel toggling, anything), using
+        // the live size here would size this canvas (and the
+        // u_resolution uniform used for aspect correction) to a
+        // DIFFERENT box than the one the "before" texture was
+        // actually captured for, while that texture's pixel content
+        // stays fixed — the GPU then samples it through the wrong
+        // aspect ratio, which reads as the frame being stretched/
+        // dragged to one side. Locking to the captured size removes
+        // that whole class of intermittent mismatch.
+        const cssWidth =
+          overrideCssWidth ??
+          window.innerWidth;
+
+        const cssHeight =
+          overrideCssHeight ??
+          window.innerHeight;
+
         const width =
           Math.max(
             1,
             Math.round(
-              window.innerWidth *
+              cssWidth *
                 pixelRatio,
             ),
           );
@@ -329,7 +371,7 @@ const PageTransitionCanvas =
           Math.max(
             1,
             Math.round(
-              window.innerHeight *
+              cssHeight *
                 pixelRatio,
             ),
           );
@@ -360,10 +402,10 @@ const PageTransitionCanvas =
            */
 
           canvas.style.width =
-            `${window.innerWidth}px`;
+            `${cssWidth}px`;
 
           canvas.style.height =
-            `${window.innerHeight}px`;
+            `${cssHeight}px`;
         }
 
         gl.viewport(
@@ -903,10 +945,16 @@ const PageTransitionCanvas =
           }
 
           /*
-           * Resize BEFORE uploading textures.
+           * Resize BEFORE uploading textures. Pass through the
+           * locked capture-time viewport size (see PageTransitionOptions)
+           * so this canvas's resolution can't drift from what the
+           * "before" texture was actually captured at.
            */
 
-          resizeCanvas();
+          resizeCanvas(
+            options.viewportWidth,
+            options.viewportHeight,
+          );
 
           /*
            * Upload exactly once.

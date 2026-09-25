@@ -59,7 +59,13 @@ export interface TransitionFramePair {
    ones after it).
 ============================================================ */
 
-const CAPTURE_MARGIN_PX = 200;
+// Was 200. This pads the captured region beyond the raw viewport on
+// every side, so every extra px here is more DOM the filter lets
+// through and more pixels domToCanvas has to rasterize on every
+// single navigation. 100px is still enough margin to avoid edge
+// artifacts (partially-cut-off elements right at the viewport
+// boundary) without capturing double the buffer zone.
+const CAPTURE_MARGIN_PX = 100;
 
 // modern-screenshot's first step ("wait until load") scans the ENTIRE
 // document for every <img>/<video>, not just the elements our `filter`

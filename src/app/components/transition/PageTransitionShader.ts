@@ -269,6 +269,34 @@ void main() {
     );
 
   /*
+   * direction above lives in aspect-corrected space (p.x was
+   * stretched by aspect relative to p.y) - that's correct for
+   * shape math (distanceFromOrigin/edge), but it is WRONG to apply
+   * directly as a UV offset later: 0.01 in uv.x and 0.01 in uv.y are
+   * not the same physical distance on a non-square viewport. Left
+   * uncorrected, every displacement below (liquid wobble, ripple
+   * edge, chromatic aberration) gets its horizontal component
+   * amplified by roughly the aspect ratio itself (~1.6-2.1x on a
+   * typical wide desktop window), which is what produced both the
+   * glitchy look and the whole frame appearing to drag sideways
+   * during the animation. Un-scale it back into UV space here, once,
+   * and use this for every texture-sampling offset below.
+   */
+  vec2 uvDirection =
+    direction;
+
+  uvDirection.x /=
+    aspect;
+
+  uvDirection =
+    normalize(
+      uvDirection +
+      vec2(
+        0.00001
+      )
+    );
+
+  /*
    * ==========================================================
    * LIQUID NOISE
    * ==========================================================
@@ -429,7 +457,7 @@ void main() {
 
   vec2 distortedUV =
     uv +
-    direction *
+    uvDirection *
     displacement;
 
   /*
@@ -473,12 +501,12 @@ void main() {
 
   vec2 redUV =
     distortedUV +
-    direction *
+    uvDirection *
     chromatic;
 
   vec2 blueUV =
     distortedUV -
-    direction *
+    uvDirection *
     chromatic;
 
   /*

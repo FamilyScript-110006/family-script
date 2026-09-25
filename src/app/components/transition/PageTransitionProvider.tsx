@@ -46,7 +46,14 @@ import { captureViewportSnapshot } from "./PageTransitionCapture";
 const BEFORE_CAPTURE_TIMEOUT = 3000;
 const AFTER_CAPTURE_TIMEOUT = 3000;
 const ROUTE_MOUNT_TIMEOUT = 3000;
-const RIPPLE_DURATION = 1250;
+// Was 1250, then 950, then 700 — 700 cut the total nav time but made
+// the ripple itself read as a rushed flicker rather than a visible
+// wave. The actual multi-second delay users feel is almost entirely
+// the capture/mount time *before* this animation even starts (see the
+// timing marks below), not this duration — so trimming it further
+// doesn't fix the real problem and just makes the effect worse.
+// Back up to a speed that still reads clearly as a ripple.
+const RIPPLE_DURATION = 1000;
 const FADE_FALLBACK_DURATION = 200;
 
 /* ============================================================
@@ -213,8 +220,24 @@ export default function PageTransitionProvider({
       const myId = ++transitionIdRef.current;
       isBusyRef.current = true;
       const scrollYAtClick = window.scrollY;
+      // Locked in now, before navigation can change anything, and
+      // threaded through to PageTransitionCanvas.renderTransition
+      // below — see PageTransitionOptions/resizeCanvas for why this
+      // matters (keeps the WebGL canvas's resolution from drifting
+      // away from what the "before" texture was actually captured
+      // at, which was an intermittent source of the frame looking
+      // stretched/dragged sideways).
+      const viewportWidthAtClick = window.innerWidth;
+      const viewportHeightAtClick = window.innerHeight;
       const freezeCanvas = freezeCanvasRef.current;
       let navigated = false;
+
+      // TEMP INSTRUMENTATION — remove once the 4-5s nav time is
+      // diagnosed. Logs how long each step of the sequence actually
+      // takes on this machine/build, so we're not guessing.
+      const t0 = performance.now();
+      const mark = (label: string) =>
+        console.log(`[transition] ${label}: ${(performance.now() - t0).toFixed(0)}ms elapsed`);
 
       try {
         // A — capture the outgoing page exactly as the user sees it now.
@@ -222,6 +245,7 @@ export default function PageTransitionProvider({
           BEFORE_CAPTURE_TIMEOUT,
           scrollYAtClick,
         );
+        mark("before-capture done");
 
         if (transitionIdRef.current !== myId) return;
 
@@ -297,6 +321,7 @@ export default function PageTransitionProvider({
             setTimeout(() => resolve(false), ROUTE_MOUNT_TIMEOUT);
           }),
         ]);
+        mark("route mount resolved");
 
         if (transitionIdRef.current !== myId) return;
 
@@ -331,6 +356,7 @@ export default function PageTransitionProvider({
         // occlusion doesn't matter here). New pages scroll-restore to
         // top by default.
         const after = await captureViewportSnapshot(AFTER_CAPTURE_TIMEOUT, 0);
+        mark("after-capture done");
 
         if (transitionIdRef.current !== myId) return;
 
@@ -356,8 +382,11 @@ export default function PageTransitionProvider({
             originY: origin.originY,
             strength: 1.05,
             duration: RIPPLE_DURATION,
+            viewportWidth: viewportWidthAtClick,
+            viewportHeight: viewportHeightAtClick,
           },
         );
+        mark("ripple render done");
 
         if (transitionIdRef.current !== myId) return;
 

@@ -9,17 +9,19 @@ interface ProcessStep {
   description: string;
   number: string;
   icon: string;
-  image: string;
+  imageDesktop: string;
+  imageMobile: string;
 }
 
 const processSteps: ProcessStep[] = [
   {
     number: "01",
-    title: "CONNECTION AND RECORDING THE INTERVIEWS",
+    title: "CONDUCTION AND RECORDING THE INTERVIEWS",
     description:
       "In this initial phase, Family Script conducts physical interviews, ensuring a meticulous capture of personal narratives and oral histories. Through these interactions, interviewers extract narratives, emotions, and memories from participants, laying the groundwork for the documentation process.",
     icon: "/process-icons/process-1.svg",
-    image: "/assets/process/01.png",
+    imageDesktop: "/assets/process/01_DESKTOP.png",
+    imageMobile: "/assets/process/01_MOBILE.png",
   },
   {
     number: "02",
@@ -27,7 +29,8 @@ const processSteps: ProcessStep[] = [
     description:
       "Following the interviews, transcription transforms audio recordings into written text. This crucial step ensures accessibility and facilitates further analysis and content generation, providing a textual foundation for the subsequent stages of the process.",
     icon: "/process-icons/process-2.svg",
-    image: "/assets/process/02.png",
+    imageDesktop: "/assets/process/02_DESKTOP.png",
+    imageMobile: "/assets/process/02_MOBILE.png",
   },
   {
     number: "03",
@@ -35,7 +38,8 @@ const processSteps: ProcessStep[] = [
     description:
       "Family Script conducts archival assessments, examining photographs, letters, handwritten notes, documents and any material memory available. These artifacts are evaluated, ensuring their preservation and integration into the narrative framework.",
     icon: "/process-icons/process-3.svg",
-    image: "/assets/process/03.png",
+    imageDesktop: "/assets/process/03_DESKTOP.png",
+    imageMobile: "/assets/process/03_MOBILE.png",
   },
   {
     number: "04",
@@ -43,7 +47,8 @@ const processSteps: ProcessStep[] = [
     description:
       "Through conceptualization, storyboarding, and narrative development, Family Script breathes life into raw data. Skilled storytellers weave together disparate elements, crafting comprehensive narratives that resonate with depths and entirety their essence.",
     icon: "/process-icons/process-4.svg",
-    image: "/assets/process/04.png",
+    imageDesktop: "/assets/process/04_DESKTOP.png",
+    imageMobile: "/assets/process/04_MOBILE.png",
   },
   {
     number: "05",
@@ -51,7 +56,8 @@ const processSteps: ProcessStep[] = [
     description:
       "Data segmentation and chapterization form the backbone of narrative organization. By categorizing and structuring content, we create a cohesive framework, facilitating seamless transitions and enhancing readability for both books and videos.",
     icon: "/process-icons/process-5.svg",
-    image: "/assets/process/05.png",
+    imageDesktop: "/assets/process/05_DESKTOP.png",
+    imageMobile: "/assets/process/05_MOBILE.png",
   },
   {
     number: "06",
@@ -59,7 +65,8 @@ const processSteps: ProcessStep[] = [
     description:
       "Layout generation and formatting transform textual content into visually engaging formats. Attention to detail is paramount as we design layouts, selecting fonts, colors, and imagery to communicate content and enhance aesthetic appeal.",
     icon: "/process-icons/process-6.svg",
-    image: "/assets/process/06.png",
+    imageDesktop: "/assets/process/06_DESKTOP.png",
+    imageMobile: "/assets/process/06_MOBILE.png",
   },
   {
     number: "07",
@@ -67,7 +74,8 @@ const processSteps: ProcessStep[] = [
     description:
       "Rigorous quality checks ensure that every aspect of the project meets the exacting standards. From narrative coherence to visual presentation, meticulous scrutiny guarantees a final product of unparalleled excellence in tandem with the client's choice.",
     icon: "/process-icons/process-7.svg",
-    image: "/assets/process/07.png",
+    imageDesktop: "/assets/process/07_DESKTOP.png",
+    imageMobile: "/assets/process/07_MOBILE.png",
   },
   {
     number: "08",
@@ -75,7 +83,8 @@ const processSteps: ProcessStep[] = [
     description:
       "In this pivotal stage, Family Script compiles books and videos, integrating multimodal content into cohesive deliverables. Seamlessly weaving together textual narratives, visual elements, and audiovisual components, the final products emerge as immersive and captivating experiences.",
     icon: "/process-icons/process-8.svg",
-    image: "/assets/process/08.png",
+    imageDesktop: "/assets/process/08_DESKTOP.png",
+    imageMobile: "/assets/process/08_MOBIKE.png",
   },
   {
     number: "09",
@@ -83,7 +92,8 @@ const processSteps: ProcessStep[] = [
     description:
       "With the completion of the production process, we deliver the finished products to the clients. Whether in printed form or digital format, each deliverable represents the culmination of meticulous planning, creative vision, and dedication to preserving and sharing stories.",
     icon: "/process-icons/process-9.svg",
-    image: "/assets/process/09.png",
+    imageDesktop: "/assets/process/09_DESKTOP.png",
+    imageMobile: "/assets/process/09_MOBILE.png",
   },
 ];
 
@@ -715,9 +725,6 @@ export default function Hero() {
             justify-start
             gap-[12px]
 
-            sm:w-[130px]
-            sm:gap-[9px]
-
             md:mt-[72px]
             md:h-[400px]
             md:w-full
@@ -941,7 +948,7 @@ export default function Hero() {
                     <div className="relative h-[58%] min-h-0 w-full shrink-0 overflow-hidden">
 
                       <img
-                        src={step.image}
+                        src={step.imageMobile}
                         alt=""
                         aria-hidden="true"
                         className="absolute inset-0 h-full w-full object-cover"
@@ -1010,7 +1017,7 @@ export default function Hero() {
                     <div className="relative h-[175px] w-full shrink-0 overflow-hidden rounded-[7px]">
 
                       <img
-                        src={step.image}
+                        src={step.imageDesktop}
                         alt=""
                         aria-hidden="true"
                         className="h-full w-full object-cover"
