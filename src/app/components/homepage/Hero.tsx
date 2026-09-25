@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 
 import gsap from "gsap";
+import CTAButton from "../layout/CTAButton";
 
 /* ============================================================
    HERO
@@ -32,6 +33,8 @@ export default function Hero() {
 
   const subtitleRef = useRef<HTMLHeadingElement | null>(null);
 
+  const ctaRef = useRef<HTMLDivElement | null>(null);
+
   /* ==========================================================
      HERO ENTRANCE ANIMATION
   ========================================================== */
@@ -47,7 +50,9 @@ export default function Hero() {
 
     const subtitle = subtitleRef.current;
 
-    if (!section || !content || !logo || !title || !subtitle) {
+    const cta = ctaRef.current;
+
+    if (!section || !content || !logo || !title || !subtitle || !cta) {
       return;
     }
 
@@ -58,7 +63,7 @@ export default function Hero() {
        * This animation only runs on initial load.
        */
 
-      gsap.set([logo, title, subtitle], {
+      gsap.set([logo, title, subtitle, cta], {
         opacity: 0,
         y: 30,
       });
@@ -99,6 +104,17 @@ export default function Hero() {
 
       timeline.to(
         subtitle,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.85,
+          ease: "power3.out",
+        },
+        "-=0.55",
+      );
+
+      timeline.to(
+        cta,
         {
           opacity: 1,
           y: 0,
@@ -234,6 +250,10 @@ export default function Hero() {
         >
           Create a Legacy
         </h2>
+
+        <div ref={ctaRef} className="mt-7">
+          <CTAButton />
+        </div>
       </div>
     </div>
   );

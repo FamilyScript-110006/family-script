@@ -52,13 +52,16 @@ const JOURNAL_PURPOSES = [
    FORM FIELD
 ============================================================ */
 
+
 function FormField({
   icon,
+  name,
   placeholder,
   type = "text",
   required = false,
 }: {
   icon?: React.ReactNode;
+  name: string;
   placeholder: string;
   type?: string;
   required?: boolean;
@@ -78,6 +81,7 @@ function FormField({
       )}
 
       <input
+        name={name}
         type={type}
         placeholder={placeholder}
         required={required}
@@ -135,9 +139,8 @@ function FormSelect({
   return (
     <div
       ref={selectRef}
-      className={`contact-field relative min-w-0 w-full ${
-        isOpen ? "z-50" : "z-10"
-      }`}
+      className={`contact-field relative min-w-0 w-full ${isOpen ? "z-50" : "z-10"
+        }`}
     >
       {/* Dropdown trigger */}
       <button
@@ -152,18 +155,16 @@ function FormSelect({
         }}
       >
         <span
-          className={`min-w-0 flex-1 truncate ${
-            selectedOption ? "text-white" : "text-white/85"
-          }`}
+          className={`min-w-0 flex-1 truncate ${selectedOption ? "text-white" : "text-white/85"
+            }`}
         >
           {selectedOption?.label ?? placeholder}
         </span>
 
         <FiChevronDown
           size={17}
-          className={`shrink-0 text-white/90 transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`shrink-0 text-white/90 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+            }`}
         />
       </button>
 
@@ -187,9 +188,8 @@ function FormSelect({
                 onChange(option.value);
                 setIsOpen(false);
               }}
-              className={`futura-light block w-full px-4 py-3 text-left text-[14px] tracking-[0.01em] text-white transition-colors duration-150 hover:bg-white/10 ${
-                value === option.value ? "bg-white/10" : ""
-              }`}
+              className={`futura-light block w-full px-4 py-3 text-left text-[14px] tracking-[0.01em] text-white transition-colors duration-150 hover:bg-white/10 ${value === option.value ? "bg-white/10" : ""
+                }`}
             >
               {option.label}
             </button>
@@ -205,7 +205,7 @@ function FormSelect({
           aria-hidden="true"
           required
           value={value}
-          onChange={() => {}}
+          onChange={() => { }}
           className="pointer-events-none absolute h-px w-px opacity-0"
           style={{ bottom: 0, left: 0 }}
         />
@@ -218,6 +218,7 @@ function FormSelect({
    MESSAGE FIELD
 ============================================================ */
 
+
 function MessageField() {
   return (
     <div
@@ -228,6 +229,7 @@ function MessageField() {
       }}
     >
       <textarea
+        name="message"
         placeholder="Message"
         rows={4}
         className="futura-light block w-full resize-y appearance-none border-0 bg-transparent text-[14px] leading-[1.4] tracking-[0.01em] text-white caret-white outline-none ring-0 placeholder:text-white/85 focus:border-0 focus:bg-transparent focus:text-white focus:outline-none focus:ring-0"
@@ -275,6 +277,9 @@ export default function ContactSection() {
 
   const [selectedService, setSelectedService] = useState("");
   const [selectedPurpose, setSelectedPurpose] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState("");
+  const [submitError, setSubmitError] = useState(false);
 
   const purposeOptions =
     selectedService === "journals"
@@ -284,6 +289,80 @@ export default function ContactSection() {
   const handleServiceChange = (value: string) => {
     setSelectedService(value);
     setSelectedPurpose("");
+  };
+
+
+  const handleSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+
+    if (isSubmitting) return;
+
+    if (!selectedService || !selectedPurpose) {
+      setSubmitError(true);
+      setSubmitMessage(
+        "Please select a service and documentation purpose."
+      );
+      return;
+    }
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    const payload = {
+      firstName: formData.get("firstName"),
+      lastName: formData.get("lastName"),
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      service:
+        SERVICES.find((item) => item.value === selectedService)?.label ||
+        selectedService,
+      purpose:
+        purposeOptions.find((item) => item.value === selectedPurpose)
+          ?.label || selectedPurpose,
+      message: formData.get("message"),
+    };
+
+    setIsSubmitting(true);
+    setSubmitMessage("");
+    setSubmitError(false);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error || "Unable to send your message."
+        );
+      }
+
+      setSubmitError(false);
+      setSubmitMessage(
+        "Thank you! Your message has been sent successfully."
+      );
+
+      form.reset();
+      setSelectedService("");
+      setSelectedPurpose("");
+    } catch (error) {
+      setSubmitError(true);
+      setSubmitMessage(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   /* ==========================================================
@@ -443,33 +522,31 @@ export default function ContactSection() {
             <form
               ref={formRef}
               className="grid w-full grid-cols-1 gap-x-5 gap-y-3 sm:grid-cols-2"
-              onSubmit={(event) => {
-                event.preventDefault();
-              }}
+              onSubmit={handleSubmit}
             >
-              {/* First name */}
               <FormField
+                name="firstName"
                 icon={<FiUser size={15} />}
                 placeholder="First name*"
                 required
               />
 
-              {/* Last name */}
               <FormField
+                name="lastName"
                 icon={<FiUser size={15} />}
                 placeholder="Last name"
               />
 
-              {/* Email */}
               <FormField
+                name="email"
                 icon={<FiMail size={15} />}
                 placeholder="Email*"
                 type="email"
                 required
               />
 
-              {/* Phone */}
               <FormField
+                name="phone"
                 icon={<FiPhone size={15} />}
                 placeholder="Phone*"
                 type="tel"
@@ -497,14 +574,28 @@ export default function ContactSection() {
               {/* Message */}
               <MessageField />
 
+              {/* Submission status */}
+              {submitMessage && (
+                <p
+                  role="status"
+                  aria-live="polite"
+                  className={`col-span-1 text-center text-sm sm:col-span-2 ${
+                    submitError ? "text-red-700" : "text-[#542338]"
+                  }`}
+                >
+                  {submitMessage}
+                </p>
+              )}
+
               {/* Submit button */}
               <div className="col-span-1 flex justify-center pt-1 sm:col-span-2">
                 <button
                   ref={submitRef}
                   type="submit"
-                  className="futura-light h-[40px] min-w-[120px] rounded-[4px] border border-[#6b203e]/20 bg-[#6b203e] px-8 text-[13px] tracking-[0.01em] text-white transition-all duration-200 hover:bg-[#581a34] active:scale-95"
+                  disabled={isSubmitting}
+                  className="futura-light h-[40px] min-w-[120px] rounded-[4px] border border-[#6b203e]/20 bg-[#6b203e] px-8 text-[13px] tracking-[0.01em] text-white transition-all duration-200 hover:bg-[#581a34] active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Submit
+                  {isSubmitting ? "Sending..." : "Submit"}
                 </button>
               </div>
             </form>
