@@ -62,8 +62,7 @@ export default function WhatWeOffer() {
       return;
     }
 
-    const boxes =
-      services.querySelectorAll<HTMLElement>(".service-box");
+    const boxes = services.querySelectorAll<HTMLElement>(".service-box");
 
     const ctx = gsap.context(() => {
       /* ==================================================
@@ -178,10 +177,6 @@ export default function WhatWeOffer() {
       /* ==================================================
          REFRESH
       ================================================== */
-
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
-      });
     }, section);
 
     return () => {
@@ -220,8 +215,7 @@ export default function WhatWeOffer() {
           bg-no-repeat
         "
         style={{
-          backgroundImage:
-            "url('/assets/Homepage/WHAT_WE_OFFER.jpg')",
+          backgroundImage: "url('/assets/Homepage/WHAT_WE_OFFER.jpg')",
 
           backgroundSize: "cover",
 
@@ -283,7 +277,6 @@ export default function WhatWeOffer() {
           text-white
         "
       >
-
         {/* ====================================================
             ====================================================
             DESKTOP VERSION
@@ -298,7 +291,6 @@ export default function WhatWeOffer() {
             md:block
           "
         >
-
           {/* ==================================================
               HEADING
           ================================================== */}
@@ -338,9 +330,7 @@ export default function WhatWeOffer() {
           >
             <p>A nonlinear, open-ended process</p>
 
-            <p>
-              Recording Oral History and Material Memory
-            </p>
+            <p>Recording Oral History and Material Memory</p>
 
             <p>
               Driving a{" "}
@@ -390,30 +380,19 @@ export default function WhatWeOffer() {
             </div>
 
             <div>
-              <ServiceBox>
-                Digital Archive Services
-              </ServiceBox>
+              <ServiceBox>Digital Archive Services</ServiceBox>
             </div>
 
             <div>
-              <ServiceBox>
-                Exhibition Design
-              </ServiceBox>
+              <ServiceBox>Exhibition Design</ServiceBox>
             </div>
 
             <div>
-              <ServiceBox>
-                Life Writing Workshops
-              </ServiceBox>
+              <ServiceBox>Life Writing Workshops</ServiceBox>
             </div>
 
-            <Link
-              href="/products"
-              className="block cursor-pointer"
-            >
-              <ServiceBox>
-                Bespoke Journals
-              </ServiceBox>
+            <Link href="/products" className="block cursor-pointer">
+              <ServiceBox>Bespoke Journals</ServiceBox>
             </Link>
           </div>
         </div>
@@ -432,7 +411,6 @@ export default function WhatWeOffer() {
             md:hidden
           "
         >
-
           {/* ==================================================
               MOBILE HEADING
           ================================================== */}
@@ -472,13 +450,9 @@ export default function WhatWeOffer() {
               leading-[1.45]
             "
           >
-            <p>
-              A nonlinear, open-ended process
-            </p>
+            <p>A nonlinear, open-ended process</p>
 
-            <p>
-              Recording Oral History and Material Memory
-            </p>
+            <p>Recording Oral History and Material Memory</p>
 
             <p>
               Driving a{" "}
@@ -511,7 +485,6 @@ export default function WhatWeOffer() {
               gap-y-[4.5%]
             "
           >
-
             {/* ------------------------------------------------
                 MEMOIRS
             ------------------------------------------------ */}
@@ -541,9 +514,7 @@ export default function WhatWeOffer() {
             ------------------------------------------------ */}
 
             <div>
-              <ServiceBox mobile>
-                Digital Archive Services
-              </ServiceBox>
+              <ServiceBox mobile>Digital Archive Services</ServiceBox>
             </div>
 
             {/* ------------------------------------------------
@@ -551,9 +522,7 @@ export default function WhatWeOffer() {
             ------------------------------------------------ */}
 
             <div>
-              <ServiceBox mobile>
-                Exhibition Design
-              </ServiceBox>
+              <ServiceBox mobile>Exhibition Design</ServiceBox>
             </div>
 
             {/* ------------------------------------------------
@@ -561,9 +530,7 @@ export default function WhatWeOffer() {
             ------------------------------------------------ */}
 
             <div>
-              <ServiceBox mobile>
-                Life Writing Workshops
-              </ServiceBox>
+              <ServiceBox mobile>Life Writing Workshops</ServiceBox>
             </div>
 
             {/* ------------------------------------------------
@@ -577,9 +544,7 @@ export default function WhatWeOffer() {
                 cursor-pointer
               "
             >
-              <ServiceBox mobile>
-                Bespoke Journals
-              </ServiceBox>
+              <ServiceBox mobile>Bespoke Journals</ServiceBox>
             </Link>
           </div>
         </div>

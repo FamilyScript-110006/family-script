@@ -35,21 +35,13 @@ export default function WhatWeDo() {
          MOBILE + DESKTOP ELEMENTS
       ================================================== */
 
-      const boxes = content.querySelectorAll(
-        ".wwd-composition-box",
-      );
+      const boxes = content.querySelectorAll(".wwd-composition-box");
 
-      const titles = content.querySelectorAll(
-        ".wwd-title",
-      );
+      const titles = content.querySelectorAll(".wwd-title");
 
-      const rightTexts = content.querySelectorAll(
-        ".wwd-right-text",
-      );
+      const rightTexts = content.querySelectorAll(".wwd-right-text");
 
-      const leftTexts = content.querySelectorAll(
-        ".wwd-left-text",
-      );
+      const leftTexts = content.querySelectorAll(".wwd-left-text");
 
       /* ==================================================
          INITIAL STATE
@@ -161,10 +153,6 @@ export default function WhatWeDo() {
       /* ==================================================
          REFRESH
       ================================================== */
-
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
-      });
     }, section);
 
     return () => {
@@ -202,8 +190,7 @@ export default function WhatWeDo() {
           bg-no-repeat
         "
         style={{
-          backgroundImage:
-            "url('/assets/Homepage/WHAT_WE_DO.jpg')",
+          backgroundImage: "url('/assets/Homepage/WHAT_WE_DO.jpg')",
 
           backgroundSize: "cover",
 
@@ -261,7 +248,6 @@ export default function WhatWeDo() {
           z-10
         "
       >
-
         {/* ====================================================
             ====================================================
             DESKTOP COMPOSITION
@@ -276,7 +262,6 @@ export default function WhatWeDo() {
             inset-0
           "
         >
-
           {/* ==================================================
               LEFT DARK TRANSPARENT BLOCK
           ================================================== */}
@@ -518,7 +503,6 @@ export default function WhatWeDo() {
             md:hidden
           "
         >
-
           {/* ==================================================
               SUBTLE TOP LEFT PANEL
           ================================================== */}
@@ -702,9 +686,7 @@ export default function WhatWeDo() {
             >
               We are empathetic listeners,
               <br />
-              <span className="futura-medium">
-                We co-create with you.
-              </span>
+              <span className="futura-medium">We co-create with you.</span>
             </p>
           </div>
 

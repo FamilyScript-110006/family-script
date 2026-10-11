@@ -42,7 +42,10 @@ const STANDARD_PURPOSES = [
 ];
 
 const JOURNAL_PURPOSES = [
-  { value: "indigo-chronicles-hamper", label: "Indigo Chronicles: Set of 3 Journals" },
+  {
+    value: "indigo-chronicles-hamper",
+    label: "Indigo Chronicles: Set of 3 Journals",
+  },
   { value: "cherish", label: "Cherish: A memory Journal" },
   { value: "celebrate", label: "Celebrate: Day to Day Journal" },
   { value: "create", label: "Create: Planner" },
@@ -51,7 +54,6 @@ const JOURNAL_PURPOSES = [
 /* ============================================================
    FORM FIELD
 ============================================================ */
-
 
 function FormField({
   icon,
@@ -115,9 +117,7 @@ function FormSelect({
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement | null>(null);
 
-  const selectedOption = options.find(
-    (option) => option.value === value
-  );
+  const selectedOption = options.find((option) => option.value === value);
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
@@ -139,8 +139,9 @@ function FormSelect({
   return (
     <div
       ref={selectRef}
-      className={`contact-field relative min-w-0 w-full ${isOpen ? "z-50" : "z-10"
-        }`}
+      className={`contact-field relative min-w-0 w-full ${
+        isOpen ? "z-50" : "z-10"
+      }`}
     >
       {/* Dropdown trigger */}
       <button
@@ -155,16 +156,18 @@ function FormSelect({
         }}
       >
         <span
-          className={`min-w-0 flex-1 truncate ${selectedOption ? "text-white" : "text-white/85"
-            }`}
+          className={`min-w-0 flex-1 truncate ${
+            selectedOption ? "text-white" : "text-white/85"
+          }`}
         >
           {selectedOption?.label ?? placeholder}
         </span>
 
         <FiChevronDown
           size={17}
-          className={`shrink-0 text-white/90 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
-            }`}
+          className={`shrink-0 text-white/90 transition-transform duration-200 ${
+            isOpen ? "rotate-180" : ""
+          }`}
         />
       </button>
 
@@ -188,8 +191,9 @@ function FormSelect({
                 onChange(option.value);
                 setIsOpen(false);
               }}
-              className={`futura-light block w-full px-4 py-3 text-left text-[14px] tracking-[0.01em] text-white transition-colors duration-150 hover:bg-white/10 ${value === option.value ? "bg-white/10" : ""
-                }`}
+              className={`futura-light block w-full px-4 py-3 text-left text-[14px] tracking-[0.01em] text-white transition-colors duration-150 hover:bg-white/10 ${
+                value === option.value ? "bg-white/10" : ""
+              }`}
             >
               {option.label}
             </button>
@@ -205,7 +209,7 @@ function FormSelect({
           aria-hidden="true"
           required
           value={value}
-          onChange={() => { }}
+          onChange={() => {}}
           className="pointer-events-none absolute h-px w-px opacity-0"
           style={{ bottom: 0, left: 0 }}
         />
@@ -217,7 +221,6 @@ function FormSelect({
 /* ============================================================
    MESSAGE FIELD
 ============================================================ */
-
 
 function MessageField() {
   return (
@@ -247,19 +250,27 @@ function ScrollToTopButton() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => {
-      const journey = document.getElementById("our-journey");
-      if (!journey) return;
-      setVisible(journey.getBoundingClientRect().top <= window.innerHeight * 0.5);
-    };
+    const journey = document.getElementById("our-journey");
+    if (!journey) return;
 
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
+    const initialTop = journey.getBoundingClientRect().top;
+    if (initialTop <= window.innerHeight * 0.5) {
+      setVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -50% 0px", threshold: 0 },
+    );
+
+    observer.observe(journey);
+    return () => observer.disconnect();
   }, []);
 
   const handleScrollToTop = () => {
@@ -307,28 +318,21 @@ export default function ContactSection() {
   const [submitError, setSubmitError] = useState(false);
 
   const purposeOptions =
-    selectedService === "journals"
-      ? JOURNAL_PURPOSES
-      : STANDARD_PURPOSES;
+    selectedService === "journals" ? JOURNAL_PURPOSES : STANDARD_PURPOSES;
 
   const handleServiceChange = (value: string) => {
     setSelectedService(value);
     setSelectedPurpose("");
   };
 
-
-  const handleSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (isSubmitting) return;
 
     if (!selectedService || !selectedPurpose) {
       setSubmitError(true);
-      setSubmitMessage(
-        "Please select a service and documentation purpose."
-      );
+      setSubmitMessage("Please select a service and documentation purpose.");
       return;
     }
 
@@ -344,8 +348,8 @@ export default function ContactSection() {
         SERVICES.find((item) => item.value === selectedService)?.label ||
         selectedService,
       purpose:
-        purposeOptions.find((item) => item.value === selectedPurpose)
-          ?.label || selectedPurpose,
+        purposeOptions.find((item) => item.value === selectedPurpose)?.label ||
+        selectedPurpose,
       message: formData.get("message"),
     };
 
@@ -365,15 +369,11 @@ export default function ContactSection() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          result.error || "Unable to send your message."
-        );
+        throw new Error(result.error || "Unable to send your message.");
       }
 
       setSubmitError(false);
-      setSubmitMessage(
-        "Thank you! Your message has been sent successfully."
-      );
+      setSubmitMessage("Thank you! Your message has been sent successfully.");
 
       form.reset();
       setSelectedService("");
@@ -383,7 +383,7 @@ export default function ContactSection() {
       setSubmitMessage(
         error instanceof Error
           ? error.message
-          : "Something went wrong. Please try again."
+          : "Something went wrong. Please try again.",
       );
     } finally {
       setIsSubmitting(false);
@@ -448,7 +448,7 @@ export default function ContactSection() {
           stagger: 0.04,
           ease: "power2.out",
         },
-        "-=0.18"
+        "-=0.18",
       );
 
       timeline.to(
@@ -459,7 +459,7 @@ export default function ContactSection() {
           duration: 0.3,
           ease: "power2.out",
         },
-        "-=0.12"
+        "-=0.12",
       );
 
       timeline.to(
@@ -470,7 +470,7 @@ export default function ContactSection() {
           duration: 0.35,
           ease: "power2.out",
         },
-        "-=0.1"
+        "-=0.1",
       );
 
       ScrollTrigger.create({
@@ -478,10 +478,6 @@ export default function ContactSection() {
         start: "top 80%",
         onEnter: () => timeline.restart(),
         onEnterBack: () => timeline.restart(),
-      });
-
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
       });
     }, section);
 
@@ -538,8 +534,7 @@ export default function ContactSection() {
               ref={headingRef}
               className="futura-light mb-5 text-center text-[16px] leading-tight tracking-[0.03em] text-[#542338] sm:text-[19px] lg:text-[18px]"
             >
-              Get your Story{" "}
-              <span className="futura-bold">Scripted</span>
+              Get your Story <span className="futura-bold">Scripted</span>
             </h2>
 
             {/* FORM */}

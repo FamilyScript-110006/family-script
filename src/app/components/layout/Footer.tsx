@@ -260,9 +260,9 @@ export default function Footer() {
               >
                 An offering of M/s Prarabdha Info Solutions Pvt Ltd,
                 <br />
-                Incubated at a DST-NIDHI technology business incubator
+                Incubated at a DST-NIDHI technology business incubator; DPIIT-recognised
                 <br />
-                DPIIT-recognised; MSME, Udyam and GeM registered
+                MSME, Udyam and GeM registered
               </p>
 
               {/* ==============================================

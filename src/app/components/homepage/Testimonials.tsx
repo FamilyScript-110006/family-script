@@ -44,11 +44,7 @@ type Testimonial = (typeof TESTIMONIALS)[number];
    DESKTOP TESTIMONIAL CARD
 ============================================================ */
 
-function DesktopTestimonial({
-  testimonial,
-}: {
-  testimonial: Testimonial;
-}) {
+function DesktopTestimonial({ testimonial }: { testimonial: Testimonial }) {
   return (
     <div className="relative h-[400px] w-full">
       {/* Card border and content */}
@@ -81,11 +77,7 @@ function DesktopTestimonial({
    MOBILE TESTIMONIAL CARD
 ============================================================ */
 
-function MobileTestimonial({
-  testimonial,
-}: {
-  testimonial: Testimonial;
-}) {
+function MobileTestimonial({ testimonial }: { testimonial: Testimonial }) {
   return (
     <div className="relative flex h-[410px] w-[min(300px,calc(100vw-40px))] flex-shrink-0 snap-center snap-always flex-col items-center justify-center rounded-[12px] border border-white/70 px-[22px] py-[24px] text-center">
       {/* Image */}
@@ -118,6 +110,7 @@ export default function Testimonials() {
   const desktopTrackRef = useRef<HTMLDivElement | null>(null);
   const desktopViewportRef = useRef<HTMLDivElement | null>(null);
   const mobileViewportRef = useRef<HTMLDivElement | null>(null);
+  const desktopLoopWidthRef = useRef(0);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -147,7 +140,7 @@ export default function Testimonials() {
             start: "top 80%",
             toggleActions: "play none none reverse",
           },
-        }
+        },
       );
 
       /* ======================================================
@@ -171,7 +164,7 @@ export default function Testimonials() {
             start: "top 80%",
             toggleActions: "play none none reverse",
           },
-        }
+        },
       );
 
       /* ======================================================
@@ -195,7 +188,7 @@ export default function Testimonials() {
             start: "top 75%",
             toggleActions: "play none none reverse",
           },
-        }
+        },
       );
 
       /* ======================================================
@@ -205,9 +198,20 @@ export default function Testimonials() {
       // Mobile uses native swipe + CSS snap only. Driving scrollLeft from
       // JS while the user is touching (and snap is active) caused jitter.
       const viewports = [desktopViewportRef.current].filter(
-        (viewport): viewport is HTMLDivElement =>
-          viewport !== null
+        (viewport): viewport is HTMLDivElement => viewport !== null,
       );
+
+      const resizeObservers = viewports.map((viewport) => {
+        const updateLoopWidth = () => {
+          desktopLoopWidthRef.current = viewport.scrollWidth / 2;
+        };
+
+        updateLoopWidth();
+
+        const observer = new ResizeObserver(updateLoopWidth);
+        observer.observe(viewport);
+        return observer;
+      });
 
       const paused = new Set<HTMLDivElement>();
 
@@ -245,46 +249,33 @@ export default function Testimonials() {
         viewports.forEach((viewport) => {
           if (paused.has(viewport)) return;
 
-          const loopWidth = viewport.scrollWidth / 2;
+          const loopWidth = desktopLoopWidthRef.current;
+          if (loopWidth <= 0) return;
 
           const speed = 0.1;
 
-          const nextPosition =
-            viewport.scrollLeft + elapsed * speed;
+          const nextPosition = viewport.scrollLeft + elapsed * speed;
 
           viewport.scrollLeft =
-            nextPosition >= loopWidth
-              ? nextPosition - loopWidth
-              : nextPosition;
+            nextPosition >= loopWidth ? nextPosition - loopWidth : nextPosition;
         });
 
-        animationFrame =
-          window.requestAnimationFrame(autoScroll);
+        animationFrame = window.requestAnimationFrame(autoScroll);
       };
 
-      animationFrame =
-        window.requestAnimationFrame(autoScroll);
-
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
-      });
+      animationFrame = window.requestAnimationFrame(autoScroll);
 
       cleanupAutoScroll = () => {
         window.cancelAnimationFrame(animationFrame);
+        resizeObservers.forEach((observer) => observer.disconnect());
 
         viewports.forEach((viewport) => {
           const listener = listeners.get(viewport);
           if (!listener) return;
 
-          viewport.removeEventListener(
-            "mouseenter",
-            listener.enter
-          );
+          viewport.removeEventListener("mouseenter", listener.enter);
 
-          viewport.removeEventListener(
-            "mouseleave",
-            listener.leave
-          );
+          viewport.removeEventListener("mouseleave", listener.leave);
         });
       };
     }, section);
@@ -324,10 +315,9 @@ export default function Testimonials() {
 
         {/* Description */}
         <p className="testimonials-description futura-light absolute left-1/2 top-[17%] w-[min(740px,80%)] -translate-x-1/2 text-center text-[clamp(12px,1vw,15px)] leading-[1.45] tracking-[0.04em]">
-          This is a tribute to our friends at Family Script,
-          who have been unwavering pillars of support
-          throughout our journey, alongside many others who
-          have also played pivotal roles in our endeavors.
+          This is a tribute to our friends at Family Script, who have been
+          unwavering pillars of support throughout our journey, alongside many
+          others who have also played pivotal roles in our endeavors.
         </p>
 
         {/* Desktop testimonial viewport */}
@@ -339,18 +329,14 @@ export default function Testimonials() {
             ref={desktopTrackRef}
             className="flex w-max flex-row items-center gap-[24px] pb-[20px]"
           >
-            {[...TESTIMONIALS, ...TESTIMONIALS].map(
-              (testimonial, index) => (
-                <div
-                  key={`${testimonial.name}-${index}`}
-                  className="desktop-testimonial-card flex w-[min(1050px,calc(100vw-100px))] flex-shrink-0 justify-center"
-                >
-                  <DesktopTestimonial
-                    testimonial={testimonial}
-                  />
-                </div>
-              )
-            )}
+            {[...TESTIMONIALS, ...TESTIMONIALS].map((testimonial, index) => (
+              <div
+                key={`${testimonial.name}-${index}`}
+                className="desktop-testimonial-card flex w-[min(1050px,calc(100vw-100px))] flex-shrink-0 justify-center"
+              >
+                <DesktopTestimonial testimonial={testimonial} />
+              </div>
+            ))}
           </div>
         </div>
 
@@ -374,10 +360,9 @@ export default function Testimonials() {
 
         {/* Mobile description */}
         <p className="testimonials-description futura-light mx-auto mt-[18px] w-[85%] text-center text-[12px] leading-[1.45] tracking-[0.03em]">
-          This is a tribute to our friends at Family Script,
-          who have been unwavering pillars of support
-          throughout our journey, alongside many others who
-          have also played pivotal roles in our endeavors.
+          This is a tribute to our friends at Family Script, who have been
+          unwavering pillars of support throughout our journey, alongside many
+          others who have also played pivotal roles in our endeavors.
         </p>
 
         {/* Mobile testimonial viewport */}

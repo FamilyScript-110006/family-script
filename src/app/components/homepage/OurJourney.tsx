@@ -1,7 +1,6 @@
-
 "use client";
 
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useCallback, useEffect } from "react";
 
 type JourneyItem = {
   year: string;
@@ -76,13 +75,29 @@ const journeyItems: JourneyItem[] = [
 export default function OurJourney() {
   const trackRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const itemOffsetsRef = useRef<number[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const updateItemOffsets = () => {
+      itemOffsetsRef.current = itemRefs.current.map(
+        (item) => item?.offsetLeft ?? 0,
+      );
+    };
+
+    updateItemOffsets();
+
+    const resizeObserver = new ResizeObserver(updateItemOffsets);
+    resizeObserver.observe(track);
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
   const scrollToItem = useCallback((index: number) => {
-    const target = Math.max(
-      0,
-      Math.min(index, journeyItems.length - 1)
-    );
+    const target = Math.max(0, Math.min(index, journeyItems.length - 1));
 
     const track = trackRef.current;
     const item = itemRefs.current[target];
@@ -90,28 +105,25 @@ export default function OurJourney() {
     if (!track || !item) return;
 
     track.scrollTo({
-      left: item.offsetLeft,
+      left: itemOffsetsRef.current[target] ?? item.offsetLeft,
       behavior: "smooth",
     });
 
-    setActiveIndex(target);
+    setActiveIndex((current) => (current === target ? current : target));
   }, []);
 
   const handleScroll = useCallback(() => {
     const track = trackRef.current;
     if (!track) return;
 
-    const trackStart = track.getBoundingClientRect().left;
+    const scrollLeft = track.scrollLeft;
+    const itemOffsets = itemOffsetsRef.current;
 
     let closestIndex = 0;
     let closestDistance = Infinity;
 
-    itemRefs.current.forEach((item, index) => {
-      if (!item) return;
-
-      const itemStart = item.getBoundingClientRect().left;
-
-      const distance = Math.abs(trackStart - itemStart);
+    itemOffsets.forEach((itemOffset, index) => {
+      const distance = Math.abs(scrollLeft - itemOffset);
 
       if (distance < closestDistance) {
         closestDistance = distance;
@@ -119,7 +131,9 @@ export default function OurJourney() {
       }
     });
 
-    setActiveIndex(closestIndex);
+    setActiveIndex((current) =>
+      current === closestIndex ? current : closestIndex,
+    );
   }, []);
 
   return (
@@ -243,8 +257,6 @@ export default function OurJourney() {
             →
           </button>
         </div>
-
-        
       </div>
 
       {/* Scrollbar styling */}

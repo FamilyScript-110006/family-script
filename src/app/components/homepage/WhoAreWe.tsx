@@ -196,10 +196,6 @@ export default function WhoAreWe() {
       /* ==================================================
          REFRESH
       ================================================== */
-
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
-      });
     }, section);
 
     return () => {
@@ -368,8 +364,7 @@ export default function WhoAreWe() {
               "
             >
               <span className="futura-medium">Family Script (FS)</span> is a
-              venture of designers, historians, architects and educationists
-              who{" "}
+              venture of designers, historians, architects and educationists who{" "}
               <span className="futura-medium">
                 celebrate non-hegemonic histories of individuals and
                 collectives.
