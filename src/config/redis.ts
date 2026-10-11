@@ -1,3 +1,4 @@
+
 import net from "node:net";
 import tls from "node:tls";
 import { EventEmitter } from "node:events";
@@ -16,24 +17,30 @@ const BASE_RETRY_DELAY_MS = 100;
 const MAX_RETRY_DELAY_MS = 2_000;
 const RETRY_JITTER_PERCENTAGE = 0.2;
 
-// A3: Central Redis client with JSON helpers, retry handling, and shared connection lifecycle.
+// Redis is optional for frontend-only deployments.
 class RedisClient extends EventEmitter {
   private socket: net.Socket | tls.TLSSocket | null = null;
   private buffer = Buffer.alloc(0);
   private pendingCommands: PendingCommand[] = [];
   private connectPromise: Promise<void> | null = null;
 
-  private readonly url = new URL(env.REDIS_URL);
-  private readonly isTls = this.url.protocol === "rediss:";
-  private readonly host = this.url.hostname;
-  private readonly port = Number(this.url.port || 6379);
-  private readonly password = this.url.password
+  private readonly url = env.REDIS_URL
+    ? new URL(env.REDIS_URL)
+    : null;
+
+  private readonly isTls = this.url?.protocol === "rediss:";
+  private readonly host = this.url?.hostname ?? "";
+  private readonly port = Number(this.url?.port || 6379);
+
+  private readonly password = this.url?.password
     ? decodeURIComponent(this.url.password)
     : undefined;
-  private readonly username = this.url.username
+
+  private readonly username = this.url?.username
     ? decodeURIComponent(this.url.username)
     : undefined;
-  private readonly database = this.url.pathname.replace("/", "");
+
+  private readonly database = this.url?.pathname.replace("/", "") ?? "";
 
   async getJson<T>(key: string): Promise<T | null> {
     const value = await this.command("GET", key);
@@ -92,7 +99,7 @@ class RedisClient extends EventEmitter {
     try {
       await this.rawCommand("QUIT");
     } catch {
-      // Ignore close-time Redis errors; the socket is being torn down anyway.
+      // Ignore close-time Redis errors.
     } finally {
       this.disconnect();
     }
@@ -108,7 +115,6 @@ class RedisClient extends EventEmitter {
 
   private async command(...args: RedisValue[]): Promise<RedisResponse> {
     await this.connectWithRetry();
-
     return this.rawCommand(...args);
   }
 
@@ -122,8 +128,8 @@ class RedisClient extends EventEmitter {
       }
 
       const pendingCommand = { resolve, reject };
-
       this.pendingCommands.push(pendingCommand);
+
       socket.write(this.serializeCommand(args), (error) => {
         if (error) {
           const commandIndex = this.pendingCommands.indexOf(pendingCommand);
@@ -139,6 +145,12 @@ class RedisClient extends EventEmitter {
   }
 
   private async connectWithRetry(): Promise<void> {
+    if (!this.url) {
+      throw new Error(
+        "Redis is disabled because REDIS_URL is not configured.",
+      );
+    }
+
     for (let attempt = 1; attempt <= MAX_RETRY_ATTEMPTS; attempt += 1) {
       try {
         await this.connect();
@@ -154,6 +166,12 @@ class RedisClient extends EventEmitter {
   }
 
   private async connect(): Promise<void> {
+    if (!this.url) {
+      throw new Error(
+        "Redis is disabled because REDIS_URL is not configured.",
+      );
+    }
+
     if (this.socket && !this.socket.destroyed) {
       return;
     }
@@ -166,6 +184,7 @@ class RedisClient extends EventEmitter {
       const socket = this.isTls
         ? tls.connect({ host: this.host, port: this.port })
         : net.createConnection({ host: this.host, port: this.port });
+
       let settled = false;
 
       const fail = (error: Error) => {
@@ -202,16 +221,17 @@ class RedisClient extends EventEmitter {
     });
 
     this.connectPromise = connectPromise;
-
     return connectPromise;
   }
 
   private attachSocketListeners(socket: net.Socket | tls.TLSSocket): void {
     socket.on("data", (chunk) => this.readResponses(chunk));
+
     socket.on("error", (error) => {
       this.emit("error", error);
       this.rejectPending(error);
     });
+
     socket.on("close", () => {
       this.socket = null;
       this.connectPromise = null;
@@ -347,7 +367,6 @@ class RedisClient extends EventEmitter {
       `*${args.length}`,
       ...args.flatMap((arg) => {
         const value = String(arg);
-
         return [`$${Buffer.byteLength(value)}`, value];
       }),
       "",
@@ -355,8 +374,8 @@ class RedisClient extends EventEmitter {
   }
 
   private rejectPending(error: Error): void {
-    for (const pendingCommand of this.pendingCommands) {
-      pendingCommand.reject(error);
+    for (const pending of this.pendingCommands) {
+      pending.reject(error);
     }
 
     this.pendingCommands = [];
@@ -367,8 +386,8 @@ class RedisClient extends EventEmitter {
       BASE_RETRY_DELAY_MS * 2 ** (attempt - 1),
       MAX_RETRY_DELAY_MS,
     );
-    const jitter = delay * RETRY_JITTER_PERCENTAGE * Math.random();
 
+    const jitter = delay * RETRY_JITTER_PERCENTAGE * Math.random();
     return delay + jitter;
   }
 
