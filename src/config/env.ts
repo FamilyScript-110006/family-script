@@ -2,36 +2,42 @@ import { z } from "zod";
 import dotenv from "dotenv";
 import path from "path";
 
-// 1. Manually load environment variables during next.config lifecycle
-// This reads the .env files before Zod starts parsing
+// Load environment variables
 dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 const envSchema = z.object({
-  DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
-  DIRECT_URL: z.string().min(1, "DIRECT_URL is required"),
-  REDIS_URL: z.string().min(1, "REDIS_URL is required"),
+  // Backend services — optional for frontend-only deployment
+  DATABASE_URL: z.string().optional(),
+  DIRECT_URL: z.string().optional(),
+  REDIS_URL: z.string().optional(),
 
-  BETTER_AUTH_SECRET: z.string().min(1, "BETTER_AUTH_SECRET is required"),
-  SESSION_SECRET: z.string().min(1, "SESSION_SECRET is required"),
+  // Authentication
+  BETTER_AUTH_SECRET: z.string().optional(),
+  SESSION_SECRET: z.string().optional(),
 
-  RESEND_API_KEY: z.string().min(1, "RESEND_API_KEY is required"),
+  // Email
+  RESEND_API_KEY: z.string().optional(),
 
+  // OAuth
   GOOGLE_CLIENT_ID: z.string().optional(),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
 
   GITHUB_CLIENT_ID: z.string().optional(),
   GITHUB_CLIENT_SECRET: z.string().optional(),
 
-  CORS_ORIGIN: z.string().min(1, "CORS_ORIGIN is required"),
-  
-  // Provide a safe fallback for PORT if it's evaluated as undefined before parse
+  // CORS
+  CORS_ORIGIN: z.string().optional(),
+
+  // Runtime
   PORT: z.preprocess(
-    (val) => val ?? "3000", 
+    (val) => val ?? "3000",
     z.coerce.number().int().positive()
   ),
-  
-  NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+
+  NODE_ENV: z
+    .enum(["development", "test", "production"])
+    .default("development"),
 });
 
 export const env = envSchema.parse(process.env);
