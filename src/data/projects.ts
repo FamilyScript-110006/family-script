@@ -317,7 +317,7 @@ export const projects: Project[] = [
 
     coverImage: "/assets/PROJECTS/BIOGRAPHICAL/SUDHA RAINA/cover.png",
 
-    bookImage: "/assets/PROJECTS/BIOGRAPHICAL/SUDHA RAINA/book.png",
+    bookImage: "/assets/PROJECTS/BIOGRAPHICAL/SUDHA RAINA/raina-book.png",
 
     gallery: [
       {

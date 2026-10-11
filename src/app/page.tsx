@@ -82,8 +82,6 @@ export default function Home() {
         id="our-journey"
         className="
           relative
-          h-screen
-          min-h-screen
           w-full
         "
       >

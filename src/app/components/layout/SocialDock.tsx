@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { FiFacebook, FiInstagram, FiShare2, FiX, FiYoutube } from "react-icons/fi";
+import { FiFacebook, FiInstagram, FiLink, FiX, FiYoutube } from "react-icons/fi";
 
 /* ============================================================
    DATA
@@ -153,7 +153,7 @@ export default function SocialDock() {
           className="social-dock-toggle"
           data-open={open}
         >
-          {open ? <FiX size={15} /> : <FiShare2 size={14} />}
+          {open ? <FiX size={15} /> : <FiLink size={14} />}
         </button>
       </div>
     </>
