@@ -17,7 +17,10 @@ const envSchema = z.object({
   SESSION_SECRET: z.string().optional(),
 
   // Email
-  RESEND_API_KEY: z.string().optional(),
+  GMAIL_CLIENT_ID: z.string().optional(),
+  GMAIL_CLIENT_SECRET: z.string().optional(),
+  GMAIL_REFRESH_TOKEN: z.string().optional(),
+  GMAIL_SENDER: z.string().optional(),
 
   // OAuth
   GOOGLE_CLIENT_ID: z.string().optional(),

@@ -1,8 +1,12 @@
-
-import { Resend } from "resend";
+import { google } from "googleapis";
 import { NextResponse } from "next/server";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const oauth2 = new google.auth.OAuth2(
+  process.env.GMAIL_CLIENT_ID,
+  process.env.GMAIL_CLIENT_SECRET
+);
+oauth2.setCredentials({ refresh_token: process.env.GMAIL_REFRESH_TOKEN });
+const gmail = google.gmail({ version: "v1", auth: oauth2 });
 
 function escapeHtml(value: unknown) {
   return String(value ?? "")
@@ -11,6 +15,40 @@ function escapeHtml(value: unknown) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+function encodeHeader(v: string) {
+  return `=?UTF-8?B?${Buffer.from(v).toString("base64")}?=`;
+}
+
+function buildRaw(o: {
+  from: string;
+  to: string;
+  replyTo: string;
+  subject: string;
+  text: string;
+  html: string;
+}) {
+  const boundary = `b_${Date.now()}`;
+  const mime = [
+    `From: ${o.from}`,
+    `To: ${o.to}`,
+    `Reply-To: ${o.replyTo}`,
+    `Subject: ${encodeHeader(o.subject)}`,
+    "MIME-Version: 1.0",
+    `Content-Type: multipart/alternative; boundary="${boundary}"`,
+    "",
+    `--${boundary}`,
+    'Content-Type: text/plain; charset="UTF-8"',
+    "",
+    o.text,
+    `--${boundary}`,
+    'Content-Type: text/html; charset="UTF-8"',
+    "",
+    o.html,
+    `--${boundary}--`,
+  ].join("\r\n");
+  return Buffer.from(mime).toString("base64url");
 }
 
 export async function POST(request: Request) {
@@ -65,14 +103,7 @@ export async function POST(request: Request) {
       "http://localhost:3000"
     ).replace(/\/$/, "");
 
-    const { data, error } = await resend.emails.send({
-      from:
-        process.env.RESEND_FROM_EMAIL ||
-        "FamilyScript <onboarding@resend.dev>",
-      to: process.env.CONTACT_EMAIL!,
-      replyTo: email,
-      subject: `New FamilyScript Inquiry — ${firstName} ${lastName || ""}`,
-      text: `
+    const text = `
 New contact form submission
 
 First Name: ${firstName}
@@ -84,8 +115,9 @@ Documentation Purpose: ${purpose}
 
 Message:
 ${message || "No message provided"}
-      `,
-      html: `
+      `;
+
+    const html = `
         <!doctype html>
         <html lang="en">
           <body style="margin: 0; padding: 32px 16px; background-color: #f4eee3; color: #542338; font-family: Arial, Helvetica, sans-serif;">
@@ -148,23 +180,27 @@ ${message || "No message provided"}
             </table>
           </body>
         </html>
-      `,
+      `;
+
+    const res = await gmail.users.messages.send({
+      userId: "me",
+      requestBody: {
+        raw: buildRaw({
+          from: `FamilyScript <${process.env.GMAIL_SENDER}>`,
+          to: process.env.CONTACT_EMAIL!,
+          replyTo: email,
+          subject: `New FamilyScript Inquiry — ${firstName} ${lastName || ""}`,
+          text,
+          html,
+        }),
+      },
     });
-
-    if (error) {
-      console.error("Resend error:", error);
-
-      return NextResponse.json(
-        { error: "Unable to send your message. Please try again." },
-        { status: 500 }
-      );
-    }
 
     return NextResponse.json(
       {
         success: true,
         message: "Your message has been sent successfully!",
-        id: data?.id,
+        id: res.data.id,
       },
       { status: 200 }
     );
