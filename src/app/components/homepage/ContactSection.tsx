@@ -494,7 +494,7 @@ export default function ContactSection() {
     <section
       id="contact-us"
       ref={sectionRef}
-      className="relative flex w-full flex-col"
+      className="relative z-20 flex w-full flex-col"
     >
       {/* BACKGROUND IMAGE */}
 
