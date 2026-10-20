@@ -22,6 +22,37 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Family Script",
   description: "Family Script",
+
+  icons: {
+    icon: [
+      {
+        url: "/favicon/favicon.ico",
+        type: "image/x-icon",
+      },
+      {
+        url: "/favicon/favicon.svg",
+        type: "image/svg+xml",
+      },
+      {
+        url: "/favicon/favicon-96x96.png",
+        sizes: "96x96",
+        type: "image/png",
+      },
+    ],
+    apple: [
+      {
+        url: "/favicon/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+  },
+
+  manifest: "/favicon/site.webmanifest",
+
+  appleWebApp: {
+    title: "Family Script",
+  },
 };
 
 export default function RootLayout({
@@ -35,7 +66,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        <link rel="stylesheet" href="https://use.typekit.net/zar3kom.css" />
+        <link
+          rel="stylesheet"
+          href="https://use.typekit.net/zar3kom.css"
+        />
       </head>
 
       <body className="flex flex-col">
