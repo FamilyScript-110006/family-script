@@ -104,12 +104,13 @@ export default function PhotoArc() {
   return (
     <div className="absolute inset-0 z-10">
       <Stage>
-        {/* Wheel box: 1372 x 1360, top-left at (70, 35) in the frame. */}
+        {/* Wheel box: 1372 x 1360, centred horizontally, 35 from the top. */}
         <div
           ref={wheelRef}
           className="absolute"
           style={{
-            left: 70,
+            left: "50%",
+            marginLeft: -1372.064 / 2,
             top: 35,
             width: 1372.064,
             height: 1359.887,

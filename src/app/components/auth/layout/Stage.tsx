@@ -1,50 +1,72 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 /* ============================================================
    STAGE
 
-   The Figma frames are 1512 x 982. Stage lays its children out in
-   that coordinate space and scales the whole thing to fit the
-   viewport, so every pixel value copied from Figma stays correct.
+   The Figma frame is 1512px wide. Stage lays its children out in
+   that coordinate space and scales the whole thing so it fills the
+   page edge to edge:
+
+   - the scale follows the viewport WIDTH, so the design always spans
+     the full width (no empty bars on the sides);
+   - the stage is as tall as the viewport, so there are no bars at the
+     top / bottom either. Pin things to the top with `top-[..]` and to
+     the bottom with `bottom-[..]`; centre them with `left-1/2`.
+   - on short, wide windows the scale is lowered so that
+     MIN_DESIGN_HEIGHT units still fit vertically and nothing overlaps.
 ============================================================ */
 
-export const STAGE_WIDTH = 1512;
-export const STAGE_HEIGHT = 982;
+export const DESIGN_WIDTH = 1512;
+export const MIN_DESIGN_HEIGHT = 820;
+
+type StageSize = { scale: number; width: number; height: number };
 
 export default function Stage({ children }: { children: ReactNode }) {
-  const [scale, setScale] = useState<number | null>(null);
+  const hostRef = useRef<HTMLDivElement | null>(null);
+  const [size, setSize] = useState<StageSize | null>(null);
 
   useEffect(() => {
-    const update = () =>
-      setScale(
-        Math.min(
-          window.innerWidth / STAGE_WIDTH,
-          window.innerHeight / STAGE_HEIGHT,
-        ),
-      );
+    const host = hostRef.current;
+
+    if (!host) return;
+
+    const update = () => {
+      const { width: vw, height: vh } = host.getBoundingClientRect();
+
+      if (!vw || !vh) return;
+
+      const scale = Math.min(vw / DESIGN_WIDTH, vh / MIN_DESIGN_HEIGHT);
+
+      setSize({ scale, width: vw / scale, height: vh / scale });
+    };
 
     update();
-    window.addEventListener("resize", update);
 
-    return () => window.removeEventListener("resize", update);
+    const observer = new ResizeObserver(update);
+    observer.observe(host);
+
+    return () => observer.disconnect();
   }, []);
 
   return (
     <div
-      className="pointer-events-none absolute overflow-hidden"
-      style={{
-        left: "50%",
-        top: "50%",
-        width: STAGE_WIDTH,
-        height: STAGE_HEIGHT,
-        transform: `translate(-50%, -50%) scale(${scale ?? 1})`,
-        /* Hidden until the first measurement so it never flashes at 1x. */
-        opacity: scale === null ? 0 : 1,
-      }}
+      ref={hostRef}
+      className="pointer-events-none absolute inset-0 overflow-hidden"
     >
-      {children}
+      <div
+        className="absolute left-0 top-0 origin-top-left"
+        style={{
+          width: size?.width ?? DESIGN_WIDTH,
+          height: size?.height ?? MIN_DESIGN_HEIGHT,
+          transform: `scale(${size?.scale ?? 1})`,
+          /* Hidden until the first measurement so it never flashes at 1x. */
+          opacity: size === null ? 0 : 1,
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 }

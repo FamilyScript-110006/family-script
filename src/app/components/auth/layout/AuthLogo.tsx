@@ -1,7 +1,7 @@
-/* Positioned for the 1512 x 982 stage: top-left, 72px. */
+/* Top-left corner of the page, 72px. */
 export default function AuthLogo() {
   return (
-    <div className="absolute left-[48px] top-[35px] size-[72px]">
+    <div className="absolute left-[48px] top-[38px] size-[72px]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/auth/logo-white.png"

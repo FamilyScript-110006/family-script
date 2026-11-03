@@ -17,7 +17,7 @@ export function AuthBackdrop() {
 export function AuthGlow() {
   return (
     <div className="pointer-events-none absolute inset-0 z-20">
-      {/* Figma: 634px tall at the bottom of a 982px frame. */}
+      {/* Fills the full viewport width; ~65% of the height from the bottom. */}
       <div className="absolute inset-x-0 bottom-0 h-[64.6%] bg-gradient-to-t from-[#606060] from-[30.769%] to-[rgba(102,102,102,0)]" />
 
       {/* eslint-disable-next-line @next/next/no-img-element */}
