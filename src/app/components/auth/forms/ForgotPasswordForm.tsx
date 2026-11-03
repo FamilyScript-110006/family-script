@@ -3,15 +3,21 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 
+import RateLimitNotice from "../shared/RateLimitNotice";
+import { formatCountdown, useCountdown } from "../shared/useCountdown";
+
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [lockSeconds, setLockSeconds] = useCountdown(0);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+
+    if (lockSeconds > 0) return;
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       setError("Enter a valid email address.");
@@ -26,6 +32,12 @@ export default function ForgotPasswordForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim() }),
       });
+
+      if (response.status === 429) {
+        const data = (await response.json()) as { retryAfterSeconds?: number };
+        setLockSeconds(data.retryAfterSeconds ?? 60);
+        return;
+      }
 
       if (!response.ok) {
         const data = (await response.json()) as { message?: string };
@@ -88,12 +100,23 @@ export default function ForgotPasswordForm() {
         />
         {error && <span className="futura-light mt-1 block px-5 text-[14px] leading-5 text-[#ffb4b4]">{error}</span>}
       </label>
+      {lockSeconds > 0 && (
+        <RateLimitNotice
+          seconds={lockSeconds}
+          title="Too many requests"
+          message="Please wait before requesting another reset link."
+        />
+      )}
       <button
         type="submit"
-        disabled={submitting}
+        disabled={submitting || lockSeconds > 0}
         className="futura-light h-12 rounded-full bg-soft-ivory text-[16px] text-dark-burgundy hover:opacity-90 focus-visible:ring-2 focus-visible:ring-antique-gold disabled:opacity-60"
       >
-        {submitting ? "SENDING..." : "SEND RESET LINK"}
+        {submitting
+          ? "SENDING..."
+          : lockSeconds > 0
+            ? `TRY AGAIN IN ${formatCountdown(lockSeconds)}`
+            : "SEND RESET LINK"}
       </button>
       <Link href="/sign-in" className="futura-light text-center text-[14px] text-antique-gold underline underline-offset-2 hover:opacity-70">
         Return to login

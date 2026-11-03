@@ -8,6 +8,16 @@ import {
 } from "@/middleware/authenticate";
 import { resendVerificationSchema, verifyEmailSchema } from "./auth.validators";
 import { forgotPasswordSchema, resetPasswordSchema } from "./auth.validators";
+import {
+  FORGOT_PASSWORD_LIMIT,
+  LOGIN_FAILURE_LIMIT,
+  RESEND_LIMIT,
+  getClientIp,
+  hitRateLimit,
+  peekRateLimit,
+  rateLimitedResponse,
+  resetRateLimit,
+} from "@/lib/rate-limit";
 
 export const authController = {
   async register(request: Request) {
@@ -102,15 +112,39 @@ export const authController = {
       );
     }
 
+    // Failed attempts are counted per email + IP, so someone else can't
+    // lock a victim out of their own account from a different address.
+    const loginKey = `login:${parsed.data.email}:${getClientIp(request)}`;
+    const current = peekRateLimit(loginKey, LOGIN_FAILURE_LIMIT.limit);
+
+    if (current.limited) {
+      return rateLimitedResponse(current.retryAfterSeconds);
+    }
+
     try {
       const result = await authService.loginUser(parsed.data);
 
       if (!result.success) {
+        // Only wrong credentials count; unverified email (403) does not.
+        if (result.status === 401) {
+          const after = hitRateLimit(
+            loginKey,
+            LOGIN_FAILURE_LIMIT.limit,
+            LOGIN_FAILURE_LIMIT.windowSeconds,
+          );
+
+          if (after.limited) {
+            return rateLimitedResponse(after.retryAfterSeconds);
+          }
+        }
+
         return NextResponse.json(
           { success: false, message: result.message },
           { status: result.status },
         );
       }
+
+      resetRateLimit(loginKey);
 
       const res = NextResponse.json(
         {
@@ -238,10 +272,22 @@ export const authController = {
       );
     }
 
+    const resendKey = `resend:${parsed.data.email}`;
+    const resendLimit = peekRateLimit(resendKey, RESEND_LIMIT.limit);
+
+    if (resendLimit.limited) {
+      return rateLimitedResponse(resendLimit.retryAfterSeconds);
+    }
+
+    hitRateLimit(resendKey, RESEND_LIMIT.limit, RESEND_LIMIT.windowSeconds);
+
     try {
       const result = await authService.resendVerification(parsed.data);
 
-      if (!result.success) {
+      // Always answer with a generic success for client errors (unknown
+      // email, already verified) so this endpoint can't be used to find
+      // out which emails are registered.
+      if (!result.success && result.status >= 500) {
         return NextResponse.json(
           { success: false, message: result.message },
           { status: result.status },
@@ -249,7 +295,7 @@ export const authController = {
       }
 
       return NextResponse.json(
-        { success: true, message: "Verification email sent." },
+        { success: true, message: "If this email needs verifying, a new link has been sent." },
         { status: 200 },
       );
     } catch (error) {
@@ -286,6 +332,19 @@ export const authController = {
         { status: 400 },
       );
     }
+
+    const forgotKey = `forgot:${parsed.data.email}:${getClientIp(request)}`;
+    const forgotLimit = peekRateLimit(forgotKey, FORGOT_PASSWORD_LIMIT.limit);
+
+    if (forgotLimit.limited) {
+      return rateLimitedResponse(forgotLimit.retryAfterSeconds);
+    }
+
+    hitRateLimit(
+      forgotKey,
+      FORGOT_PASSWORD_LIMIT.limit,
+      FORGOT_PASSWORD_LIMIT.windowSeconds,
+    );
 
     try {
       const result = await authService.forgotPassword(parsed.data);

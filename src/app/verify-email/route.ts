@@ -1,1 +1,0 @@
-export { verifyEmailHandler as POST } from "@/modules/auth/auth.router";

@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 
+import RateLimitNotice from "../shared/RateLimitNotice";
+import { formatCountdown, useCountdown } from "../shared/useCountdown";
+
 type SocialProvider = "google" | "apple" | "github";
 
 const SOCIAL_OPTIONS: Array<{
@@ -16,6 +19,7 @@ const SOCIAL_OPTIONS: Array<{
 
 type LoginResponse = {
   message?: string;
+  retryAfterSeconds?: number;
   errors?: Record<string, string[] | undefined>;
 };
 
@@ -57,7 +61,7 @@ function SocialIcon({ provider }: { provider: SocialProvider }) {
   );
 }
 
-export default function SignInForm() {
+export default function SignInForm({ reason }: { reason?: string }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -66,6 +70,8 @@ export default function SignInForm() {
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [socialLoading, setSocialLoading] = useState<SocialProvider | null>(null);
+  const [lockSeconds, setLockSeconds] = useCountdown(0);
+  const [needsVerification, setNeedsVerification] = useState(false);
 
   function validate() {
     const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
@@ -77,7 +83,8 @@ export default function SignInForm() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFormError("");
-    if (!validate()) return;
+    setNeedsVerification(false);
+    if (lockSeconds > 0 || !validate()) return;
 
     setSubmitting(true);
 
@@ -89,7 +96,13 @@ export default function SignInForm() {
       });
       const data = (await response.json()) as LoginResponse;
 
+      if (response.status === 429) {
+        setLockSeconds(data.retryAfterSeconds ?? 60);
+        return;
+      }
+
       if (!response.ok) {
+        setNeedsVerification(response.status === 403);
         setFormError(data.message ?? "Invalid email or password.");
         return;
       }
@@ -114,6 +127,14 @@ export default function SignInForm() {
       noValidate
       className="pointer-events-auto absolute left-1/2 top-[365px] flex w-[min(405px,calc(100vw-48px))] -translate-x-1/2 flex-col gap-[13px]"
     >
+      {reason === "session-expired" && (
+        <p
+          role="status"
+          className="futura-light mb-1 rounded-3xl border border-antique-gold/50 bg-soft-ivory/10 px-5 py-3 text-center text-[14px] leading-5 text-soft-ivory"
+        >
+          Your session has expired. Please log in again to continue.
+        </p>
+      )}
       <p className="futura-light mb-1 text-center text-[16px] text-antique-gold">
         Log in to your account
       </p>
@@ -180,18 +201,35 @@ export default function SignInForm() {
         </Link>
       </div>
 
-      {formError && (
+      {lockSeconds > 0 && <RateLimitNotice seconds={lockSeconds} />}
+
+      {formError && lockSeconds === 0 && (
         <p role="alert" className="futura-light text-center text-[14px] text-[#ffb4b4]">
           {formError}
+          {needsVerification && (
+            <>
+              {" "}
+              <Link
+                href={`/verify-email/pending?email=${encodeURIComponent(email.trim())}`}
+                className="text-antique-gold underline underline-offset-2 hover:opacity-70"
+              >
+                Resend verification email
+              </Link>
+            </>
+          )}
         </p>
       )}
 
       <button
         type="submit"
-        disabled={submitting || socialLoading !== null}
+        disabled={submitting || socialLoading !== null || lockSeconds > 0}
         className="futura-light mt-1 h-12 rounded-full bg-soft-ivory text-[16px] text-dark-burgundy hover:opacity-90 focus-visible:ring-2 focus-visible:ring-antique-gold focus-visible:ring-offset-2 focus-visible:ring-offset-dark-burgundy disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {submitting ? "LOGGING IN..." : "LOG IN"}
+        {submitting
+          ? "LOGGING IN..."
+          : lockSeconds > 0
+            ? `TRY AGAIN IN ${formatCountdown(lockSeconds)}`
+            : "LOG IN"}
       </button>
 
       <div className="flex items-center gap-3 py-1">

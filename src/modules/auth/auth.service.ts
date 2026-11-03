@@ -37,6 +37,8 @@ export const authService = {
           name: input.name,
           email: input.email,
           password: input.password,
+          // Better Auth redirects here after the emailed link is clicked.
+          callbackURL: "/verify-email?verified=1",
         },
         asResponse: false,
       });
@@ -138,7 +140,7 @@ export const authService = {
     try {
       // Issues a new token, triggers sendVerificationEmail again
       await auth.api.sendVerificationEmail({
-        body: { email: input.email },
+        body: { email: input.email, callbackURL: "/verify-email?verified=1" },
       });
 
       return { success: true as const };

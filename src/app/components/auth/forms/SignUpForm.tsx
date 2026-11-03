@@ -197,8 +197,10 @@ export default function SignUpForm() {
         return;
       }
 
-      setSubmitted(true);
-      setValues({ name: "", email: "", password: "", confirmPassword: "" });
+      window.location.assign(
+        `/verify-email/pending?email=${encodeURIComponent(values.email.trim())}&sent=1`,
+      );
+      return;
     } catch {
       setFormError("Unable to create your account. Please try again.");
     } finally {
