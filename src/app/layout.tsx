@@ -8,6 +8,7 @@ import ChunkErrorReload from "./components/layout/ChunkErrorReload";
 import Footer from "./components/layout/Footer";
 import ScrollToTop from "./components/layout/ScrollToTop";
 import SocialDock from "./components/layout/SocialDock";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -86,6 +87,8 @@ export default function RootLayout({
         <ScrollToTop />
 
         <SocialDock />
+
+        <Analytics />
       </body>
     </html>
   );
