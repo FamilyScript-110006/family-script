@@ -1,52 +1,31 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import { authClient } from "@/lib/auth/client";
 
 type FieldErrors = Partial<
   Record<"name" | "email" | "password" | "confirmPassword", string>
 >;
-
-type RegisterResponse = {
-  success?: boolean;
-  message?: string;
-  code?: string;
-  errors?: Record<string, string[] | undefined>;
-};
 
 type SocialProvider = "google" | "apple" | "github";
 
 const SOCIAL_OPTIONS: Array<{
   provider: SocialProvider;
   label: string;
-}> = [
-  { provider: "google", label: "Continue with Google" },
-  { provider: "apple", label: "Continue with Apple" },
-  { provider: "github", label: "Continue with GitHub" },
-];
+}> = [{ provider: "google", label: "Continue with Google" }];
 
 function SocialIcon({ provider }: { provider: SocialProvider }) {
   if (provider === "google") {
     return (
-      <span className="futura-medium text-[17px] font-bold text-[#4285f4]">
+      <span className="futura-medium text-[17px] font-bold text-[#ffffff]">
         G
       </span>
     );
   }
 
-  if (provider === "apple") {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5 fill-current">
-        <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.1.8 1.21-.25 2.37-.93 3.66-.84 1.55.13 2.72.74 3.48 1.87-3.2 1.92-2.44 6.14.49 7.32-.59 1.55-1.36 3.09-2.73 3.82ZM12.05 7.25C11.9 4.94 13.77 3.05 15.92 2.87c.3 2.67-2.42 4.65-3.87 4.38Z" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5 fill-current">
-      <path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.04c-3.34.73-4.04-1.61-4.04-1.61-.55-1.4-1.34-1.77-1.34-1.77-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.23 1.84 1.23 1.07 1.83 2.8 1.3 3.49.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.93 0-1.31.47-2.38 1.23-3.22-.12-.3-.53-1.52.12-3.17 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.65 1.65.24 2.87.12 3.17.77.84 1.23 1.91 1.23 3.22 0 4.6-2.8 5.62-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5Z" />
-    </svg>
-  );
+  return null;
 }
 
 function EyeIcon({ hidden }: { hidden: boolean }) {
@@ -97,9 +76,8 @@ function PasswordField({
           onChange={(event) => onChange(event.target.value)}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : undefined}
-          className={`futura-light h-12 w-full rounded-full border bg-transparent px-5 pr-12 text-[16px] text-soft-ivory outline-none placeholder:text-soft-ivory/75 focus:border-soft-ivory focus-visible:ring-2 focus-visible:ring-antique-gold ${
-            error ? "border-[#ffb4b4]" : "border-soft-ivory/45"
-          }`}
+          className={`futura-light h-12 w-full rounded-full border bg-transparent px-5 pr-12 text-[16px] text-soft-ivory outline-none placeholder:text-soft-ivory/75 focus:border-soft-ivory focus-visible:ring-2 focus-visible:ring-antique-gold ${error ? "border-[#ffb4b4]" : "border-soft-ivory/45"
+            }`}
         />
         <button
           type="button"
@@ -120,6 +98,7 @@ function PasswordField({
 }
 
 export default function SignUpForm() {
+  const router = useRouter();
   const [values, setValues] = useState({
     name: "",
     email: "",
@@ -128,7 +107,7 @@ export default function SignUpForm() {
   });
   const [errors, setErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [existingAccount, setExistingAccount] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [showPasswords, setShowPasswords] = useState(false);
   const [socialLoading, setSocialLoading] = useState<SocialProvider | null>(
@@ -159,11 +138,13 @@ export default function SignUpForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitted(false);
+
     setFormError("");
+    setExistingAccount(false);
 
     const nextErrors = validate();
     setErrors(nextErrors);
+
     if (Object.keys(nextErrors).length > 0) {
       return;
     }
@@ -171,38 +152,61 @@ export default function SignUpForm() {
     setSubmitting(true);
 
     try {
-      const response = await fetch("/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: values.name.trim(),
-          email: values.email.trim(),
-          password: values.password,
-        }),
-      });
-      const data = (await response.json()) as RegisterResponse;
+      if (process.env.NODE_ENV === "development") {
+        console.info("[auth.sign-up] Email sign-up started.");
+      }
 
-      if (!response.ok) {
-        if (data.code === "EMAIL_TAKEN") {
-          setErrors({ email: "This email address is already registered." });
-        } else if (data.errors) {
-          setErrors({
-            name: data.errors.name?.[0],
-            email: data.errors.email?.[0],
-            password: data.errors.password?.[0],
+      const email = values.email.trim();
+      const result = await authClient.signUp.email({
+        name: values.name.trim(),
+        email,
+        password: values.password,
+      });
+
+      if (result.error) {
+        if (process.env.NODE_ENV === "development") {
+          console.warn("[auth.sign-up] Email sign-up failed.", {
+            status: result.error.status,
+            code: result.error.code,
           });
-        } else {
-          setFormError(data.message ?? "Unable to create your account.");
         }
+
+        const message = result.error.message ?? "Unable to create your account.";
+        const normalizedMessage = message.toLowerCase();
+        const emailAlreadyExists =
+          result.error.status === 409 ||
+          result.error.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL" ||
+          normalizedMessage.includes("already exists") ||
+          normalizedMessage.includes("already registered");
+
+        if (emailAlreadyExists) {
+          setExistingAccount(true);
+          setErrors({ email: "This email address already has an account." });
+        } else {
+          setFormError(message);
+        }
+
         return;
       }
 
-      window.location.assign(
-        `/verify-email/pending?email=${encodeURIComponent(values.email.trim())}&sent=1`,
+      if (process.env.NODE_ENV === "development") {
+        console.info("[auth.sign-up] Email sign-up succeeded.", {
+          hasUser: Boolean(result.data?.user),
+        });
+      }
+
+      router.push(
+        `/verify-email/code?email=${encodeURIComponent(email)}&sent=1`,
       );
-      return;
-    } catch {
-      setFormError("Unable to create your account. Please try again.");
+    } catch (error) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("[auth.sign-up] Email sign-up request threw.", {
+          errorType: error instanceof Error ? error.name : "UnknownError",
+        });
+      }
+      setFormError(
+        "Unable to create your account. Please try again."
+      );
     } finally {
       setSubmitting(false);
     }
@@ -214,31 +218,87 @@ export default function SignUpForm() {
   ) {
     setValues((current) => ({ ...current, [field]: value }));
     setErrors((current) => ({ ...current, [field]: undefined }));
+    if (field === "email") {
+      setExistingAccount(false);
+    }
     setFormError("");
   }
 
-  function startSocialSignUp(provider: SocialProvider) {
+  async function startSocialSignUp(provider: SocialProvider) {
     setFormError("");
     setSocialLoading(provider);
-    window.location.assign(`/auth/oauth/${provider}`);
+
+    try {
+      if (process.env.NODE_ENV === "development") {
+        console.info("[auth.sign-up] Social sign-in started.", { provider });
+      }
+
+      const result = await authClient.signIn.social({
+        provider,
+        callbackURL: "/candidate-dashboard",
+      });
+
+      if (result.error) {
+        if (process.env.NODE_ENV === "development") {
+          console.warn("[auth.sign-up] Social sign-in failed.", {
+            provider,
+            status: result.error.status,
+            code: result.error.code,
+          });
+        }
+        setFormError(
+          result.error.message ?? "Unable to continue with Google."
+        );
+        setSocialLoading(null);
+        return;
+      }
+
+      const redirectUrl = result.data?.url;
+      if (!redirectUrl) {
+        if (process.env.NODE_ENV === "development") {
+          console.error("[auth.sign-up] Social sign-in returned no redirect URL.", {
+            provider,
+          });
+        }
+        setFormError("Google sign-in did not return a redirect URL.");
+        setSocialLoading(null);
+        return;
+      }
+
+      if (process.env.NODE_ENV === "development") {
+        console.info("[auth.sign-up] Navigating to the OAuth provider.", {
+          provider,
+          sdkRedirectFlag: result.data.redirect,
+        });
+      }
+      window.location.assign(redirectUrl);
+    } catch (error) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("[auth.sign-up] Social sign-in request threw.", {
+          provider,
+          errorType: error instanceof Error ? error.name : "UnknownError",
+        });
+      }
+      setFormError("Unable to start Google sign-up.");
+      setSocialLoading(null);
+    }
   }
 
   return (
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="pointer-events-auto absolute left-1/2 top-[365px] flex w-[min(405px,calc(100vw-48px))] -translate-x-1/2 flex-col gap-[13px]"
+      className="pointer-events-auto absolute left-1/2 top-[320px] flex w-[min(405px,calc(100vw-48px))] -translate-x-1/2 flex-col gap-[10px]"
     >
-      <p className="futura-light mb-1 text-center text-[16px] text-antique-gold">
+      <p className="futura-light  text-center text-[16px] text-antique-gold">
         Create your account
       </p>
-      <p className="futura-light mb-1 text-center text-[14px] text-antique-gold">
-        Already have an account?{" "}
+      <p className="futura-light  text-center text-[14px] text-antique-gold">
         <Link
           href="/sign-in"
           className="underline underline-offset-2 transition-opacity hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-antique-gold"
         >
-          Log in
+          Already have an account? Log in
         </Link>
       </p>
       <label className="relative block">
@@ -252,9 +312,8 @@ export default function SignUpForm() {
           value={values.name}
           onChange={(event) => updateValue("name", event.target.value)}
           aria-invalid={Boolean(errors.name)}
-          className={`futura-light h-12 w-full rounded-full border bg-transparent px-5 text-[16px] text-soft-ivory outline-none placeholder:text-soft-ivory/75 focus:border-soft-ivory focus-visible:ring-2 focus-visible:ring-antique-gold ${
-            errors.name ? "border-[#ffb4b4]" : "border-soft-ivory/45"
-          }`}
+          className={`futura-light h-12 w-full rounded-full border bg-transparent px-5 text-[16px] text-soft-ivory outline-none placeholder:text-soft-ivory/75 focus:border-soft-ivory focus-visible:ring-2 focus-visible:ring-antique-gold ${errors.name ? "border-[#ffb4b4]" : "border-soft-ivory/45"
+            }`}
         />
         {errors.name && <span className="futura-light mt-1 block px-5 text-[14px] leading-5 text-[#ffb4b4]">{errors.name}</span>}
       </label>
@@ -270,12 +329,28 @@ export default function SignUpForm() {
           value={values.email}
           onChange={(event) => updateValue("email", event.target.value)}
           aria-invalid={Boolean(errors.email)}
-          className={`futura-light h-12 w-full rounded-full border bg-transparent px-5 text-[16px] text-soft-ivory outline-none placeholder:text-soft-ivory/75 focus:border-soft-ivory focus-visible:ring-2 focus-visible:ring-antique-gold ${
-            errors.email ? "border-[#ffb4b4]" : "border-soft-ivory/45"
-          }`}
+          aria-describedby={errors.email ? "email-error" : undefined}
+          className={`futura-light h-12 w-full rounded-full border bg-transparent px-5 text-[16px] text-soft-ivory outline-none placeholder:text-soft-ivory/75 focus:border-soft-ivory focus-visible:ring-2 focus-visible:ring-antique-gold ${errors.email ? "border-[#ffb4b4]" : "border-soft-ivory/45"
+            }`}
         />
-        {errors.email && <span className="futura-light mt-1 block px-5 text-[14px] leading-5 text-[#ffb4b4]">{errors.email}</span>}
       </label>
+      {errors.email && (
+        <p
+          id="email-error"
+          role={existingAccount ? "alert" : undefined}
+          className="futura-light -mt-2 px-5 text-[14px] leading-5 text-[#ffb4b4]"
+        >
+          {errors.email}{" "}
+          {existingAccount && (
+            <Link
+              href="/sign-in"
+              className="underline underline-offset-2 hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-antique-gold"
+            >
+              Log in instead.
+            </Link>
+          )}
+        </p>
+      )}
 
       <PasswordField
         id="password"
@@ -301,12 +376,6 @@ export default function SignUpForm() {
           {formError}
         </p>
       )}
-      {submitted && (
-        <p role="status" className="futura-light text-center text-[14px] text-[#d9efc2]">
-          Account created successfully.
-        </p>
-      )}
-
       <button
         type="submit"
         disabled={submitting}
@@ -321,17 +390,18 @@ export default function SignUpForm() {
         <span className="h-px flex-1 bg-soft-ivory/25" />
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-center gap-4">
         {SOCIAL_OPTIONS.map(({ provider, label }) => (
           <button
             key={provider}
             type="button"
             disabled={submitting || socialLoading !== null}
             onClick={() => startSocialSignUp(provider)}
-            className="futura-light flex h-12 items-center justify-center gap-3 rounded-full border border-soft-ivory/35 bg-soft-ivory/15 text-[15px] text-soft-ivory transition-colors hover:bg-soft-ivory/25 focus-visible:ring-2 focus-visible:ring-antique-gold disabled:cursor-not-allowed disabled:opacity-60"
+            aria-label={socialLoading === provider ? "Redirecting..." : label}
+            title={label}
+            className="flex size-12 items-center justify-center rounded-full border border-soft-ivory/35 bg-soft-ivory/15 text-soft-ivory transition-colors hover:bg-soft-ivory/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-antique-gold disabled:cursor-not-allowed disabled:opacity-60"
           >
             <SocialIcon provider={provider} />
-            {socialLoading === provider ? "Redirecting..." : label}
           </button>
         ))}
       </div>

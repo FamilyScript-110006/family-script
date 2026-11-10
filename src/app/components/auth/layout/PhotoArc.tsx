@@ -13,7 +13,7 @@ import Stage from "./Stage";
    0.3s (ease-out). That is the exact timing of the Figma prototype.
 ============================================================ */
 
-const TILE_SIZE = 131;
+const TILE_SIZE = 150;
 const RADIUS = 614.4;
 const STEP_DEG = 20;
 
@@ -104,14 +104,14 @@ export default function PhotoArc() {
   return (
     <div className="absolute inset-0 z-10">
       <Stage>
-        {/* Wheel box: 1372 x 1360, centred horizontally, 35 from the top. */}
+        {/* Wheel box: 1372 x 1360, centred horizontally, 15 from the top. */}
         <div
           ref={wheelRef}
           className="absolute"
           style={{
             left: "50%",
             marginLeft: -1372.064 / 2,
-            top: 35,
+            top: 15,
             width: 1372.064,
             height: 1359.887,
             willChange: "transform",

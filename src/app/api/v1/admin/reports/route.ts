@@ -2,16 +2,14 @@
 
 import { NextRequest, NextResponse } from "next/server";
 
-import { auth } from "@/config/auth";
+import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 import { getReportsQuerySchema } from "@/lib/validations/report";
 
 export async function GET(request: NextRequest) {
   try {
-    // 1. Get the current session from Better Auth.
-    const session = await auth.api.getSession({
-      headers: request.headers,
-    });
+    // 1. Get the current session from Neon Managed Auth.
+    const session = await getSession();
 
     // User is not logged in.
     if (!session) {
@@ -24,8 +22,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // 2. Better Auth's session user does not contain the Prisma role.
-    // Fetch the role directly from our User table.
+    // Fetch the app role from the Prisma User table.
     const user = await prisma.user.findUnique({
       where: {
         id: session.user.id,

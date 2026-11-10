@@ -1,7 +1,6 @@
-import { headers } from "next/headers";
 import { NextRequest } from "next/server";
 
-import { auth } from "@/config/auth";
+import { getSession } from "@/lib/auth/session";
 import { handleApiError } from "@/lib/api-error";
 import { successResponse } from "@/lib/api-response";
 
@@ -22,9 +21,7 @@ const treeService = new TreeService(treeRepository);
  */
 export async function GET(request: NextRequest) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const session = await getSession();
 
     if (!session) {
       return Response.json(
@@ -54,9 +51,7 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const session = await getSession();
 
     if (!session) {
       return Response.json(

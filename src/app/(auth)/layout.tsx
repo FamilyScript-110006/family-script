@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 import {
   AuthBackdrop,
   AuthGlow,
@@ -6,6 +8,9 @@ import {
   PhotoArc,
   Stage,
 } from "@/app/components/auth";
+import { auth } from "@/lib/auth/server";
+
+export const dynamic = "force-dynamic";
 
 /* ============================================================
    AUTH LAYOUT
@@ -25,11 +30,23 @@ import {
    TODO: hide those on auth routes instead of covering them.
 ============================================================ */
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const sessionResult = await auth.getSession();
+
+  if (sessionResult.error) {
+    throw new Error(
+      `Could not verify the Neon Auth session (${sessionResult.error.status} ${sessionResult.error.code}).`,
+    );
+  }
+
+  if (sessionResult.data?.user && sessionResult.data.session) {
+    redirect("/candidate-dashboard");
+  }
+
   return (
     <div className="fixed inset-0 z-[2000] overflow-hidden bg-dark-burgundy">
       <AuthBackdrop />

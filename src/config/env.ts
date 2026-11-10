@@ -13,9 +13,8 @@ const envSchema = z.object({
   REDIS_URL: z.string().optional(),
 
   // Authentication
-  BETTER_AUTH_SECRET: z.string().optional(),
-  BETTER_AUTH_URL: z.string().url().optional(),
-  SESSION_SECRET: z.string().optional(),
+  NEON_AUTH_BASE_URL: z.string().url().optional(),
+  NEON_AUTH_COOKIE_SECRET: z.string().min(32).optional(),
 
   // Email
   GMAIL_CLIENT_ID: z.string().optional(),
@@ -23,16 +22,6 @@ const envSchema = z.object({
   GMAIL_REFRESH_TOKEN: z.string().optional(),
   GMAIL_SENDER: z.string().optional(),
   CONTACT_EMAIL: z.string().email().optional(),
-
-  // OAuth
-  GOOGLE_CLIENT_ID: z.string().optional(),
-  GOOGLE_CLIENT_SECRET: z.string().optional(),
-
-  GITHUB_CLIENT_ID: z.string().optional(),
-  GITHUB_CLIENT_SECRET: z.string().optional(),
-
-  APPLE_CLIENT_ID: z.string().optional(),
-  APPLE_CLIENT_SECRET: z.string().optional(),
 
   // CORS
   CORS_ORIGIN: z.string().optional(),

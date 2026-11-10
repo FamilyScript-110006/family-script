@@ -6,9 +6,9 @@ import { useEffect, useState } from "react";
 type Props = {
   /** `?token=` : verify it through the API. */
   token?: string;
-  /** `?verified=1` : Better Auth already verified it and redirected here. */
+  /** `?verified=1` : Neon Auth verified the address and redirected here. */
   verified?: boolean;
-  /** `?error=` : Better Auth redirected here because verification failed. */
+  /** `?error=` : Neon Auth redirected here because verification failed. */
   error?: string;
 };
 
@@ -105,15 +105,15 @@ export default function VerifyEmailResult({ token, verified, error }: Props) {
         !
       </div>
       <h2 className="futura-light text-[22px] text-soft-ivory">
-        {expired ? "This link has expired" : "This link is not valid"}
+        {expired ? "This code or link has expired" : "This code or link is not valid"}
       </h2>
       <p className="futura-light text-[16px] leading-6 text-soft-ivory/85">
         {expired
-          ? "Verification links are only valid for a short time. Request a new one to continue."
-          : "The verification link is invalid or has already been used. Request a new one to continue."}
+          ? "Verification codes and links are only valid for a short time. Request a new code to continue."
+          : "The verification code or link is invalid or has already been used. Request a new code to continue."}
       </p>
       <Link href="/verify-email/pending" className={linkClass}>
-        Request a new link
+        Request a new code
       </Link>
       <Link
         href="/sign-in"

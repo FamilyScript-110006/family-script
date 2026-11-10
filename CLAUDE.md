@@ -31,11 +31,9 @@ npx prisma studio           # browse the database
 ```
 `prisma/seed.ts` exists but is currently empty (no seed data).
 
-Required env vars are validated by `src/config/env.ts` at import time (Zod) — see
-`env.example` for the full list (`DATABASE_URL`, `DIRECT_URL`, `REDIS_URL`,
-`BETTER_AUTH_SECRET`, `SESSION_SECRET`, `RESEND_API_KEY`, `GOOGLE_CLIENT_ID/SECRET`,
-`GITHUB_CLIENT_ID/SECRET`, `CORS_ORIGIN`, `PORT`, `NODE_ENV`). Missing any of these throws
-at startup.
+Environment variables are parsed by `src/config/env.ts` (Zod); most are optional. See
+`env.example` for the app database, runtime, email, and Neon Auth settings. Managed Auth
+provider configuration is managed in Neon; this app currently enables Google only.
 
 ## Documentation already in this repo — read these first
 
@@ -66,13 +64,13 @@ your change — `git log` on the specific file is the fastest way to check.
 
 ## Architecture
 
-Next.js 15 App Router + Prisma + PostgreSQL (Neon) + Better Auth + Redis + Zod, in a
+Next.js 16 App Router + Prisma + PostgreSQL (Neon) + Neon Managed Auth + Redis + Zod, in a
 layered module style:
 
 ```
 src/
 ├── app/            → routes only: pages (marketing site) + API route handlers
-│   ├── api/auth/[...all]/  → Better Auth's own catch-all handler (session, OAuth, etc.)
+│   ├── api/auth/[...all]/  → Neon Managed Auth catch-all handler (session, OAuth, etc.)
 │   ├── api/trees/          → tree CRUD, nodes, relationships, invitations, export/import,
 │   │                          analytics, timeline, contributors — mostly construct their
 │   │                          own TreeRepository/TreeService per route
@@ -84,7 +82,7 @@ src/
 │   └── components/         → presentational React for the public marketing homepage only
 │                              (no data fetching, no auth checks)
 ├── config/          → process-wide singletons: env (Zod-validated), database (Prisma
-│                       client #1), auth (the one Better Auth instance), redis (hand-rolled
+│                       client #1), redis (hand-rolled
 │                       RESP client, no external Redis lib)
 ├── lib/             → response envelope (ApiResponse/successResponse/errorResponse),
 │                       error mapping (handleApiError), a second Prisma client singleton
@@ -92,8 +90,8 @@ src/
 ├── middleware/       → NOT Next.js middleware.ts — plain functions a route calls manually
 │                       (authenticate(), authorize()); nothing runs automatically per-request
 ├── modules/
-│   ├── auth/         → controller → service → validators, thin wrapper over Better Auth's
-│   │                    auth.api.* — this is the actual auth logic layer
+│   ├── auth/         → controller → service → validators, thin wrapper over Neon Managed
+│   │                    Auth server APIs; shared session helper maps auth identities to app users
 │   └── tree/          → constants/errors/permissions/repository/service/types/validator,
 │                         plus relationship-deriver.ts (pure graph traversal to label
 │                         derived relationships like grandmother/cousin/in-law at query
@@ -118,11 +116,9 @@ Key structural facts worth knowing before editing:
   and are not wired together. A third, simpler gate — `src/lib/auth/permissions.ts`
   (`requireAdmin`/`requireSuperAdmin`, checks `User.role`) — is what the `v1/admin`
   routes actually use.
-- **Route handlers do their own inline session checks** via
-  `auth.api.getSession({ headers: await headers() })` (tree routes) rather than calling
-  `authenticate()` from `src/middleware/authenticate.ts` — that helper is only used by
-  `authController.getCurrentUser`. Follow the pattern already used by sibling routes in
-  the same directory rather than introducing a third convention.
+- **Route handlers use `getSession()` from `src/lib/auth/session.ts`** for Neon Managed
+  Auth sessions. That helper maps verified Neon identities to the app's Prisma `User`
+  record by email so existing tree ownership and role references continue to work.
 - **`TreeNode`** (in `prisma/schema.prisma`) is the generic person/entity model shared
   across all three tree types (`FAMILY`, `ORGANIZATION`, `TRIBE`); type-specific fields
   live in the 1:1 `FamilyProfile`/`OrganizationProfile`/`TribeProfile` side tables, not on
@@ -136,10 +132,9 @@ Key structural facts worth knowing before editing:
   Conversation, Message, Meeting, Notification) are archived by setting `deletedAt`, not
   by removing the row — see `TreeRepository.softDelete`/`.restore` for the pattern to
   follow elsewhere.
-- `prisma/schema.prisma`'s own header comment documents the consolidation history (removed
-  duplicate model drafts, renamed `VerificationToken` → `Verification` to match Better
-  Auth's expected model name, added `@@map` snake_case table names) — read it directly if
-  a migration or model shape looks surprising.
+- Prisma `User` remains the app-domain user table. Neon Auth owns credentials and sessions;
+  legacy Prisma auth tables remain in the schema for existing data and are no longer used
+  by the auth runtime.
 - The homepage (`src/app/page.tsx` and `src/app/components/homepage/*`) is presentation-only
   marketing content with hand-tuned pixel/percentage layout constants (see `OurJourney.tsx`
   and the corresponding `Decisions.md` entries) — don't "clean up" magic numbers there

@@ -1,4 +1,4 @@
-// Developer A owns the Prisma schema for authentication infrastructure and shared domain relations.
+// Prisma schema for app-domain data and retained legacy auth records.
 //
 // CONSOLIDATION NOTES (fixed issues from the previous draft):
 // 1. Removed duplicate declarations of TreeType, RelationshipType, InvitationStatus,
@@ -11,15 +11,12 @@
 //    from that draft (birthDate, gender, parentKind, relationship status/dates) were
 //    folded into TreeNode / Relationship instead.
 // 4. Removed InviteToken — it duplicated the existing Invitation model.
-// 5. Auth models: renamed VerificationToken -> Verification (Better Auth's expected model
-//    name), removed the redundant PasswordResetToken model, and added @@map directives to
-//    all four auth models, matching the correction made in an earlier session.
+// 5. Legacy auth models: renamed VerificationToken -> Verification, removed the redundant
+//    PasswordResetToken model, and added @@map directives. Neon Managed Auth now owns
+//    active credentials and sessions in its separate schema.
 // 6. Added @@map snake_case table names consistently across all models.
 //
-// Double-check the Account/Session field names below against whatever Better Auth version
-// you're pinned to — some versions expect accountId/providerId rather than
-// providerAccountId/provider. I kept the original field names since I can't verify your
-// installed adapter version from this file alone.
+// Account/Session/Verification remain for existing data and are not used by the auth runtime.
 
 generator client {
   provider = "prisma-client-js"
@@ -66,18 +63,14 @@ username String?    @unique
   status   UserStatus @default(ACTIVE)
 
   // =====================================================
-  // TIMESTAMPS — BETTER AUTH REQUIRED
+  // TIMESTAMPS
   // =====================================================
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  // =====================================================
-  // AUTH RELATIONS
-  // =====================================================
-
-  // ===== AUTH RELATIONS =====
+  // Legacy auth relations are retained for existing data; Neon Auth owns active credentials and sessions.
   accounts      Account[]
   sessions      Session[]
   verifications Verification[]
@@ -179,9 +172,7 @@ model Session {
 
 // =====================================================
 // VERIFICATION
-// Purpose: email verification AND password reset, unified
-// (Better Auth's expected model name/shape). Replaces the
-// separate VerificationToken + PasswordResetToken models.
+// Legacy verification records retained for existing data; Neon Auth manages current verification and reset flows.
 // =====================================================
 
 model Verification {

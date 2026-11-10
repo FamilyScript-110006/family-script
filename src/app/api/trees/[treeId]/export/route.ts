@@ -1,7 +1,6 @@
-import { headers } from "next/headers";
 import { NextRequest } from "next/server";
 
-import { auth } from "@/config/auth";
+import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/config/database";
 import { handleApiError } from "@/lib/api-error";
 
@@ -16,9 +15,7 @@ export async function POST(
   { params }: { params: Promise<{ treeId: string }> },
 ) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const session = await getSession();
 
     if (!session) {
       return Response.json(

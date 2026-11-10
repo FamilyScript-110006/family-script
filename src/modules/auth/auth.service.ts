@@ -1,229 +1,154 @@
-import { APIError } from "better-auth/api";
-
-import { auth } from "@/config/auth";
-import type { loginSchema, registerSchema } from "./auth.validators";
+import { auth } from "@/lib/auth/server";
 import type {
   forgotPasswordSchema,
-  resetPasswordSchema,
-} from "./auth.validators";
-import type {
+  loginSchema,
+  registerSchema,
   resendVerificationSchema,
+  resetPasswordSchema,
   verifyEmailSchema,
 } from "./auth.validators";
 import type { z } from "zod";
 
 type RegisterInput = z.infer<typeof registerSchema>;
-
-type RegisterResult =
-  | { success: true; userId: string; email: string }
-  | { success: false; status: number; message: string };
-
 type LoginInput = z.infer<typeof loginSchema>;
 
-type LoginResult =
-  | {
-      success: true;
-      userId: string;
-      email: string;
-      setCookieHeader: string | null;
-    }
-  | { success: false; status: number; message: string };
+type ServiceFailure = {
+  success: false;
+  status: number;
+  message: string;
+};
+
+function failure(
+  error: { status: number; message?: string },
+  fallbackMessage: string,
+): ServiceFailure {
+  return {
+    success: false,
+    status: error.status,
+    message: error.message ?? fallbackMessage,
+  };
+}
+
+function appUrl(path: string): string {
+  const origin =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    `http://localhost:${process.env.PORT ?? "3000"}`;
+  return new URL(path, origin).toString();
+}
 
 export const authService = {
-  async registerUser(input: RegisterInput): Promise<RegisterResult> {
-    try {
-      const response = await auth.api.signUpEmail({
-        body: {
-          name: input.name,
-          email: input.email,
-          password: input.password,
-          // Better Auth redirects here after the emailed link is clicked.
-          callbackURL: "/verify-email?verified=1",
-        },
-        asResponse: false,
-      });
+  async registerUser(input: RegisterInput) {
+    const { data, error } = await auth.signUp.email({
+      name: input.name,
+      email: input.email,
+      password: input.password,
+      callbackURL: appUrl("/verify-email?verified=1"),
+    });
+
+    if (error) {
+      const emailAlreadyExists =
+        error.status === 409 ||
+        error.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL" ||
+        (error.message?.toLowerCase().includes("already exists") ?? false);
 
       return {
-        success: true,
-        userId: response.user.id,
-        email: response.user.email,
+        success: false as const,
+        status: emailAlreadyExists ? 409 : error.status,
+        message: emailAlreadyExists ? "EMAIL_TAKEN" : error.message ?? "Sign up failed.",
       };
-    } catch (error) {
-      if (error instanceof APIError) {
-        const errorCode = error.body?.code;
-
-        if (
-          errorCode === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL" ||
-          error.message.toLowerCase().includes("already exists")
-        ) {
-          return {
-            success: false,
-            status: 409,
-            message: "EMAIL_TAKEN",
-          };
-        }
-
-        return {
-          success: false,
-          status: error.statusCode ?? 400,
-          message:
-            error.body?.message ?? error.message ?? "Registration failed.",
-        };
-      }
-
-      throw error;
     }
+
+    if (!data?.user) {
+      throw new Error("Neon Auth sign-up returned no user.");
+    }
+
+    return {
+      success: true as const,
+      userId: data.user.id,
+      email: data.user.email,
+    };
   },
-  async loginUser(input: LoginInput): Promise<LoginResult> {
-    try {
-      const response = await auth.api.signInEmail({
-        body: {
-          email: input.email,
-          password: input.password,
-        },
-        asResponse: true,
-      });
 
-      if (!response.ok) {
-        const errorBody = await response.json().catch(() => null);
-        return {
-          success: false,
-          status: response.status,
-          message: errorBody?.message ?? "Invalid email or password.",
-        };
-      }
+  async loginUser(input: LoginInput) {
+    const { data, error } = await auth.signIn.email({
+      email: input.email,
+      password: input.password,
+    });
 
-      const data = await response.json();
-
-      return {
-        success: true,
-        userId: data.user.id,
-        email: data.user.email,
-        setCookieHeader: response.headers.get("set-cookie"),
-      };
-    } catch (error) {
-      if (error instanceof APIError) {
-        return {
-          success: false,
-          status: error.statusCode ?? 401,
-          message: error.body?.message ?? error.message ?? "Login failed.",
-        };
-      }
-
-      throw error;
+    if (error) {
+      return failure(error, "Login failed.");
     }
+
+    if (!data?.user) {
+      throw new Error("Neon Auth sign-in returned no user.");
+    }
+
+    return {
+      success: true as const,
+      userId: data.user.id,
+      email: data.user.email,
+    };
   },
 
   async verifyEmail(input: z.infer<typeof verifyEmailSchema>) {
-    try {
-      // Validates token, marks user verified
-      await auth.api.verifyEmail({
-        query: { token: input.token },
-      });
+    const { error } = await auth.verifyEmail({
+      query: { token: input.token },
+    });
 
-      return { success: true as const };
-    } catch (error) {
-      if (error instanceof APIError) {
-        return {
-          success: false as const,
-          status: error.statusCode ?? 400,
-          message:
-            error.body?.message ?? error.message ?? "Verification failed.",
-        };
-      }
-
-      throw error;
-    }
+    return error
+      ? failure(error, "Email verification failed.")
+      : { success: true as const };
   },
 
-  async resendVerification(input: z.infer<typeof resendVerificationSchema>) {
-    try {
-      // Issues a new token, triggers sendVerificationEmail again
-      await auth.api.sendVerificationEmail({
-        body: { email: input.email, callbackURL: "/verify-email?verified=1" },
-      });
+  async resendVerification(
+    input: z.infer<typeof resendVerificationSchema>,
+  ) {
+    const { error } = await auth.sendVerificationEmail({
+      email: input.email,
+      callbackURL: appUrl("/verify-email?verified=1"),
+    });
 
-      return { success: true as const };
-    } catch (error) {
-      if (error instanceof APIError) {
-        return {
-          success: false as const,
-          status: error.statusCode ?? 400,
-          message:
-            error.body?.message ??
-            error.message ??
-            "Could not resend verification email.",
-        };
-      }
-
-      throw error;
-    }
+    return error
+      ? failure(error, "Could not resend verification email.")
+      : { success: true as const };
   },
 
   async forgotPassword(input: z.infer<typeof forgotPasswordSchema>) {
-    try {
-      // Issues reset token, triggers Better Auth's password reset email
-      await auth.api.requestPasswordReset({
-        body: {
-          email: input.email,
-          redirectTo: "http://localhost:3000/reset-password",
-        },
-      });
+    const { error } = await auth.requestPasswordReset({
+      email: input.email,
+      redirectTo: appUrl("/reset-password"),
+    });
 
-      return { success: true as const };
-    } catch (error) {
-      if (error instanceof APIError) {
-        return {
-          success: false as const,
-          status: error.statusCode ?? 400,
-          message:
-            error.body?.message ??
-            error.message ??
-            "Could not send reset email.",
-        };
-      }
-
-      throw error;
-    }
+    return error
+      ? failure(error, "Could not send password reset email.")
+      : { success: true as const };
   },
 
   async resetPassword(input: z.infer<typeof resetPasswordSchema>) {
-    try {
-      // Validates token, updates the hashed password on Account
-      await auth.api.resetPassword({
-        body: {
-          token: input.token,
-          newPassword: input.password,
-        },
-      });
-
-      return { success: true as const };
-    } catch (error) {
-      if (error instanceof APIError) {
-        return {
-          success: false as const,
-          status: error.statusCode ?? 400,
-          message:
-            error.body?.message ?? error.message ?? "Password reset failed.",
-        };
-      }
-
-      throw error;
-    }
-  },
-
-  async getSocialSignInUrl(provider: "google" | "github" | "apple") {
-    const result = await auth.api.signInSocial({
-      body: {
-        provider,
-        callbackURL: "/welcome",
-      },
+    const { error } = await auth.resetPassword({
+      token: input.token,
+      newPassword: input.password,
     });
 
-    if (!result.url) {
-      throw new Error(`Better Auth did not return a ${provider} sign-in URL.`);
+    return error
+      ? failure(error, "Password reset failed.")
+      : { success: true as const };
+  },
+
+  async getGoogleSignInUrl() {
+    const { data, error } = await auth.signIn.social({
+      provider: "google",
+      callbackURL: appUrl("/candidate-dashboard"),
+    });
+
+    if (error) {
+      throw new Error(error.message);
     }
 
-    return result.url;
+    if (!data?.url) {
+      throw new Error("Neon Auth did not return a Google sign-in URL.");
+    }
+
+    return data.url;
   },
 };

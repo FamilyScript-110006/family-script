@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { getSession } from "@/lib/auth/session";
+import { auth } from "@/lib/auth/server";
+
+export const dynamic = "force-dynamic";
 
 const checklist = [
   {
@@ -22,9 +24,15 @@ const checklist = [
 ];
 
 export default async function CandidateDashboardPage() {
-  const session = await getSession();
+  const { data: session, error } = await auth.getSession();
 
-  if (!session) {
+  if (error) {
+    throw new Error(
+      `Could not verify the Neon Auth session (${error.status} ${error.code}).`,
+    );
+  }
+
+  if (!session?.user || !session.session) {
     redirect("/sign-in");
   }
 

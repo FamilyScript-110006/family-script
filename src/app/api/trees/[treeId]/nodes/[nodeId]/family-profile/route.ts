@@ -1,7 +1,6 @@
-import { headers } from "next/headers";
 import { NextRequest } from "next/server";
 
-import { auth } from "@/config/auth";
+import { getSession } from "@/lib/auth/session";
 import { handleApiError } from "@/lib/api-error";
 import { successResponse } from "@/lib/api-response";
 
@@ -25,9 +24,7 @@ type RouteParams = { params: Promise<{ treeId: string; nodeId: string }> };
  */
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const session = await getSession();
 
     if (!session) {
       return Response.json(
@@ -57,9 +54,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
  */
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const session = await getSession();
 
     if (!session) {
       return Response.json(

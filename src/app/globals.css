@@ -249,6 +249,9 @@ select {
 
 a {
   color: inherit;
+}
+
+a:not(.underline) {
   text-decoration: none;
 }
 
@@ -604,13 +607,23 @@ GLOBAL CTA
    MOBILE NAVIGATION — FORCE LIGHT LINK TEXT
 ============================================================ */
 
-.mobile-menu-link,
-.mobile-menu-link:link,
-.mobile-menu-link:visited,
-.mobile-menu-link:hover,
-.mobile-menu-link:focus,
-.mobile-menu-link:active {
+a.mobile-menu-link,
+a.mobile-menu-link:link,
+a.mobile-menu-link:visited,
+a.mobile-menu-link:hover,
+a.mobile-menu-link:focus,
+a.mobile-menu-link:active {
   color: #e9e7da !important;
   -webkit-text-fill-color: #e9e7da;
   text-decoration: none;
+}
+
+.nav-dropdown-link,
+.nav-dropdown-link:link,
+.nav-dropdown-link:visited,
+.nav-dropdown-link:hover,
+.nav-dropdown-link:focus,
+.nav-dropdown-link:active {
+  color: #e9e7da !important;
+  -webkit-text-fill-color: #e9e7da;
 }

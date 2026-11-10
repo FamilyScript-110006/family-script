@@ -2,12 +2,9 @@ import { NextResponse } from "next/server";
 
 import { authService } from "./auth.service";
 import { loginSchema, registerSchema } from "./auth.validators";
-import {
-  authenticate,
-  type AuthenticatedRequest,
-} from "@/middleware/authenticate";
 import { resendVerificationSchema, verifyEmailSchema } from "./auth.validators";
 import { forgotPasswordSchema, resetPasswordSchema } from "./auth.validators";
+import { getSession } from "@/lib/auth/session";
 import {
   FORGOT_PASSWORD_LIMIT,
   LOGIN_FAILURE_LIMIT,
@@ -64,7 +61,7 @@ export const authController = {
         );
       }
 
-      // User created; verification email already sent by Better Auth
+      // Neon Auth sent the verification email during registration.
       return NextResponse.json(
         {
           success: true,
@@ -146,7 +143,9 @@ export const authController = {
 
       resetRateLimit(loginKey);
 
-      const res = NextResponse.json(
+      resetRateLimit(loginKey);
+
+      return NextResponse.json(
         {
           success: true,
           message: "Login successful.",
@@ -154,14 +153,6 @@ export const authController = {
         },
         { status: 200 },
       );
-
-      // Forward Better Auth's session cookie to the client so subsequent
-      // requests are authenticated.
-      if (result.setCookieHeader) {
-        res.headers.set("set-cookie", result.setCookieHeader);
-      }
-
-      return res;
     } catch (error) {
       console.error("[auth.login] Unexpected error:", error);
 
@@ -172,26 +163,24 @@ export const authController = {
     }
   },
 
-  async getCurrentUser(request: Request) {
-    const nextRequest = request as import("next/server").NextRequest;
+  async getCurrentUser() {
+    const session = await getSession();
 
-    // Validates session, attaches user/session, or returns 401
-    const authError = await authenticate(nextRequest);
-
-    if (authError) {
-      return authError;
+    if (!session?.user) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 },
+      );
     }
-
-    const { user } = nextRequest as AuthenticatedRequest;
 
     return NextResponse.json(
       {
         success: true,
         data: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          emailVerified: user.emailVerified,
+          id: session.user.id,
+          name: session.user.name,
+          email: session.user.email,
+          emailVerified: session.user.emailVerified,
         },
       },
       { status: 200 },
@@ -424,20 +413,7 @@ export const authController = {
   },
 
   async googleSignIn() {
-    const url = await authService.getSocialSignInUrl("google");
-
-    return NextResponse.redirect(url);
-  },
-
-  async githubSignIn() {
-    const url = await authService.getSocialSignInUrl("github");
-
-    return NextResponse.redirect(url);
-  },
-
-  async appleSignIn() {
-    const url = await authService.getSocialSignInUrl("apple");
-
+    const url = await authService.getGoogleSignInUrl();
     return NextResponse.redirect(url);
   },
 };

@@ -1,4 +1,4 @@
-import { Stage, VerifyEmailPending } from "@/app/components/auth";
+import { Stage, VerifyEmailCode } from "@/app/components/auth";
 
 export default async function VerifyEmailPendingPage({
   searchParams,
@@ -9,7 +9,7 @@ export default async function VerifyEmailPendingPage({
 
   return (
     <Stage>
-      <VerifyEmailPending email={email} justSent={sent === "1"} />
+      <VerifyEmailCode email={email} sent={sent === "1"} />
     </Stage>
   );
 }

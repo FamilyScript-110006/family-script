@@ -463,8 +463,7 @@ export class TreeService {
       expiresAt,
     });
  
-    // TODO: wire up real email delivery. Logging for now, same
-    // pattern as sendVerificationEmail in config/auth.ts.
+    // TODO: wire up real email delivery. Logging for now.
     console.info(
       `Tree invitation for ${data.email}: /trees/invitations/${token}/accept`
     );

@@ -11,14 +11,14 @@
 ============================================================ */
 
 export function AuthBackdrop() {
-  return <div className="absolute inset-0 z-0 bg-dark-burgundy" />;
+  return <div className="absolute inset-0 z-0 bg-[#480424]" />;
 }
 
 export function AuthGlow() {
   return (
     <div className="pointer-events-none absolute inset-0 z-20">
       {/* Fills the full viewport width; ~65% of the height from the bottom. */}
-      <div className="absolute inset-x-0 bottom-0 h-[64.6%] bg-gradient-to-t from-[#606060] from-[30.769%] to-[rgba(102,102,102,0)]" />
+      <div className="absolute inset-x-0 bottom-0 h-[64.6%] bg-gradient-to-t from-[#480424] from-[2.769%] to-[rgba(46, 46, 46, 0)]" />
 
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -26,6 +26,11 @@ export function AuthGlow() {
         alt=""
         draggable={false}
         className="absolute inset-0 size-full object-cover object-bottom"
+        style={{
+          maskImage: "linear-gradient(to bottom, transparent 30%, black 68%)",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, transparent 50%, black 68%)",
+        }}
       />
     </div>
   );

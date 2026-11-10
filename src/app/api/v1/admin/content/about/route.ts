@@ -1,13 +1,10 @@
-import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-import { auth } from "@/config/auth";
+import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/config/database";
 
 async function requireAdmin() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSession();
 
   if (!session?.user) {
     return null;
